@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   
   
-  <title>博文书写（markdown熟悉） | 不听话的兔子君</title>
+  <title>DFT应用——快速卷积之重叠保留法理解 | 不听话的兔子君</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
     <meta name="description" content="记录生活，记录成长">
@@ -87,7 +87,7 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-first_blog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-blog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -95,7 +95,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      博文书写（markdown熟悉）
+      DFT应用——快速卷积之重叠保留法理解
     </h1>
   
 
@@ -111,7 +111,7 @@
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/markdown/">markdown</a>
+    <a class="article-category-link" href="/categories/%E6%95%B0%E5%AD%97%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">数字信号处理</a>
   </div>
 
       
@@ -124,7 +124,7 @@
 
       
       
-<a href="/2021/05/21/first_blog/#comments" class="article-comment-link">
+<a href="/2021/05/21/blog/#comments" class="article-comment-link">
   
     
     
@@ -141,25 +141,23 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>摘要：仅以此文作为我自己的模板，没有任何内容(&gt; 后跟引用部分，例如代码，当然我觉得摘要这么写也不错)</p>
+<p>摘要：重叠保留法的一些简单理解，主要针对为什么移位长度为n-1作出讨论</p>
 </blockquote>
-<span id="more"></span>以下部分只会在阅读全文后显现，相当于前面是简介
-<h3 id="这是三级标题（注意空格）"><a href="#这是三级标题（注意空格）" class="headerlink" title="这是三级标题（注意空格）"></a>这是三级标题（注意空格）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span>（这是类似于引用的写法，实际和右边稍有不同，前面会自动加行号）</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a>这里粘贴url，writing代表描述</p>
-<ul>
-<li>这两个是无序列表</li>
-<li>这两个是无序列表<br>下面是有序列表</li>
-</ul>
+<span id="more"></span>
+<h3 id="一、重叠保留法介绍："><a href="#一、重叠保留法介绍：" class="headerlink" title="一、重叠保留法介绍："></a>一、重叠保留法介绍：</h3><p>&ensp;&ensp;仍然采用分段求卷积再组合的方法。<br>&ensp;&ensp;该方法与重叠相加法的区别为：</p>
+<h4 id="ⅰ-对序列x-n-以M为长度重叠分段为xi-n-，其后段与前段有N-1个重叠点；"><a href="#ⅰ-对序列x-n-以M为长度重叠分段为xi-n-，其后段与前段有N-1个重叠点；" class="headerlink" title="ⅰ. 对序列x(n)以M为长度重叠分段为xi(n) ，其后段与前段有N-1个重叠点；"></a>ⅰ. 对序列x(n)以M为长度重叠分段为xi(n) ，其后段与前段有N-1个重叠点；</h4><h4 id="ⅱ-每段以M为周期计算循环卷积-；-用FFT"><a href="#ⅱ-每段以M为周期计算循环卷积-；-用FFT" class="headerlink" title="ⅱ. 每段以M为周期计算循环卷积 ；(用FFT)"></a>ⅱ. 每段以M为周期计算循环卷积 ；(用FFT)</h4><h4 id="ⅲ-将每段得到的循环卷积结果的前N-1个点去掉-这是循环卷积中的混叠部分-，然后将各段剩余部分-对应线性卷积结果-首尾衔接起来，即得到最终结果。"><a href="#ⅲ-将每段得到的循环卷积结果的前N-1个点去掉-这是循环卷积中的混叠部分-，然后将各段剩余部分-对应线性卷积结果-首尾衔接起来，即得到最终结果。" class="headerlink" title="ⅲ. 将每段得到的循环卷积结果的前N-1个点去掉(这是循环卷积中的混叠部分)，然后将各段剩余部分(对应线性卷积结果)首尾衔接起来，即得到最终结果。"></a>ⅲ. 将每段得到的循环卷积结果的前N-1个点去掉(这是循环卷积中的混叠部分)，然后将各段剩余部分(对应线性卷积结果)首尾衔接起来，即得到最终结果。</h4><p><img src="https://s.im5i.com/2021/05/21/ST8Nd.png" alt="重叠保留法卷积示意图">   </p>
+<h3 id="二、理解过程"><a href="#二、理解过程" class="headerlink" title="二、理解过程"></a>二、理解过程</h3><p>&ensp;&ensp;下面结合课本第三章的一道课后题来解释清楚重叠保留法的过程   </p>
+<blockquote>
+<p>21.我们希望利用h（n）长度为N=50的FIR滤波器对一段很长的数据序列进行滤波处理，要求采用重叠保留法通过DFT（即FFT）来实现。所谓重叠保留法，就是对输入序列进行分段（本题设每段长度为M=100个采样点），但相邻两段必须重叠V个点，然后计算各段与h（n）的L点（本题取L=128）循环卷积，得到输出序列y(n)，m表示第m段循环卷积计算输出。最后，从y(n)中选取B个样值，使每段选取的B个样值连接得到滤波输出y(n)。<br>（1）求V；（2）求B；  </p>
+</blockquote>
+<p><strong>分析</strong>:<br>&ensp;&ensp;不管是重叠相加法还是重叠保留法，其本质都是用循环卷积去代替线性卷积，但是循环卷积根据情况（L&gt;=N+M-1）可能等于或者不等于线性卷积，我们需要对多余的部分做操作，是保留还是如何。下面看一下这题的示意图<br><img src="https://s.im5i.com/2021/05/21/STViK.png" alt="示意图">    </p>
+<p><strong>从上往下依次</strong>：   </p>
 <ol>
-<li>有序列表1</li>
-<li>有序列表2</li>
-<li>会自动将下一行补全</li>
-<li>注意以上四行字符缩进比无序列表大<br><img src="https://s.im5i.com/2021/05/21/S0qUp.jpg" alt="好康的壁纸">这里放图片链接，中括号里面是描述</li>
+<li>被分段的输入序列之一  </li>
+<li>滤波器的单位取样响应h(n)  </li>
+<li>h(n)以L为周期进行周期延拓后的反转序列   </li>
 </ol>
-<p>两对星号包起来加粗<br>例如<strong>这个</strong></p>
-<p>一对星号斜体<br>例如<em>这个</em></p>
-<p>换字号字体等复杂操作则需要html的标签<br>例如<p align="left"><font face="微软雅黑" color="red" size="28">位置字体颜色和字号</p></p>
+<p>&ensp;&ensp;实际的线性卷积只有①段，因此线性卷积和循环卷积要想相等，必须把②段移出0<del>99外，即79</del>99共21个点。因此作循环卷积时，前21个点会发生混叠，即ym(0)~ym(20)要舍去。<br>&ensp;&ensp;因此相邻两段必须重叠21个点，即下一段xm(n)要从79开始，再有21个无效的输出时，①段的左侧与上一次的x(n)的n=99重合，因此第一次ym(n)取样值也只取到这里，即取第21到99点作为输出，而不取到128，否则会有重复。<br>&ensp;&ensp;但是实际生活中，往往L是未知的，但是滤波器是固定的，滤波器确定了，h(n)的长度就确定了，所以一般干脆取N-1点作为重叠部分，而不需要考虑L，这里为了计算机计算方便，L会取比分段序列每一段长大的2的幂次，如本题中27&gt;100。这里的分段长度可能实际生活中是不确定了，而我们21点就是据此算出来的，为了形成统一的算法，取重叠部分为N-1，因为②段的长度就是N，所以一定会被移出去。保证了循环卷积和线性卷积结果一致。</p>
 
         
             <div id="toc-article">
@@ -167,7 +165,7 @@
   <div class="widget-wrap" id="toc-wrap">
     <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
     <div class="widget">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%99%E6%98%AF%E4%B8%89%E7%BA%A7%E6%A0%87%E9%A2%98%EF%BC%88%E6%B3%A8%E6%84%8F%E7%A9%BA%E6%A0%BC%EF%BC%89"><span class="toc-text">这是三级标题（注意空格）</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%87%8D%E5%8F%A0%E4%BF%9D%E7%95%99%E6%B3%95%E4%BB%8B%E7%BB%8D%EF%BC%9A"><span class="toc-text">一、重叠保留法介绍：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%85%B0-%E5%AF%B9%E5%BA%8F%E5%88%97x-n-%E4%BB%A5M%E4%B8%BA%E9%95%BF%E5%BA%A6%E9%87%8D%E5%8F%A0%E5%88%86%E6%AE%B5%E4%B8%BAxi-n-%EF%BC%8C%E5%85%B6%E5%90%8E%E6%AE%B5%E4%B8%8E%E5%89%8D%E6%AE%B5%E6%9C%89N-1%E4%B8%AA%E9%87%8D%E5%8F%A0%E7%82%B9%EF%BC%9B"><span class="toc-text">ⅰ. 对序列x(n)以M为长度重叠分段为xi(n) ，其后段与前段有N-1个重叠点；</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%85%B1-%E6%AF%8F%E6%AE%B5%E4%BB%A5M%E4%B8%BA%E5%91%A8%E6%9C%9F%E8%AE%A1%E7%AE%97%E5%BE%AA%E7%8E%AF%E5%8D%B7%E7%A7%AF-%EF%BC%9B-%E7%94%A8FFT"><span class="toc-text">ⅱ. 每段以M为周期计算循环卷积 ；(用FFT)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%85%B2-%E5%B0%86%E6%AF%8F%E6%AE%B5%E5%BE%97%E5%88%B0%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%8D%B7%E7%A7%AF%E7%BB%93%E6%9E%9C%E7%9A%84%E5%89%8DN-1%E4%B8%AA%E7%82%B9%E5%8E%BB%E6%8E%89-%E8%BF%99%E6%98%AF%E5%BE%AA%E7%8E%AF%E5%8D%B7%E7%A7%AF%E4%B8%AD%E7%9A%84%E6%B7%B7%E5%8F%A0%E9%83%A8%E5%88%86-%EF%BC%8C%E7%84%B6%E5%90%8E%E5%B0%86%E5%90%84%E6%AE%B5%E5%89%A9%E4%BD%99%E9%83%A8%E5%88%86-%E5%AF%B9%E5%BA%94%E7%BA%BF%E6%80%A7%E5%8D%B7%E7%A7%AF%E7%BB%93%E6%9E%9C-%E9%A6%96%E5%B0%BE%E8%A1%94%E6%8E%A5%E8%B5%B7%E6%9D%A5%EF%BC%8C%E5%8D%B3%E5%BE%97%E5%88%B0%E6%9C%80%E7%BB%88%E7%BB%93%E6%9E%9C%E3%80%82"><span class="toc-text">ⅲ. 将每段得到的循环卷积结果的前N-1个点去掉(这是循环卷积中的混叠部分)，然后将各段剩余部分(对应线性卷积结果)首尾衔接起来，即得到最终结果。</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%90%86%E8%A7%A3%E8%BF%87%E7%A8%8B"><span class="toc-text">二、理解过程</span></a></li></ol>
     </div>
   </div>
 
@@ -176,7 +174,7 @@
         
         
           <blockquote id="copyright">
-              <p>原文链接: <a href="https://naughtyrabbit.github.io/2021/05/21/first_blog/">https://naughtyrabbit.github.io/2021/05/21/first_blog/</a></p>
+              <p>原文链接: <a href="https://naughtyrabbit.github.io/2021/05/21/blog/">https://naughtyrabbit.github.io/2021/05/21/blog/</a></p>
               <p>版权声明: 转载请注明出处.</p>
           </blockquote>
         
@@ -188,7 +186,7 @@
           
 
           
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag">模板</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" rel="tag">算法理解</a></li></ul>
 
           
     <div class="social-share">
@@ -203,15 +201,11 @@
         
 <nav id="article-nav">
   
-    <a href="/2021/05/21/blog/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">newer</strong>
-      <div class="article-nav-title">
-        
-          DFT应用——快速卷积之重叠保留法理解
-        
-      </div>
-    </a>
   
+    <a href="/2021/05/21/first_blog/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">博文书写（markdown熟悉）</div>
+    </a>
   
 </nav>
 
