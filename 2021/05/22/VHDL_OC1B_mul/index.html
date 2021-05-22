@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>VHDL__原码一位乘 | 不听话的兔子君</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="记录生活，记录成长">
+  
+  
+  
+    <link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">不听话的兔子君</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">那破云的光终会洒落，将有人迎向你的身侧</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 主页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-VHDL_OC1B_mul" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      VHDL__原码一位乘
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-05-21T16:00:00.000Z" itemprop="datePublished">2021年05月22日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/VHDL/">VHDL</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/05/22/VHDL_OC1B_mul/#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>摘要：记录用VHDL实现原码一位乘的过程，包括模块的分析以及给出端口定义，实体说明，因为比较简单，并未给出完整代码。另外，这篇文章在代码段的显示上有问题，好像识别不了代码段结束符，导致从第一段代码开始一直到文末我找不到原因，希望有大佬知道的告诉我一下。</p>
+</blockquote>
+<span id="more"></span>
+<p>&ensp;&ensp;自己琢磨的过程还是比较难受的，虽然是一个简单的知识点，但VHDL是一回事，原码一位乘的原理是一回事，用VHDL实现原码一位乘又是一回事，但是毕竟是基础，理解整个过程对以后都有好处，二位乘也只是选择的条件和选择相加的对象改一下，整体小改即可，后续会加入博客中供参考，废话少说，下面开始。</p>
+<h3 id="一、原码一位乘原理："><a href="#一、原码一位乘原理：" class="headerlink" title="一、原码一位乘原理："></a>一、原码一位乘原理：</h3><p>&ensp;&ensp;以8位相乘的过程为例，可能更好理解过程<br>&ensp;&ensp;乘数是 Y：1001 0101（95）<br>&ensp;&ensp;被乘数是 X：1111 0110（F6）<br>&ensp;&ensp;相乘结果是（1000 1111 0010 1110）（8f2e）<br>&ensp;&ensp;<img src="https://s.im5i.com/2021/05/21/SZmkW.png" alt="原码一位乘过程示意图">     </p>
+<h3 id="二、VHDL设计"><a href="#二、VHDL设计" class="headerlink" title="二、VHDL设计"></a>二、VHDL设计</h3><ol>
+<li>移位寄存器设计<br>&ensp;&ensp;先从简单的开始，可以看到表格右侧的操作是对乘数作右移操作，然后根据移出位作判断下一步是作+X还是+0，这里可以设置移位模块，由时钟驱动，输入为乘数，乘法开始后进行n-1次右移操作，输出为移出位。<br>下面是实体部分   </li>
+</ol>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">component</span> SREG8B <span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(clk	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">			LOAD	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">			DIN		:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">			QB	 	:	<span class="keyword">OUT</span> <span class="built_in">STD_LOGIC</span>);</span><br><span class="line">	<span class="keyword">end</span> <span class="keyword">component</span>;</span><br><span class="line">```   </span><br><span class="line">      </span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. 加法器  </span><br><span class="line">&amp;ensp;&amp;ensp;可以看到每次都有加法操作，加法操作实际上是部分积的高<span class="number">8</span>位和乘数（这里是<span class="number">1111</span> <span class="number">0110</span>）相加，结果存在新的部分积，进位存在新的部分积最高位。因此为了方便模块间交互，这里将加法器的输出设置为<span class="number">9</span>位，第九位存放进位.  </span><br><span class="line">&amp;ensp;&amp;ensp;![加法过程示意图](https://s.im5i.com/<span class="number">2021</span>/<span class="number">05</span>/<span class="number">21</span>/SZXDo.png) </span><br><span class="line">下面是实体部分  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```VHDL</span><br><span class="line">    <span class="keyword">component</span> adder_8B <span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(a		:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">		     b		:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">		     cin	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">		     cout	:	<span class="keyword">out</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">		     sum	:	<span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">8</span> <span class="keyword">downto</span> <span class="number">0</span>));</span><br><span class="line">    <span class="keyword">end</span> <span class="keyword">component</span>;  </span><br><span class="line">```  </span><br><span class="line"><span class="number">3</span>. 选择器（得到被乘数）  </span><br><span class="line">&amp;ensp;&amp;ensp;前面也看到了，需要根据移位移出位来判断是+X还是+<span class="number">0</span>，实际上移出位是<span class="number">0</span>或者<span class="number">1</span>，只需要将移出位和被除数相与即可得到本次操作的被乘数。  </span><br><span class="line">下面是实体部分  </span><br><span class="line"></span><br><span class="line">~~~</span><br><span class="line">```VHDL</span><br><span class="line">    <span class="keyword">component</span> ANDARITH <span class="keyword">is</span></span><br><span class="line">		<span class="keyword">port</span>(ABIN	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">		     DIN	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">		     DOUT	:	<span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">7</span> <span class="keyword">downto</span> <span class="number">0</span>));</span><br><span class="line">    <span class="keyword">end</span> <span class="keyword">component</span>;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line"><span class="number">4</span>. <span class="number">16</span>位移位寄存器  </span><br><span class="line">&amp;ensp;&amp;ensp;实际上很容易看出最后的结果,最低位是由D的部分移位来的，与A的部分没有关系（都被移出去了）。  </span><br><span class="line">&amp;ensp;&amp;ensp;再重新看这个图，分析结果的构成，发现，结果是由加法器的结果构成高<span class="number">9</span>位，低<span class="number">7</span>位是由上一次D+A(不包括A0)的（<span class="number">7</span> <span class="keyword">downto</span> <span class="number">1</span>）构成的，这就很好实现了。   </span><br><span class="line">&amp;ensp;&amp;ensp;![加法过程示意图](https://s.im5i.com/<span class="number">2021</span>/<span class="number">05</span>/<span class="number">21</span>/SZXDo.png)  </span><br><span class="line">下面是实体部分  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```VHDL</span><br><span class="line">    <span class="keyword">component</span> REG16B <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">port</span>(clk	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	     CLR	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	     D		:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">8</span> <span class="keyword">downto</span> <span class="number">0</span>);</span><br><span class="line">	     Q		:	<span class="keyword">out</span> <span class="built_in">STD_LOGIC_VECTOR</span>(<span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span>));</span><br><span class="line">    <span class="keyword">end</span> <span class="keyword">component</span>;</span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line"><span class="number">5</span>. 控制器  </span><br><span class="line">&amp;ensp;&amp;ensp;上面只是单个功能的分析和实现，都比较容易，那整体来看呢，移位模块不可能一直移位啊，选择器也不会一直工作，自然，就会想到用计数器控制整个乘法周期，<span class="number">8</span>次操作一个周期，整个操作都完成了输出done信号，底下不需要一直工作的模块用控制器生成的时钟控制，乘法完成后，时钟置<span class="number">0</span>，等待下一次乘法指令的开始信号到来，本次的乘法开始信号也可以作为下面<span class="number">16</span>位寄存器的清零信号以及移位寄存器的输入使能。  </span><br><span class="line">下面是实体部分   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```VHDL</span><br><span class="line">    <span class="keyword">component</span> ARICTL <span class="keyword">is</span></span><br><span class="line">	<span class="keyword">port</span>(clk	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	     START	:	<span class="keyword">in</span> <span class="built_in">STD_LOGIC</span>;</span><br><span class="line">	     CLKOUT,RESTALL,DONE:<span class="keyword">OUT</span> <span class="built_in">STD_LOGIC</span>);</span><br><span class="line">    <span class="keyword">end</span> <span class="keyword">component</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="仿真结果"><a href="#仿真结果" class="headerlink" title="仿真结果"></a>仿真结果</h3><p>&ensp;&ensp;<img src="https://s.im5i.com/2021/05/21/SZHax.png" alt="仿真结果"></p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%8E%9F%E7%A0%81%E4%B8%80%E4%BD%8D%E4%B9%98%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-text">一、原码一位乘原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81VHDL%E8%AE%BE%E8%AE%A1"><span class="toc-text">二、VHDL设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C"><span class="toc-text">仿真结果</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://naughtyrabbit.github.io/2021/05/22/VHDL_OC1B_mul/">https://naughtyrabbit.github.io/2021/05/22/VHDL_OC1B_mul/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" rel="tag">实验记录</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2021/05/21/chongdiebaoliufa/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">DFT应用——快速卷积之重叠保留法理解</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/05/22/VHDL_OC1B_mul/">VHDL__原码一位乘</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/21/chongdiebaoliufa/">DFT应用——快速卷积之重叠保留法理解</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/21/first_blog/">博文书写（markdown熟悉）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">实验记录</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 10px;">模板</a> <a href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" style="font-size: 10px;">算法理解</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/VHDL/">VHDL</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/markdown/">markdown</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E5%AD%97%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">数字信号处理</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年05月</a><span class="archive-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" rel="tag">实验记录</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag">模板</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" rel="tag">算法理解</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://joshualys.gitee.io/joshua/">joshualys_BLOG</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example2.com/">site-name2</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://www.example3.com/">site-name3</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 naughtyrabbit.</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>
