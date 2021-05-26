@@ -316,7 +316,20 @@ end Behavioral;
          );
 end fifo_all;
 </code></pre>
-<h3 id="仿真结果"><a href="#仿真结果" class="headerlink" title="仿真结果"></a>仿真结果</h3><p>&ensp;&ensp;可以看到，写进去的数据被依次读取除来了；<br><img src="https://s.im5i.com/2021/05/22/Sq6Hf.png" alt="FIFO信号图"></p>
+<p>内部实现</p>
+<pre><code class="VHDL">signal full,empty : std_logic;
+signal rd_pt    : STD_LOGIC_VECTOR(depth-1 downto 0);
+signal wr_pt    : STD_LOGIC_VECTOR(depth-1 downto 0);
+begin
+
+judge_status0: judge_status port map(clk,rst,wr_pt,rd_pt,empty,full);
+dualram0: dualram port map(clk,wr,wr_pt,datain,clk,rd,rd_pt,dataout);
+read_pointer0:read_pointer port map(clk,rst,rd,empty,rd_pt);
+write_pointer0:write_pointer port map(clk,rst,wr,full,wr_pt);
+empty_out&lt;=empty;
+full_out&lt;=full;   
+</code></pre>
+<h3 id="仿真结果"><a href="#仿真结果" class="headerlink" title="仿真结果"></a>仿真结果</h3><p>&ensp;&ensp;可以看到，写进去的数据被依次读取除来了；<br><img src="https://s.im5i.com/2021/05/22/Sq6Hf.png" alt="FIFO信号图"><br>&ensp;&ensp;而以上代码有错误，错误在空间写满后如果<code>wr</code>信号如果有效，会覆盖上次写的数据，而事实上此次写不应该有效。修改方法是在双端口<code>rom</code>里引入<code>empty</code>,<code>full</code>信号判断作为是否写和读的条件判断。</p>
 
         
             <div id="toc-article">
