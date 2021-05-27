@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   
   
-  <title>tag: FIFO | 不听话的兔子君</title>
+  <title>三态门与双向数据总线 | 不听话的兔子君</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
     <meta name="description" content="记录生活，记录成长">
@@ -87,35 +87,175 @@
 </header>
 
       <div class="outer">
-        <section id="main">
+        <section id="main"><article id="blog-tristates" class="h-entry article article-type-blog" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      三态门与双向数据总线
+    </h1>
+  
 
-  
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-05-27T06:00:34.000Z" itemprop="datePublished">2021年05月27日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/VHDL/">VHDL</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/05/27/tristates/#comments" class="article-comment-link">
   
     
     
-    <section class="archives-wrap">
-      <div class="archive-title">
-        
-          <i class="fa fa-tag"></i>
-          FIFO
-        
-      </div>
-      <div class="archives">
+    
+    
+    
   
-  <ul class="archive-article archive-type-blog">
-  <li class="archive-article-inner">
-    <a href="/2021/05/22/design-FIFO/">
-      <time class="dt-published" datetime="2021-05-22T11:29:37.000Z" itemprop="datePublished">2021年05月22日</time>
-      | <span class="archive-article-title">先进先出存储器（FIFO）设计</span>
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>摘要：对三态门作分析，并用VHDL实现，主要应用在双向数据总线读写中，给出详细设计和测试代码</p>
+</blockquote>
+<span id="more"></span>   
+<h3 id="一·介绍"><a href="#一·介绍" class="headerlink" title="一·介绍"></a>一·介绍</h3><p>&ensp;&ensp;在设计CPU时如果是单总线结构，那不可避免的要用到双向总线，此时数据的读写会是一个令人头疼的问题，在此，并不详细地剖析其原理，而是尽量用大家能够理解的方式解读。<br>&ensp;&ensp;以下题为例<br>&ensp;&ensp;设计一个8位位宽的双向数据总线，由使能端s控制总线数据流向，当s-00，C的数据赋给A；当s=01，A的值赋给C；s为其他值时，B的数据赋给C。用VHDL编程设计该双向数据总线，并观察的仿真波形结果验证双向总线的功能。    </p>
+<h3 id="二·分析"><a href="#二·分析" class="headerlink" title="二·分析"></a>二·分析</h3><p>&ensp;&ensp;这里直接给出代码并分析  </p>
+<pre><code class="VHDL">process(S,B,A,C)
+    BEGIN
+    IF S=&quot;00&quot; THEN
+        C&lt;=&quot;ZZZZZZZZ&quot;;A&lt;=C;
+    ELSIF S=&quot;01&quot; THEN
+        A&lt;=&quot;ZZZZZZZZ&quot;;C&lt;=A;
+    ELSE
+        C&lt;=B;
+    END IF;
+    END process;
+</code></pre>
+<p><img src="https://s.im5i.com/2021/05/27/S3kbz.png" alt="图示"><br>&ensp;&ensp;需要注意的是，这里图中的<code>in</code>,<code>out</code>都是针对<strong>内部</strong>来说的，相对而言，内部的<code>out</code>就是<code>C</code>或者<code>A</code>的<code>in</code>；不作赘述，下面开始分析代码；   </p>
+<pre><code class="VHDL">process(S,B,A,C)
+    BEGIN
+    IF S=&quot;00&quot; THEN    --现在要读取C的数据赋值给A
+        C&lt;=&quot;ZZZZZZZZ&quot;;--但是C是一个双向的总线，
+                      --我们不希望读到内部的out
+                      --或者说不希望内部的out干扰到本次的输入
+                      --因此需要由内部告诉总线C我们现在不会输出
+                      --或者说把输出暂时无效化
+                      --方法就是由内部把C置高阻，以方便读入
+        A&lt;=C;
+    ELSIF S=&quot;01&quot; THEN--下面同理
+        A&lt;=&quot;ZZZZZZZZ&quot;;
+        C&lt;=A;
+    ELSE
+        C&lt;=B;
+    END IF;
+    END process;
+</code></pre>
+<p>&ensp;&ensp;总结一下就是，在希望读双向总线数据前,要由<strong>内部</strong>把总线置高阻（即全<code>Z</code>），来使内部的输出无效化，相当于此时总线的属性对<strong>内部</strong>来说只有<code>in</code>，这时才能正确的读。<br>&ensp;&ensp;下面是<code>testbench</code>   </p>
+<pre><code class="VHDL">stim_proc: process
+   begin        
+      -- hold reset state for 100 ns.
+        S&lt;=&quot;00&quot;;C&lt;=X&quot;5C&quot;;A&lt;=(OTHERS=&gt;&#39;Z&#39;);
+        wait for 20 ns;
+        S&lt;=&quot;01&quot;;A&lt;=X&quot;5A&quot;;C&lt;=(OTHERS=&gt;&#39;Z&#39;);
+        wait for 20 ns;
+        S&lt;=&quot;10&quot;;B&lt;=X&quot;5B&quot;;C&lt;=(OTHERS=&gt;&#39;Z&#39;);
+      -- insert stimulus here 
+      wait;
+   end process;   
+</code></pre>
+<p>&ensp;&ensp;很容易发现我在这里也有置高阻的操作，否则仿真结果也不会是预期，回到之前实现部分的代码，由<strong>内部</strong>对双向总线置高阻的操作，在起到<strong>让内部可读</strong>的作用的同时，还起到了<strong>外部此时可以向总线写数据</strong>的作用，同理，<strong>内部</strong>在想要向双向总线输出的时候，也要由<strong>外部</strong>把双向总线置高阻，以便内部的输出。下面是仿真结果：  </p>
+<h3 id="三·仿真结果"><a href="#三·仿真结果" class="headerlink" title="三·仿真结果"></a>三·仿真结果</h3><p><img src="https://s.im5i.com/2021/05/27/S32rh.png" alt="图示">   </p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%C2%B7%E4%BB%8B%E7%BB%8D"><span class="toc-text">一·介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%C2%B7%E5%88%86%E6%9E%90"><span class="toc-text">二·分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%C2%B7%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C"><span class="toc-text">三·仿真结果</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="https://naughtyrabbit.github.io/2021/05/27/tristates/">https://naughtyrabbit.github.io/2021/05/27/tristates/</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" rel="tag">三态门</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+  
+    <a href="/2021/05/22/design-FIFO/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">先进先出存储器（FIFO）设计</div>
     </a>
-  </li>
-</ul>
+  
+</nav>
+
+      
+      
+        
 
 
 
-  </div></section>
 
 
+
+
+      
+    </footer>
+  </div>
+</article>
 </section>
         
           <aside id="sidebar">
