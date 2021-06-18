@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   
   
-  <title>兔言兔语——1 | 不听话的兔子君</title>
+  <title>fileio_linux | 不听话的兔子君</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
     <meta name="description" content="记录生活，记录成长">
@@ -87,7 +87,7 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="blog-poem-2021-5-22" class="h-entry article article-type-blog" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="blog-fileio-linux" class="h-entry article article-type-blog" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -95,7 +95,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      兔言兔语——1
+      fileio_linux
     </h1>
   
 
@@ -106,12 +106,12 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2021-05-22T08:14:21.000Z" itemprop="datePublished">2021年05月22日</time>
+  <time class="dt-published" datetime="2021-06-18T07:41:22.000Z" itemprop="datePublished">2021年06月18日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/%E5%85%94%E8%A8%80%E5%85%94%E8%AF%AD/">兔言兔语</a>
+    <a class="article-category-link" href="/categories/linux/">linux</a>
   </div>
 
       
@@ -124,7 +124,7 @@
 
       
       
-<a href="/2021/05/22/poem-2021-5-22/#comments" class="article-comment-link">
+<a href="/2021/06/18/fileio-linux/#comments" class="article-comment-link">
   
     
     
@@ -141,34 +141,202 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>一些乱写的东西，作个留念</p>
+<p>linux I/O编程，用fcntl()函数实现生产者消费者的FIFO</p>
 </blockquote>
 <span id="more"></span>
-<p><font face="楷体" color="SteelBlue"><center>  
-
-<p><strong>有感</strong><br><strong>潇湘月下清猿哀，</strong><br><strong>幽谷乔旁孤雀还。</strong><br><strong>风雪柴门笑尔呆，</strong><br><strong>腌臜蓑笠未敢摘。</strong><br><strong>君莫乖，君莫怪，</strong><br><strong>阳关杯酒愿卿来，此非明镜台。</strong><br><strong>负剑南，负剑难！</strong><br><strong>蓝桥墙柱刻君怀，偏要惹尘埃。</strong></center><br></font></p></p>
-<p><font face="楷体" color="SteelBlue"><center>   
-
-<p><strong>泊者</strong><br><strong>一声欸乃，</strong><br><strong>一句叨扰。</strong><br><strong>从此几经断桥，</strong><br><strong>只觉桥上身影遥迢，</strong><br><strong>再不敢唤声你早，</strong><br><strong>离去草草。</strong>  </center><br></font></p></p>
-<p><font face="楷体" color="SteelBlue"><center>     
-
-<p><strong>中秋</strong><br><strong>风落无痕，叶落伤神。</strong><br><strong>拾一粒未开的海棠，且珍藏。</strong><br><strong>念一段深埋的过往，再遗忘。</strong><br><strong>以灯为月，再不缺。</strong><br><strong>以树作殿，影仍变。</strong><br><strong>未敢登楼，看青枝挂亭轩。</strong><br><strong>只得翘首，听天际演云卷。</strong><br><strong>微风凋零眷恋，</strong><br><strong>细雨凝固时间。</strong><br><strong>春花落成秋，秋思酿作酒。</strong><br><strong>且饮一樽窗前，</strong><br><strong>道是谁还在唱着明月啊共婵娟？</strong><br><strong>独我听不见。</strong></p>
-</center></font></p>
-
-
-<p><font face="楷体" color="SteelBlue"><center>     
-
-<p><strong>江城子</strong><br> <strong>离人巧语何人忆，笑东篱，叹蝶泣，误入秦楼，方知西亭戏，城外烟雨湿行痕，自伤身，还忆曾。</strong><br> <strong>斯人折梅寄檐下，目蒹葭，别赤霞，不堪华表，信步入萧森，楼上明月浸笛声，三尺绳，泪妆成。</strong></p>
-</center></font></p>
-
-
-<p><font face="Edwardian Script" color="SteelBlue"><center>     
-
-<p><strong>kevin</strong><br><strong>I decorate today’s garden,</strong><br><strong>painting the leaves fallen.</strong><br><strong>Can you remember Kevin,</strong><br><strong>the boy likes to be alone</strong>  </p>
-<p><strong>I hide behind the tittering persimon,</strong><br><strong>looking up at the shining lantern.</strong><br><strong>Can you notice Kevin</strong><br><strong>the boy actually not awesome</strong>    </p>
-<p><strong>I wait under the moon,</strong><br><strong>counting to seven.</strong><br><strong>Can you recognize Kevin,</strong><br><strong>the boy playing the organ.</strong>  </p>
-<p><strong>Kevin feels alone,</strong><br><strong>Kevin wants to be awesome,</strong><br><strong>Kevin prays for the flying crane.</strong><br><strong>but you walk another lane.</strong></p>
-</center></font></p>
+<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p>&ensp;&ensp;消费者程序分析  </p>
+<pre><code class="c">#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+#include&lt;fcntl.h&gt;
+int lock_set(int fd,int type)
+&#123;
+    struct flock lock;
+    lock.l_whence= SEEK_SET;    //设置当前位置为文件开头
+    lock.l_start = 0;           //加锁区域的偏移量，与l_whence一起决定加锁区域的位置
+    lock.l_len = 0;             //加锁区域的长度
+                                //以上三行的作用是对整个文件加锁
+    lock.l_type = type;         //锁类型
+    lock.l_pid = -1;
+    fcntl(fd,F_GETLK,&amp;lock);
+    if(lock.l_type != F_UNLCK)
+    &#123;
+        if(lock.l_type == F_RDLCK)
+        &#123;                       //共享锁，即读锁
+            printf(&quot;Read lock alread set by %d\n&quot;,lock.l_pid);
+        &#125;
+        else if(lock.l_type == F_WRLCK)
+        &#123;                       //排斥锁，即写锁
+            printf(&quot;Write lock alread set by %d\n&quot;,lock.l_pid);
+        &#125;
+    &#125;
+    lock.l_type = type;
+    if((fcntl(fd,F_SETLKW,&amp;lock)) &lt; 0)
+    &#123;
+        printf(&quot;Lock failed:type = %d\n&quot;,lock.l_type);
+        return -1;
+    &#125;
+    switch(lock.l_type)
+    &#123;
+        case F_RDLCK:
+            &#123;
+                printf(&quot;Read lock set by %d\n&quot;,getpid());
+            &#125;
+            break;
+        case F_WRLCK:
+            &#123;
+                printf(&quot;Write lock set by %d\n&quot;,getpid());
+            &#125;
+            break;
+        case F_UNLCK:
+            &#123;
+                printf(&quot;Release lock by %d\n&quot;,getpid());
+            &#125;
+            break;
+    &#125;
+    return 0;
+&#125;
+int custum()
+&#123;
+    int fs,fd;
+    int count;
+    char c;
+    if((fs = open(&quot;produce.txt&quot;,O_RDWR)) &lt; 0)
+    &#123;
+        printf(&quot;open error\n&quot;);
+        return -1;
+    &#125;
+//  if((fd = open(&quot;temp.txt&quot;,O_RDWR)) &lt; 0)
+//  &#123;
+//      printf(&quot;open error2\n&quot;);
+//      return -1;
+//  &#125;
+    while(1)
+    &#123;
+        lock_set(fs,F_WRLCK);     //给fs上写锁
+        lseek(fs,0,SEEK_SET);
+    //  fd=open(&quot;temp.txt&quot;,O_RDWR|O_CREAT|O_TRUNC,0777);
+        count=read(fs,&amp;c,1);      //返回值是读到的字节数
+        if(count &lt;= 0)
+        &#123;
+            printf(&quot;no product!\n&quot;);
+            lock_set(fs,F_UNLCK); //读完了，释放锁
+            sleep(1);             //延迟
+            continue;
+        &#125;
+        printf(&quot;get a character: %c \n&quot;,c);
+        lseek(fs,0,SEEK_CUR);
+    //  lseek(fd,0,SEEK_SET);
+        count = 0;
+        while(((count = read(fs,&amp;c,1)) == 1) &amp;&amp; c!= &#39;\n&#39;)
+        &#123;
+            printf(&quot;read fs: %c\n&quot;, c);             //这个whlie的作用是复制到temp
+            write(fd,&amp;c,count);   
+        &#125;
+        close(fs);
+        fs = open(&quot;produce.txt&quot;,O_RDWR|O_TRUNC);    //以读写重新打开，删去原程序
+        lseek(fs,0,SEEK_SET);
+        lseek(fd,0,SEEK_SET);
+        while(((count = read(fd,&amp;c,1)) == 1) /*&amp;&amp; c!=&#39;\n&#39;*/)
+        &#123;                                           //这个while的作用是重新写回
+        //  printf(&quot;read fd: %c\n&quot;, c);
+            write(fs,&amp;c,count);     
+        &#125;
+        unlink(&quot;temp.txt&quot;);                         //关闭文件
+        close(fd);
+        lock_set(fs,F_UNLCK);
+        sleep(2);
+    &#125;
+&#125;
+ 
+int main(int argc, const char *argv[])
+&#123;
+    custum();
+    return 0;
+&#125;
+</code></pre>
+<p>&ensp;&ensp;生产者程序分析  （上锁部分类似，不作新注释）</p>
+<pre><code class="c">#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+#include&lt;fcntl.h&gt;
+int lock_set(int fd,int type)
+&#123;
+    struct flock lock;
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0;
+    lock.l_type = type;
+    lock.l_pid = -1;
+    fcntl(fd,F_GETLK,&amp;lock);
+    if(lock.l_type != F_UNLCK)
+    &#123;
+        if(lock.l_type == F_RDLCK)
+        &#123;
+            printf(&quot;Read lock alread set by %d\n&quot;,lock.l_pid);
+        &#125;
+        else if(lock.l_type == F_WRLCK)
+        &#123;
+            printf(&quot;Write lock alread set by %d\n&quot;,lock.l_pid);
+        &#125;
+    &#125;
+    lock.l_type = type;
+    if((fcntl(fd,F_SETLKW,&amp;lock)) &lt; 0)
+    &#123;
+        printf(&quot;Lock failed:type = %d\n&quot;,lock.l_type);
+        return -1;
+    &#125;
+    switch(lock.l_type)
+    &#123;
+        case F_RDLCK:
+            &#123;
+                printf(&quot;Read lock set by %d\n&quot;,getpid());
+            &#125;
+            break;
+        case F_WRLCK:
+            &#123;
+                printf(&quot;Write lock set by %d\n&quot;,getpid());
+            &#125;
+            break;
+        case F_UNLCK:
+            &#123;
+                printf(&quot;Release lock by %d\n&quot;,getpid());
+            &#125;
+            break;
+    &#125;
+    return 0;
+&#125;
+int produce()
+&#123;
+    int fd;
+    char a=&#39;A&#39;;
+    if((fd = open(&quot;produce.txt&quot;,O_WRONLY|O_APPEND)) &lt; 0) //只读|添加方式打开文件，定位到文件末尾
+    &#123;
+        printf(&quot;open failed\n&quot;);
+        return -1;
+    &#125;
+    while(1)
+    &#123;
+        lock_set(fd,F_RDLCK);       //此处原来是上写锁，但是只有一对生产者消费者的话，应该是生产者写的时候，消费者不能读，这样的逻辑吧，如有错误还请指正
+        write(fd,&amp;a,1);
+        printf(&quot;hava produce one character %c \n&quot;,a);
+        a++;
+        lock_set(fd,F_UNLCK);
+        sleep(3);
+    &#125;
+    close(fd);
+&#125;
+int main(int argc, const char *argv[])
+&#123;
+     
+    produce();
+    return 0;
+&#125;
+</code></pre>
+<p>&ensp;&ensp;执行结果  左：生产者进程；右：消费者进程<br><img src="https://s.im5i.com/2021/06/18/a7Al3.png" alt="执行结果">      </p>
+<p>代码来源：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiaan/p/9351202.html">https://www.cnblogs.com/jiaan/p/9351202.html</a></p>
 
         
             <div id="toc-article">
@@ -176,7 +344,7 @@
   <div class="widget-wrap" id="toc-wrap">
     <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
     <div class="widget">
-      
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">代码分析</span></a></li></ol>
     </div>
   </div>
 
@@ -185,7 +353,7 @@
         
         
           <blockquote id="copyright">
-              <p>原文链接: <a href="https://naughtyrabbit.github.io/2021/05/22/poem-2021-5-22/">https://naughtyrabbit.github.io/2021/05/22/poem-2021-5-22/</a></p>
+              <p>原文链接: <a href="https://naughtyrabbit.github.io/2021/06/18/fileio-linux/">https://naughtyrabbit.github.io/2021/06/18/fileio-linux/</a></p>
               <p>版权声明: 转载请注明出处.</p>
           </blockquote>
         
@@ -197,7 +365,7 @@
           
 
           
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" rel="tag">个人随笔</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98-fcntl-%E5%87%BD%E6%95%B0/" rel="tag">生产者消费者问题,fcntl()函数</a></li></ul>
 
           
     <div class="social-share">
@@ -212,19 +380,10 @@
         
 <nav id="article-nav">
   
-    <a href="/2021/05/22/design-FIFO/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">newer</strong>
-      <div class="article-nav-title">
-        
-          先进先出存储器（FIFO）设计
-        
-      </div>
-    </a>
   
-  
-    <a href="/2021/05/22/VHDL_OC1B_mul/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2021/05/27/tristates/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">older</strong>
-      <div class="article-nav-title">VHDL__原码一位乘</div>
+      <div class="article-nav-title">三态门与双向数据总线</div>
     </a>
   
 </nav>
