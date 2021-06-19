@@ -144,118 +144,118 @@
 <p>linux I/O编程，用fcntl()函数实现生产者消费者的FIFO</p>
 </blockquote>
 <span id="more"></span>
-<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p>&ensp;&ensp;消费者程序分析   </p>
-<pre><code>  
-#include&lt;stdio.h&gt;
+<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p>&ensp;&ensp;消费者程序分析  </p>
+<pre><code class="c">#include&lt;stdio.h&gt;
 #include&lt;unistd.h&gt;
 #include&lt;stdlib.h&gt;
 #include&lt;string.h&gt;
 #include&lt;fcntl.h&gt;
 int lock_set(int fd,int type)
-{
+&#123;
     struct flock lock;
-    lock.l_whence&#x3D; SEEK_SET;    &#x2F;&#x2F;设置当前位置为文件开头
-    lock.l_start &#x3D; 0;           &#x2F;&#x2F;加锁区域的偏移量，与l_whence一起决定加锁区域的位置
-    lock.l_len &#x3D; 0;             &#x2F;&#x2F;加锁区域的长度
-                                &#x2F;&#x2F;以上三行的作用是对整个文件加锁
-    lock.l_type &#x3D; type;         &#x2F;&#x2F;锁类型
-    lock.l_pid &#x3D; -1;
+    lock.l_whence= SEEK_SET;    //设置当前位置为文件开头
+    lock.l_start = 0;           //加锁区域的偏移量，与l_whence一起决定加锁区域的位置
+    lock.l_len = 0;             //加锁区域的长度
+                                //以上三行的作用是对整个文件加锁
+    lock.l_type = type;         //锁类型
+    lock.l_pid = -1;
     fcntl(fd,F_GETLK,&amp;lock);
-    if(lock.l_type !&#x3D; F_UNLCK)
-    {
-        if(lock.l_type &#x3D;&#x3D; F_RDLCK)
-        {                       &#x2F;&#x2F;共享锁，即读锁
+    if(lock.l_type != F_UNLCK)
+    &#123;
+        if(lock.l_type == F_RDLCK)
+        &#123;                       //共享锁，即读锁
             printf(&quot;Read lock alread set by %d\n&quot;,lock.l_pid);
-        }
-        else if(lock.l_type &#x3D;&#x3D; F_WRLCK)
-        {                       &#x2F;&#x2F;排斥锁，即写锁
+        &#125;
+        else if(lock.l_type == F_WRLCK)
+        &#123;                       //排斥锁，即写锁
             printf(&quot;Write lock alread set by %d\n&quot;,lock.l_pid);
-        }
-    }
-    lock.l_type &#x3D; type;
+        &#125;
+    &#125;
+    lock.l_type = type;
     if((fcntl(fd,F_SETLKW,&amp;lock)) &lt; 0)
-    {
-        printf(&quot;Lock failed:type &#x3D; %d\n&quot;,lock.l_type);
+    &#123;
+        printf(&quot;Lock failed:type = %d\n&quot;,lock.l_type);
         return -1;
-    }
+    &#125;
     switch(lock.l_type)
-    {
+    &#123;
         case F_RDLCK:
-            {
+            &#123;
                 printf(&quot;Read lock set by %d\n&quot;,getpid());
-            }
+            &#125;
             break;
         case F_WRLCK:
-            {
+            &#123;
                 printf(&quot;Write lock set by %d\n&quot;,getpid());
-            }
+            &#125;
             break;
         case F_UNLCK:
-            {
+            &#123;
                 printf(&quot;Release lock by %d\n&quot;,getpid());
-            }
+            &#125;
             break;
-    }
+    &#125;
     return 0;
-}
+&#125;
 int custum()
-{
+&#123;
     int fs,fd;
     int count;
     char c;
-    if((fs &#x3D; open(&quot;produce.txt&quot;,O_RDWR)) &lt; 0)
-    {
+    if((fs = open(&quot;produce.txt&quot;,O_RDWR)) &lt; 0)
+    &#123;
         printf(&quot;open error\n&quot;);
         return -1;
-    }
-&#x2F;&#x2F;  if((fd &#x3D; open(&quot;temp.txt&quot;,O_RDWR)) &lt; 0)
-&#x2F;&#x2F;  {
-&#x2F;&#x2F;      printf(&quot;open error2\n&quot;);
-&#x2F;&#x2F;      return -1;
-&#x2F;&#x2F;  }
+    &#125;
+//  if((fd = open(&quot;temp.txt&quot;,O_RDWR)) &lt; 0)
+//  &#123;
+//      printf(&quot;open error2\n&quot;);
+//      return -1;
+//  &#125;
     while(1)
-    {
-        lock_set(fs,F_WRLCK);     &#x2F;&#x2F;给fs上写锁
+    &#123;
+        lock_set(fs,F_WRLCK);     //给fs上写锁
         lseek(fs,0,SEEK_SET);
-    &#x2F;&#x2F;  fd&#x3D;open(&quot;temp.txt&quot;,O_RDWR|O_CREAT|O_TRUNC,0777);
-        count&#x3D;read(fs,&amp;c,1);      &#x2F;&#x2F;返回值是读到的字节数
-        if(count &lt;&#x3D; 0)
-        {
+    //  fd=open(&quot;temp.txt&quot;,O_RDWR|O_CREAT|O_TRUNC,0777);
+        count=read(fs,&amp;c,1);      //返回值是读到的字节数
+        if(count &lt;= 0)
+        &#123;
             printf(&quot;no product!\n&quot;);
-            lock_set(fs,F_UNLCK); &#x2F;&#x2F;读完了，释放锁
-            sleep(1);             &#x2F;&#x2F;延迟
+            lock_set(fs,F_UNLCK); //读完了，释放锁
+            sleep(1);             //延迟
             continue;
-        }
+        &#125;
         printf(&quot;get a character: %c \n&quot;,c);
         lseek(fs,0,SEEK_CUR);
-    &#x2F;&#x2F;  lseek(fd,0,SEEK_SET);
-        count &#x3D; 0;
-        while(((count &#x3D; read(fs,&amp;c,1)) &#x3D;&#x3D; 1) &amp;&amp; c!&#x3D; &#39;\n&#39;)
-        {
-            printf(&quot;read fs: %c\n&quot;, c);             &#x2F;&#x2F;这个whlie的作用是复制到temp
+    //  lseek(fd,0,SEEK_SET);
+        count = 0;
+        while(((count = read(fs,&amp;c,1)) == 1) &amp;&amp; c!= &#39;\n&#39;)
+        &#123;
+            printf(&quot;read fs: %c\n&quot;, c);             //这个whlie的作用是复制到temp
             write(fd,&amp;c,count);   
-        }
+        &#125;
         close(fs);
-        fs &#x3D; open(&quot;produce.txt&quot;,O_RDWR|O_TRUNC);    &#x2F;&#x2F;以读写重新打开，删去原程序
+        fs = open(&quot;produce.txt&quot;,O_RDWR|O_TRUNC);    //以读写重新打开，删去原程序
         lseek(fs,0,SEEK_SET);
         lseek(fd,0,SEEK_SET);
-        while(((count &#x3D; read(fd,&amp;c,1)) &#x3D;&#x3D; 1) &#x2F;*&amp;&amp; c!&#x3D;&#39;\n&#39;*&#x2F;)
-        {                                           &#x2F;&#x2F;这个while的作用是重新写回
-        &#x2F;&#x2F;  printf(&quot;read fd: %c\n&quot;, c);
+        while(((count = read(fd,&amp;c,1)) == 1) /*&amp;&amp; c!=&#39;\n&#39;*/)
+        &#123;                                           //这个while的作用是重新写回
+        //  printf(&quot;read fd: %c\n&quot;, c);
             write(fs,&amp;c,count);     
-        }
-        unlink(&quot;temp.txt&quot;);                         &#x2F;&#x2F;关闭文件
+        &#125;
+        unlink(&quot;temp.txt&quot;);                         //关闭文件
         close(fd);
         lock_set(fs,F_UNLCK);
         sleep(2);
-    }
-}
+    &#125;
+&#125;
  
 int main(int argc, const char *argv[])
-{
+&#123;
     custum();
     return 0;
-}  </code></pre>
+&#125;
+</code></pre>
 <p>&ensp;&ensp;生产者程序分析  （上锁部分类似，不作新注释）</p>
 <pre><code class="c">#include&lt;stdio.h&gt;
 #include&lt;unistd.h&gt;
