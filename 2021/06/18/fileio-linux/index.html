@@ -17,6 +17,10 @@
     <link rel="shortcut icon" href="/favicon.png">
   
   
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
   
 <link rel="stylesheet" href="/css/style.css">
 
@@ -140,118 +144,118 @@
 <p>linux I/O编程，用fcntl()函数实现生产者消费者的FIFO</p>
 </blockquote>
 <span id="more"></span>
-<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p>&ensp;&ensp;消费者程序分析  </p>
-<pre><code class="c">#include&lt;stdio.h&gt;
+<h3 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h3><p>&ensp;&ensp;消费者程序分析   </p>
+<pre><code>  
+#include&lt;stdio.h&gt;
 #include&lt;unistd.h&gt;
 #include&lt;stdlib.h&gt;
 #include&lt;string.h&gt;
 #include&lt;fcntl.h&gt;
 int lock_set(int fd,int type)
-&#123;
+{
     struct flock lock;
-    lock.l_whence= SEEK_SET;    //设置当前位置为文件开头
-    lock.l_start = 0;           //加锁区域的偏移量，与l_whence一起决定加锁区域的位置
-    lock.l_len = 0;             //加锁区域的长度
-                                //以上三行的作用是对整个文件加锁
-    lock.l_type = type;         //锁类型
-    lock.l_pid = -1;
+    lock.l_whence&#x3D; SEEK_SET;    &#x2F;&#x2F;设置当前位置为文件开头
+    lock.l_start &#x3D; 0;           &#x2F;&#x2F;加锁区域的偏移量，与l_whence一起决定加锁区域的位置
+    lock.l_len &#x3D; 0;             &#x2F;&#x2F;加锁区域的长度
+                                &#x2F;&#x2F;以上三行的作用是对整个文件加锁
+    lock.l_type &#x3D; type;         &#x2F;&#x2F;锁类型
+    lock.l_pid &#x3D; -1;
     fcntl(fd,F_GETLK,&amp;lock);
-    if(lock.l_type != F_UNLCK)
-    &#123;
-        if(lock.l_type == F_RDLCK)
-        &#123;                       //共享锁，即读锁
+    if(lock.l_type !&#x3D; F_UNLCK)
+    {
+        if(lock.l_type &#x3D;&#x3D; F_RDLCK)
+        {                       &#x2F;&#x2F;共享锁，即读锁
             printf(&quot;Read lock alread set by %d\n&quot;,lock.l_pid);
-        &#125;
-        else if(lock.l_type == F_WRLCK)
-        &#123;                       //排斥锁，即写锁
+        }
+        else if(lock.l_type &#x3D;&#x3D; F_WRLCK)
+        {                       &#x2F;&#x2F;排斥锁，即写锁
             printf(&quot;Write lock alread set by %d\n&quot;,lock.l_pid);
-        &#125;
-    &#125;
-    lock.l_type = type;
+        }
+    }
+    lock.l_type &#x3D; type;
     if((fcntl(fd,F_SETLKW,&amp;lock)) &lt; 0)
-    &#123;
-        printf(&quot;Lock failed:type = %d\n&quot;,lock.l_type);
+    {
+        printf(&quot;Lock failed:type &#x3D; %d\n&quot;,lock.l_type);
         return -1;
-    &#125;
+    }
     switch(lock.l_type)
-    &#123;
+    {
         case F_RDLCK:
-            &#123;
+            {
                 printf(&quot;Read lock set by %d\n&quot;,getpid());
-            &#125;
+            }
             break;
         case F_WRLCK:
-            &#123;
+            {
                 printf(&quot;Write lock set by %d\n&quot;,getpid());
-            &#125;
+            }
             break;
         case F_UNLCK:
-            &#123;
+            {
                 printf(&quot;Release lock by %d\n&quot;,getpid());
-            &#125;
+            }
             break;
-    &#125;
+    }
     return 0;
-&#125;
+}
 int custum()
-&#123;
+{
     int fs,fd;
     int count;
     char c;
-    if((fs = open(&quot;produce.txt&quot;,O_RDWR)) &lt; 0)
-    &#123;
+    if((fs &#x3D; open(&quot;produce.txt&quot;,O_RDWR)) &lt; 0)
+    {
         printf(&quot;open error\n&quot;);
         return -1;
-    &#125;
-//  if((fd = open(&quot;temp.txt&quot;,O_RDWR)) &lt; 0)
-//  &#123;
-//      printf(&quot;open error2\n&quot;);
-//      return -1;
-//  &#125;
+    }
+&#x2F;&#x2F;  if((fd &#x3D; open(&quot;temp.txt&quot;,O_RDWR)) &lt; 0)
+&#x2F;&#x2F;  {
+&#x2F;&#x2F;      printf(&quot;open error2\n&quot;);
+&#x2F;&#x2F;      return -1;
+&#x2F;&#x2F;  }
     while(1)
-    &#123;
-        lock_set(fs,F_WRLCK);     //给fs上写锁
+    {
+        lock_set(fs,F_WRLCK);     &#x2F;&#x2F;给fs上写锁
         lseek(fs,0,SEEK_SET);
-    //  fd=open(&quot;temp.txt&quot;,O_RDWR|O_CREAT|O_TRUNC,0777);
-        count=read(fs,&amp;c,1);      //返回值是读到的字节数
-        if(count &lt;= 0)
-        &#123;
+    &#x2F;&#x2F;  fd&#x3D;open(&quot;temp.txt&quot;,O_RDWR|O_CREAT|O_TRUNC,0777);
+        count&#x3D;read(fs,&amp;c,1);      &#x2F;&#x2F;返回值是读到的字节数
+        if(count &lt;&#x3D; 0)
+        {
             printf(&quot;no product!\n&quot;);
-            lock_set(fs,F_UNLCK); //读完了，释放锁
-            sleep(1);             //延迟
+            lock_set(fs,F_UNLCK); &#x2F;&#x2F;读完了，释放锁
+            sleep(1);             &#x2F;&#x2F;延迟
             continue;
-        &#125;
+        }
         printf(&quot;get a character: %c \n&quot;,c);
         lseek(fs,0,SEEK_CUR);
-    //  lseek(fd,0,SEEK_SET);
-        count = 0;
-        while(((count = read(fs,&amp;c,1)) == 1) &amp;&amp; c!= &#39;\n&#39;)
-        &#123;
-            printf(&quot;read fs: %c\n&quot;, c);             //这个whlie的作用是复制到temp
+    &#x2F;&#x2F;  lseek(fd,0,SEEK_SET);
+        count &#x3D; 0;
+        while(((count &#x3D; read(fs,&amp;c,1)) &#x3D;&#x3D; 1) &amp;&amp; c!&#x3D; &#39;\n&#39;)
+        {
+            printf(&quot;read fs: %c\n&quot;, c);             &#x2F;&#x2F;这个whlie的作用是复制到temp
             write(fd,&amp;c,count);   
-        &#125;
+        }
         close(fs);
-        fs = open(&quot;produce.txt&quot;,O_RDWR|O_TRUNC);    //以读写重新打开，删去原程序
+        fs &#x3D; open(&quot;produce.txt&quot;,O_RDWR|O_TRUNC);    &#x2F;&#x2F;以读写重新打开，删去原程序
         lseek(fs,0,SEEK_SET);
         lseek(fd,0,SEEK_SET);
-        while(((count = read(fd,&amp;c,1)) == 1) /*&amp;&amp; c!=&#39;\n&#39;*/)
-        &#123;                                           //这个while的作用是重新写回
-        //  printf(&quot;read fd: %c\n&quot;, c);
+        while(((count &#x3D; read(fd,&amp;c,1)) &#x3D;&#x3D; 1) &#x2F;*&amp;&amp; c!&#x3D;&#39;\n&#39;*&#x2F;)
+        {                                           &#x2F;&#x2F;这个while的作用是重新写回
+        &#x2F;&#x2F;  printf(&quot;read fd: %c\n&quot;, c);
             write(fs,&amp;c,count);     
-        &#125;
-        unlink(&quot;temp.txt&quot;);                         //关闭文件
+        }
+        unlink(&quot;temp.txt&quot;);                         &#x2F;&#x2F;关闭文件
         close(fd);
         lock_set(fs,F_UNLCK);
         sleep(2);
-    &#125;
-&#125;
+    }
+}
  
 int main(int argc, const char *argv[])
-&#123;
+{
     custum();
     return 0;
-&#125;
-</code></pre>
+}  </code></pre>
 <p>&ensp;&ensp;生产者程序分析  （上锁部分类似，不作新注释）</p>
 <pre><code class="c">#include&lt;stdio.h&gt;
 #include&lt;unistd.h&gt;
@@ -331,7 +335,8 @@ int main(int argc, const char *argv[])
     return 0;
 &#125;
 </code></pre>
-<p>&ensp;&ensp;执行结果  左：生产者进程；右：消费者进程<br><img src="https://s.im5i.com/2021/06/18/a7Al3.png" alt="执行结果">      </p>
+<p>&ensp;&ensp;执行结果  左：生产者进程；右：消费者进程<br><img src="https://s.im5i.com/2021/06/18/a7Al3.png" alt="执行结果">     </p>
+<p>&ensp;&ensp;事实上，如果把延时（即sleep函数）的值设置为10秒会很清楚地看到是生产者生产了一个字符，下一秒或者说下一时间消费者才会取出这个字符。</p>
 <p>代码来源：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiaan/p/9351202.html">https://www.cnblogs.com/jiaan/p/9351202.html</a></p>
 
         
@@ -361,7 +366,7 @@ int main(int argc, const char *argv[])
           
 
           
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98-fcntl-%E5%87%BD%E6%95%B0/" rel="tag">生产者消费者问题,fcntl()函数</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fcntl-%E5%87%BD%E6%95%B0/" rel="tag">fcntl()函数</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" rel="tag">生产者消费者问题</a></li></ul>
 
           
     <div class="social-share">
@@ -438,7 +443,7 @@ int main(int argc, const char *argv[])
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/FIFO/" style="font-size: 10px;">FIFO</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 10px;">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 10px;">个人随笔</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">实验记录</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 10px;">模板</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98-fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 10px;">生产者消费者问题,fcntl()函数</a> <a href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" style="font-size: 10px;">算法理解</a>
+      <a href="/tags/FIFO/" style="font-size: 10px;">FIFO</a> <a href="/tags/fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 10px;">fcntl()函数</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 10px;">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 10px;">个人随笔</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">实验记录</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 10px;">模板</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" style="font-size: 10px;">生产者消费者问题</a> <a href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" style="font-size: 10px;">算法理解</a>
     </div>
   </div>
 
@@ -467,7 +472,7 @@ int main(int argc, const char *argv[])
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FIFO/" rel="tag">FIFO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" rel="tag">三态门</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" rel="tag">个人随笔</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" rel="tag">实验记录</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag">模板</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98-fcntl-%E5%87%BD%E6%95%B0/" rel="tag">生产者消费者问题,fcntl()函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" rel="tag">算法理解</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FIFO/" rel="tag">FIFO</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fcntl-%E5%87%BD%E6%95%B0/" rel="tag">fcntl()函数</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" rel="tag">三态门</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" rel="tag">个人随笔</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" rel="tag">实验记录</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag">模板</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" rel="tag">生产者消费者问题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95%E7%90%86%E8%A7%A3/" rel="tag">算法理解</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
