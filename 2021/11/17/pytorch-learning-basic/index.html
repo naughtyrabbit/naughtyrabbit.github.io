@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>pytorch学习笔记-基础篇（tensor） | 不听话的兔子君</title><meta name="keywords" content="pytorch学习,tensor"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本篇主要记录一下一些基础的pytorch知识，在前两节的基础上，回过头来温习一下">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta property="og:type" content="article">
+<meta property="og:title" content="pytorch学习笔记-基础篇（tensor）">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2021/11/17/pytorch-learning-basic/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="本篇主要记录一下一些基础的pytorch知识，在前两节的基础上，回过头来温习一下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://e.im5i.com/2021/11/12/Us8pFs.png">
+<meta property="article:published_time" content="2021-11-17T08:05:13.000Z">
+<meta property="article:modified_time" content="2021-11-24T09:12:06.806Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="pytorch学习">
+<meta property="article:tag" content="tensor">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://e.im5i.com/2021/11/12/Us8pFs.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2021/11/17/pytorch-learning-basic/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pytorch学习笔记-基础篇（tensor）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-11-24 17:12:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">pytorch学习笔记-基础篇（tensor）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-11-17T08:05:13.000Z" title="发表于 2021-11-17 16:05:13">2021-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-11-24T09:12:06.806Z" title="更新于 2021-11-24 17:12:06">2021-11-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pytorch/">pytorch</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pytorch学习笔记-基础篇（tensor）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><p>本篇主要记录一下一些基础的pytorch知识，在前两节的基础上，回过头来温习一下</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="python与pytorch"><a href="#python与pytorch" class="headerlink" title="python与pytorch"></a>python与pytorch</h3><p>&ensp;&ensp;作为深度学习的GPU加速库，pytorch没有对string类型数据对象的直接支持。<br><img src="https://m1.im5i.com/2021/11/17/UnhBLK.png" alt="all is about tensor"><br>&ensp;&ensp;有两种方法可以去表示string（编码方式）  </p>
+<ol>
+<li>one-hot  </li>
+<li>Embedding<h3 id="tensor数据类型介绍"><a href="#tensor数据类型介绍" class="headerlink" title="tensor数据类型介绍"></a>tensor数据类型介绍</h3>&ensp;&ensp;pytorch的数据类型：FloatTensor, IntTensor, ByteTensor,需要注意的是：即使是同一种数据类型，在cpu和gpu（cuda）上并不能直接相互使用。下面是一些代码的具体演示，注意注释部分<br>``` python<br>import torch</li>
+</ol>
+<h1 id="正态分布随机初始化，方差：1"><a href="#正态分布随机初始化，方差：1" class="headerlink" title="正态分布随机初始化，方差：1"></a>正态分布随机初始化，方差：1</h1><p>a = torch.randn(2, 3)</p>
+<h1 id="torch提供的类型检测"><a href="#torch提供的类型检测" class="headerlink" title="torch提供的类型检测"></a>torch提供的类型检测</h1><p>print(a.type())</p>
+<h1 id="python提供的类型检测"><a href="#python提供的类型检测" class="headerlink" title="python提供的类型检测"></a>python提供的类型检测</h1><p>print(type(a))</p>
+<h1 id="参数的合法化检验"><a href="#参数的合法化检验" class="headerlink" title="参数的合法化检验"></a>参数的合法化检验</h1><p>print(isinstance(a, torch.FloatTensor))</p>
+<h1 id="cpu和gpu的类型不同"><a href="#cpu和gpu的类型不同" class="headerlink" title="cpu和gpu的类型不同"></a>cpu和gpu的类型不同</h1><p>print(isinstance(a, torch.cuda.FloatTensor))<br>a = a.cuda()<br>print(isinstance(a, torch.cuda.FloatTensor))</p>
+<h1 id="标量的表示（0维-tensor）"><a href="#标量的表示（0维-tensor）" class="headerlink" title="标量的表示（0维 tensor）"></a>标量的表示（0维 tensor）</h1><p>a = torch.tensor(1.)</p>
+<h1 id="shape是一个成员，-size-是一个成员函数，因此有括号"><a href="#shape是一个成员，-size-是一个成员函数，因此有括号" class="headerlink" title=".shape是一个成员，.size()是一个成员函数，因此有括号"></a>.shape是一个成员，.size()是一个成员函数，因此有括号</h1><p>print(a.shape)<br>print(a.size())<br>print(len(a.shape))</p>
+<h1 id="注意-1-3是0维，但是【1-3】是1维，长度为1的tensor"><a href="#注意-1-3是0维，但是【1-3】是1维，长度为1的tensor" class="headerlink" title="注意 1.3是0维，但是【1.3】是1维，长度为1的tensor"></a>注意 1.3是0维，但是【1.3】是1维，长度为1的tensor</h1><h1 id="通常的loss就是一个dimension为0的标量"><a href="#通常的loss就是一个dimension为0的标量" class="headerlink" title="通常的loss就是一个dimension为0的标量"></a>通常的loss就是一个dimension为0的标量</h1><h1 id="1维tensor"><a href="#1维tensor" class="headerlink" title="1维tensor"></a>1维tensor</h1><p>a = torch.tensor([1.1])<br>a = torch.tensor([1.1, 2.2])</p>
+<h1 id="tensor可以直接指定生成的具体值，FloatTensor则会指定生成的维度，随机生成数据"><a href="#tensor可以直接指定生成的具体值，FloatTensor则会指定生成的维度，随机生成数据" class="headerlink" title="tensor可以直接指定生成的具体值，FloatTensor则会指定生成的维度，随机生成数据"></a>tensor可以直接指定生成的具体值，FloatTensor则会指定生成的维度，随机生成数据</h1><p>a = torch.FloatTensor(1)<br>a = torch.FloatTensor(2)</p>
+<h1 id="1维tensor-通常用作bias，在神经元中有多个输入，进过偏置（bias），后经激活函数得到一个输出，因此通常要求是一维的"><a href="#1维tensor-通常用作bias，在神经元中有多个输入，进过偏置（bias），后经激活函数得到一个输出，因此通常要求是一维的" class="headerlink" title="1维tensor 通常用作bias，在神经元中有多个输入，进过偏置（bias），后经激活函数得到一个输出，因此通常要求是一维的"></a>1维tensor 通常用作bias，在神经元中有多个输入，进过偏置（bias），后经激活函数得到一个输出，因此通常要求是一维的</h1><h1 id="1维tensor-也会被用作线性层的输入，在进过打平之后，进入线性层的通常是1维的tensor"><a href="#1维tensor-也会被用作线性层的输入，在进过打平之后，进入线性层的通常是1维的tensor" class="headerlink" title="1维tensor 也会被用作线性层的输入，在进过打平之后，进入线性层的通常是1维的tensor"></a>1维tensor 也会被用作线性层的输入，在进过打平之后，进入线性层的通常是1维的tensor</h1><h1 id="2维tensor"><a href="#2维tensor" class="headerlink" title="2维tensor"></a>2维tensor</h1><p>a = torch.randn(2, 3)<br>print(a.shape)<br>print(a.shape[0])<br>print(a.shape[1])<br>print(a.size())<br>print(a.size(0))<br>print(len(a.shape))</p>
+<h1 id="2维tensor-通常用作带有batch的线性层输入"><a href="#2维tensor-通常用作带有batch的线性层输入" class="headerlink" title="2维tensor 通常用作带有batch的线性层输入"></a>2维tensor 通常用作带有batch的线性层输入</h1><h1 id="如-4-784-，4表示一组照片，第0-1-2-3张照片，784是照片的具体数据内容"><a href="#如-4-784-，4表示一组照片，第0-1-2-3张照片，784是照片的具体数据内容" class="headerlink" title="如 [4, 784]，4表示一组照片，第0/1/2/3张照片，784是照片的具体数据内容"></a>如 [4, 784]，4表示一组照片，第0/1/2/3张照片，784是照片的具体数据内容</h1><h1 id="3维tensor"><a href="#3维tensor" class="headerlink" title="3维tensor"></a>3维tensor</h1><h1 id="随机均匀分布，范围【0-1】"><a href="#随机均匀分布，范围【0-1】" class="headerlink" title="随机均匀分布，范围【0,1】"></a>随机均匀分布，范围【0,1】</h1><p>a = torch.rand(1, 2, 3)<br>print(a.shape)<br>print(a[0])</p>
+<h1 id="3维tensor-通常用作带有batch的RNN输入-文字"><a href="#3维tensor-通常用作带有batch的RNN输入-文字" class="headerlink" title="3维tensor 通常用作带有batch的RNN输入(文字)"></a>3维tensor 通常用作带有batch的RNN输入(文字)</h1><h1 id="4维tensor"><a href="#4维tensor" class="headerlink" title="4维tensor"></a>4维tensor</h1><p>a = torch.rand(2, 3, 28, 28)<br>print(a.shape)<br>print(a[0])</p>
+<h1 id="num-of-element-总元素个数"><a href="#num-of-element-总元素个数" class="headerlink" title="num of element(总元素个数)"></a>num of element(总元素个数)</h1><p>print(a.numel())</p>
+<h1 id="维数"><a href="#维数" class="headerlink" title="维数"></a>维数</h1><p>print(a.dim())</p>
+<h1 id="3维tensor-通常用作CNN输入-图片-【batch-size-channel-height-width】"><a href="#3维tensor-通常用作CNN输入-图片-【batch-size-channel-height-width】" class="headerlink" title="3维tensor 通常用作CNN输入(图片)【batch_size, channel, height, width】"></a>3维tensor 通常用作CNN输入(图片)【batch_size, channel, height, width】</h1><pre><code>### 创建tensor  
+``` python
+import torch
+import numpy
+
+# 方法1 torch.from_numpy()
+# 由numpy导入 (值和类型保持不变)
+a = numpy.array([2, 3, 3])
+a = torch.from_numpy(a)
+a = numpy.ones([2, 3])
+a = torch.from_numpy(a)
+
+# 方法2 torch.tensor()
+# 由list导入 (小数据量时)
+# Tensor() 参数是数据的维度/数据 用[]区别
+# tensor() 参数是数据
+a = torch.tensor([2., 3.2])
+a = torch.Tensor(2, 3)
+a = torch.FloatTensor([2., 3.2])
+# 创建未初始化数据
+# 未初始化的tensor一定要在后面加上赋值，否则会导致奇怪bug（infinity等）
+a = torch.empty()
+a = torch.FloatTensor(2, 3)
+
+# 设置类型
+print(torch.tensor([1.2, 3]).type())
+torch.set_default_tensor_type(torch.DoubleTensor)
+print(torch.tensor([1.2, 3]).type())
+
+# 随机初始化
+a = torch.rand(3, 3)
+b = torch.rand_like(a)
+# low, high, shape
+b = torch.randint(1, 10, [3, 3])
+# 正态分布 N(0, 1)
+a = torch.randd(3, 3)
+a = torch.normal(mean=torch.full([10], 0), std=torch.arange(1, 0, -0.1))
+
+# 其他
+# 全部赋值为一个元素
+a = torch.full([2, 3], 7)
+a = torch.full([], 7)
+# 递增递减等
+a = torch.arange(0, 10)
+a = torch.arange(0, 10, 2)
+# 与arange不同的是，第三个参数是num of ele而不是步进
+a = torch.linspace(0, 10, steps=4)
+a = torch.logspace(0, -1, steps=10)
+# 全0/1
+a = torch.ones(3, 3)
+a = torch.zeros(3, 3)
+a = torch.eye(3, 3)
+# 0~9 打乱填入
+a = torch.randperm(10)
+# eg. 协调shuffle
+a = torch.rand(2, 3)
+b = torch.rand(2, 3)
+idx = torch.randperm(2)
+a[idx]
+b[idx]
+</code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2021/11/17/pytorch-learning-basic/">https://naughtyrabbit.github.io/2021/11/17/pytorch-learning-basic/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pytorch%E5%AD%A6%E4%B9%A0/">pytorch学习</a><a class="post-meta__tags" href="/tags/tensor/">tensor</a></div><div class="post_share"><div class="social-share" data-image="https://e.im5i.com/2021/11/12/Us8pFs.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/11/16/pytorch-learning-classfication/"><img class="next-cover" src="https://e.im5i.com/2021/11/12/Usq3rY.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">pytorch学习笔记-简单分类问题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/11/16/pytorch-learning-classfication/" title="pytorch学习笔记-简单分类问题"><img class="cover" src="https://e.im5i.com/2021/11/12/Usq3rY.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-16</div><div class="title">pytorch学习笔记-简单分类问题</div></div></a></div><div><a href="/2021/11/12/pytorch_learning_grad/" title="pytorch学习笔记-回归问题"><img class="cover" src="https://e.im5i.com/2021/11/12/Us872Y.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-12</div><div class="title">pytorch学习笔记-回归问题</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">39</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#python%E4%B8%8Epytorch"><span class="toc-number">1.</span> <span class="toc-text">python与pytorch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tensor%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">tensor数据类型介绍</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A3%E6%80%81%E5%88%86%E5%B8%83%E9%9A%8F%E6%9C%BA%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%8C%E6%96%B9%E5%B7%AE%EF%BC%9A1"><span class="toc-number"></span> <span class="toc-text">正态分布随机初始化，方差：1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#torch%E6%8F%90%E4%BE%9B%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"><span class="toc-number"></span> <span class="toc-text">torch提供的类型检测</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#python%E6%8F%90%E4%BE%9B%E7%9A%84%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%B5%8B"><span class="toc-number"></span> <span class="toc-text">python提供的类型检测</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E7%9A%84%E5%90%88%E6%B3%95%E5%8C%96%E6%A3%80%E9%AA%8C"><span class="toc-number"></span> <span class="toc-text">参数的合法化检验</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#cpu%E5%92%8Cgpu%E7%9A%84%E7%B1%BB%E5%9E%8B%E4%B8%8D%E5%90%8C"><span class="toc-number"></span> <span class="toc-text">cpu和gpu的类型不同</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%87%E9%87%8F%E7%9A%84%E8%A1%A8%E7%A4%BA%EF%BC%880%E7%BB%B4-tensor%EF%BC%89"><span class="toc-number"></span> <span class="toc-text">标量的表示（0维 tensor）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shape%E6%98%AF%E4%B8%80%E4%B8%AA%E6%88%90%E5%91%98%EF%BC%8C-size-%E6%98%AF%E4%B8%80%E4%B8%AA%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%EF%BC%8C%E5%9B%A0%E6%AD%A4%E6%9C%89%E6%8B%AC%E5%8F%B7"><span class="toc-number"></span> <span class="toc-text">.shape是一个成员，.size()是一个成员函数，因此有括号</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F-1-3%E6%98%AF0%E7%BB%B4%EF%BC%8C%E4%BD%86%E6%98%AF%E3%80%901-3%E3%80%91%E6%98%AF1%E7%BB%B4%EF%BC%8C%E9%95%BF%E5%BA%A6%E4%B8%BA1%E7%9A%84tensor"><span class="toc-number"></span> <span class="toc-text">注意 1.3是0维，但是【1.3】是1维，长度为1的tensor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%9A%E5%B8%B8%E7%9A%84loss%E5%B0%B1%E6%98%AF%E4%B8%80%E4%B8%AAdimension%E4%B8%BA0%E7%9A%84%E6%A0%87%E9%87%8F"><span class="toc-number"></span> <span class="toc-text">通常的loss就是一个dimension为0的标量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E7%BB%B4tensor"><span class="toc-number"></span> <span class="toc-text">1维tensor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#tensor%E5%8F%AF%E4%BB%A5%E7%9B%B4%E6%8E%A5%E6%8C%87%E5%AE%9A%E7%94%9F%E6%88%90%E7%9A%84%E5%85%B7%E4%BD%93%E5%80%BC%EF%BC%8CFloatTensor%E5%88%99%E4%BC%9A%E6%8C%87%E5%AE%9A%E7%94%9F%E6%88%90%E7%9A%84%E7%BB%B4%E5%BA%A6%EF%BC%8C%E9%9A%8F%E6%9C%BA%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE"><span class="toc-number"></span> <span class="toc-text">tensor可以直接指定生成的具体值，FloatTensor则会指定生成的维度，随机生成数据</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E7%BB%B4tensor-%E9%80%9A%E5%B8%B8%E7%94%A8%E4%BD%9Cbias%EF%BC%8C%E5%9C%A8%E7%A5%9E%E7%BB%8F%E5%85%83%E4%B8%AD%E6%9C%89%E5%A4%9A%E4%B8%AA%E8%BE%93%E5%85%A5%EF%BC%8C%E8%BF%9B%E8%BF%87%E5%81%8F%E7%BD%AE%EF%BC%88bias%EF%BC%89%EF%BC%8C%E5%90%8E%E7%BB%8F%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E5%BE%97%E5%88%B0%E4%B8%80%E4%B8%AA%E8%BE%93%E5%87%BA%EF%BC%8C%E5%9B%A0%E6%AD%A4%E9%80%9A%E5%B8%B8%E8%A6%81%E6%B1%82%E6%98%AF%E4%B8%80%E7%BB%B4%E7%9A%84"><span class="toc-number"></span> <span class="toc-text">1维tensor 通常用作bias，在神经元中有多个输入，进过偏置（bias），后经激活函数得到一个输出，因此通常要求是一维的</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1%E7%BB%B4tensor-%E4%B9%9F%E4%BC%9A%E8%A2%AB%E7%94%A8%E4%BD%9C%E7%BA%BF%E6%80%A7%E5%B1%82%E7%9A%84%E8%BE%93%E5%85%A5%EF%BC%8C%E5%9C%A8%E8%BF%9B%E8%BF%87%E6%89%93%E5%B9%B3%E4%B9%8B%E5%90%8E%EF%BC%8C%E8%BF%9B%E5%85%A5%E7%BA%BF%E6%80%A7%E5%B1%82%E7%9A%84%E9%80%9A%E5%B8%B8%E6%98%AF1%E7%BB%B4%E7%9A%84tensor"><span class="toc-number"></span> <span class="toc-text">1维tensor 也会被用作线性层的输入，在进过打平之后，进入线性层的通常是1维的tensor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E7%BB%B4tensor"><span class="toc-number"></span> <span class="toc-text">2维tensor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2%E7%BB%B4tensor-%E9%80%9A%E5%B8%B8%E7%94%A8%E4%BD%9C%E5%B8%A6%E6%9C%89batch%E7%9A%84%E7%BA%BF%E6%80%A7%E5%B1%82%E8%BE%93%E5%85%A5"><span class="toc-number"></span> <span class="toc-text">2维tensor 通常用作带有batch的线性层输入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82-4-784-%EF%BC%8C4%E8%A1%A8%E7%A4%BA%E4%B8%80%E7%BB%84%E7%85%A7%E7%89%87%EF%BC%8C%E7%AC%AC0-1-2-3%E5%BC%A0%E7%85%A7%E7%89%87%EF%BC%8C784%E6%98%AF%E7%85%A7%E7%89%87%E7%9A%84%E5%85%B7%E4%BD%93%E6%95%B0%E6%8D%AE%E5%86%85%E5%AE%B9"><span class="toc-number"></span> <span class="toc-text">如 [4, 784]，4表示一组照片，第0&#x2F;1&#x2F;2&#x2F;3张照片，784是照片的具体数据内容</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E7%BB%B4tensor"><span class="toc-number"></span> <span class="toc-text">3维tensor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E5%9D%87%E5%8C%80%E5%88%86%E5%B8%83%EF%BC%8C%E8%8C%83%E5%9B%B4%E3%80%900-1%E3%80%91"><span class="toc-number"></span> <span class="toc-text">随机均匀分布，范围【0,1】</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E7%BB%B4tensor-%E9%80%9A%E5%B8%B8%E7%94%A8%E4%BD%9C%E5%B8%A6%E6%9C%89batch%E7%9A%84RNN%E8%BE%93%E5%85%A5-%E6%96%87%E5%AD%97"><span class="toc-number"></span> <span class="toc-text">3维tensor 通常用作带有batch的RNN输入(文字)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4%E7%BB%B4tensor"><span class="toc-number"></span> <span class="toc-text">4维tensor</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#num-of-element-%E6%80%BB%E5%85%83%E7%B4%A0%E4%B8%AA%E6%95%B0"><span class="toc-number"></span> <span class="toc-text">num of element(总元素个数)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%B4%E6%95%B0"><span class="toc-number"></span> <span class="toc-text">维数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3%E7%BB%B4tensor-%E9%80%9A%E5%B8%B8%E7%94%A8%E4%BD%9CCNN%E8%BE%93%E5%85%A5-%E5%9B%BE%E7%89%87-%E3%80%90batch-size-channel-height-width%E3%80%91"><span class="toc-number"></span> <span class="toc-text">3维tensor 通常用作CNN输入(图片)【batch_size, channel, height, width】</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/11/17/pytorch-learning-basic/" title="pytorch学习笔记-基础篇（tensor）"><img src="https://e.im5i.com/2021/11/12/Us8pFs.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（tensor）"/></a><div class="content"><a class="title" href="/2021/11/17/pytorch-learning-basic/" title="pytorch学习笔记-基础篇（tensor）">pytorch学习笔记-基础篇（tensor）</a><time datetime="2021-11-17T08:05:13.000Z" title="发表于 2021-11-17 16:05:13">2021-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/11/16/pytorch-learning-classfication/" title="pytorch学习笔记-简单分类问题"><img src="https://e.im5i.com/2021/11/12/Usq3rY.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-简单分类问题"/></a><div class="content"><a class="title" href="/2021/11/16/pytorch-learning-classfication/" title="pytorch学习笔记-简单分类问题">pytorch学习笔记-简单分类问题</a><time datetime="2021-11-16T06:47:03.000Z" title="发表于 2021-11-16 14:47:03">2021-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/11/12/pytorch_learning_grad/" title="pytorch学习笔记-回归问题"><img src="https://e.im5i.com/2021/11/12/Us872Y.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-回归问题"/></a><div class="content"><a class="title" href="/2021/11/12/pytorch_learning_grad/" title="pytorch学习笔记-回归问题">pytorch学习笔记-回归问题</a><time datetime="2021-11-12T03:02:17.000Z" title="发表于 2021-11-12 11:02:17">2021-11-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/27/AliIot_postTem/" title="基于阿里云的智能温度计"><img src="https://e.im5i.com/2021/11/12/Us8dfT.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="基于阿里云的智能温度计"/></a><div class="content"><a class="title" href="/2021/08/27/AliIot_postTem/" title="基于阿里云的智能温度计">基于阿里云的智能温度计</a><time datetime="2021-08-27T12:06:46.000Z" title="发表于 2021-08-27 20:06:46">2021-08-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/22/ComStruc_Encoding/" title="计算机组织与体系结构——补码与模与浮点数的规格化"><img src="https://e.im5i.com/2021/11/12/Us8Yz0.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计算机组织与体系结构——补码与模与浮点数的规格化"/></a><div class="content"><a class="title" href="/2021/08/22/ComStruc_Encoding/" title="计算机组织与体系结构——补码与模与浮点数的规格化">计算机组织与体系结构——补码与模与浮点数的规格化</a><time datetime="2021-08-22T13:00:13.000Z" title="发表于 2021-08-22 21:00:13">2021-08-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>
