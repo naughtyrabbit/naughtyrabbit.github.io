@@ -1,7 +1,270 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>不听话的兔子君 - 那破云的光终会洒落，将有人迎向你的身侧</title><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="记录生活，记录成长">
+<meta property="og:type" content="website">
+<meta property="og:title" content="不听话的兔子君">
+<meta property="og:url" content="https://naughtyrabbit.github.io/page/4/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="记录生活，记录成长">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg">
+<meta property="article:author" content="naughtyrabbit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/page/4/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '不听话的兔子君',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-08-19 11:57:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  include ./includes/mixins/post-ui.pug
-  #recent-posts.recent-posts
-    +postUI
-    include includes/pagination.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/30/pytorch-learning-adv-resnet/" title="pytorch学习笔记-高阶篇（深度残差网络）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHFeY.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（深度残差网络）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/30/pytorch-learning-adv-resnet/" title="pytorch学习笔记-高阶篇（深度残差网络）">pytorch学习笔记-高阶篇（深度残差网络）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-30T02:15:21.000Z" title="发表于 2021-12-30 10:15:21">2021-12-30</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下深度残差网络的相关知识   
+
+  
+一、Resnet提出&amp;ensp;&amp;ensp;随着研究的深入，人们就想着是不是网络层数越高，深度越深，网络的性能就越好。但经过实验发现并不是如此。所以就引入了深度残差网络这一概念，初衷是想比如原来有22层，我加上8层，但是我要保证现在的这30层性能还要差，于是可以引一条short cut到22层的地方，保证如果这新加的8层如果没有带来更好的性能就沿用之前的22层所得。  
+二、Resnet网络class ResBlk(nn.Module):
+    &quot;&quot;&quot;
+    resnet block
+    &quot;&quot;&quot;
+
+    def __init__(self, ch_in, ch_out):
+        &quot;&quot;&quot;
+        :param ch_in:
+        :param ch_out:
+        &quot;&quot;&quot;
+        super(ResBlk, self).__init__()
+
+ ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/29/pytorch-learning-adv-CNNnets/" title="pytorch学习笔记-高阶篇（经典卷积网络）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcopMH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（经典卷积网络）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/29/pytorch-learning-adv-CNNnets/" title="pytorch学习笔记-高阶篇（经典卷积网络）">pytorch学习笔记-高阶篇（经典卷积网络）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-29T08:36:52.000Z" title="发表于 2021-12-29 16:36:52">2021-12-29</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下卷积神经网络的一些经典网络
+
+
+一、LeNet  
+二、AlexNet  
+三、VGG  
+四、GoogLeNet    
+</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/29/pytorch-learning-adv-batchnorm/" title="pytorch学习笔记-高阶篇（batchnorm）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPhzB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（batchnorm）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/29/pytorch-learning-adv-batchnorm/" title="pytorch学习笔记-高阶篇（batchnorm）">pytorch学习笔记-高阶篇（batchnorm）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-29T06:12:15.000Z" title="发表于 2021-12-29 14:12:15">2021-12-29</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些卷积神经网络中batch norm相关知识  
+
+
+一、batch Norm引入&amp;ensp;&amp;ensp;对于sigmoid函数，在有效范围外就会梯度接近0，出现梯度离散的情况，数据长时间得不到更新，这不是我们所希望的，因此就需要把输入值控制在有效范围内，对此，引入batch norm把输入映射到希望的范围内。   
+二、feature Scaling&amp;ensp;&amp;ensp;对于一个普通的RGB三通道的图片：经过适当的各通道的标准化，可以使得三个通道接下来对卷积层等的作用效果几乎等价，不至于R通道要改变很大时而G通道改变很小时的效果差不多。可以上梯度下降的过程更加平滑
+normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+
+三、batch Norm&amp;ensp;&amp;ensp;对于batch norm,比如[6, 3, 28, 28]这样shape的数据，batch norm会把batch抽出来，抽出一个 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/29/pytorch-learning-adv-pooling/" title="pytorch学习笔记-高阶篇（池化层）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPktz.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（池化层）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/29/pytorch-learning-adv-pooling/" title="pytorch学习笔记-高阶篇（池化层）">pytorch学习笔记-高阶篇（池化层）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-29T03:15:13.000Z" title="发表于 2021-12-29 11:15:13">2021-12-29</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些卷积神经网络中池化层和采样相关知识  
+
+
+一、下采样（降维）1.原始 sub sampling&amp;ensp;&amp;ensp;最初的降维的下采样没有复杂的机制，只是简单的隔行采样
+1.最大池化 max pooling&amp;ensp;&amp;ensp;同样用一个小窗口扫描整个feature map，比较特殊的是最大池化指的是取小窗口中最大值作为采样值  
+2.平均池化 Avg pooling  
+x = torch.randn([1, 16, 14, 14])
+# Out[4]: torch.Size([1, 16, 14, 14])
+layer = nn.MaxPool2d(kernel_size=2, stride=2)
+out = layer(x)
+# Out[8]: torch.Size([1, 16, 7, 7])
+out = F.avg_pool2d(x, 2, stride=2)
+# Out[12]: torch.Size([1, 16, 7, 7])  
+
+二、上采样（放大）  
+out = F.interpolate(x, scal ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/28/pytorch-learning-adv-CNN/" title="pytorch学习笔记-高阶篇（卷积神经网络）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcH5pF.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（卷积神经网络）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/28/pytorch-learning-adv-CNN/" title="pytorch学习笔记-高阶篇（卷积神经网络）">pytorch学习笔记-高阶篇（卷积神经网络）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-28T06:47:57.000Z" title="发表于 2021-12-28 14:47:57">2021-12-28</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下卷积神经网络的相关知识   
+
+
+一、多通道&amp;ensp;&amp;ensp;对于原来1通道的28*28的一个Image通过7个不同的卷积核，可以理解为从7个不同的角度观察这个图片，得到7个通道的新的feature map&amp;ensp;&amp;ensp;下面以该图为例，解释各参数的size
+
+x:[batch_size, ch_in, 28, 28]  &amp;ensp;&amp;ensp;[b, 3, 28, 28],3是表示 RGB 3通道
+单个卷积核:[ch, 3, 3]  &amp;ensp;&amp;ensp;[3, 3, 3],3同样表示 RGB 3通道，这里必须和输入的通道数匹配，后面的是卷积核的size
+多个卷积核:[16, ch, 3, 3]  &amp;ensp;&amp;ensp;16表示卷积核的个数，这里是单纯地复制，是完全一样的16个（批）
+bias:16  
+output:[batch_size, ch_in, 28, 28]  &amp;ensp;&amp;ensp;[b, 16, 28, 28]
+
+二、API使用&amp ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/28/pytorch-learning-basic-conv/" title="pytorch学习笔记-基础篇（卷积）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcopMH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（卷积）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/28/pytorch-learning-basic-conv/" title="pytorch学习笔记-基础篇（卷积）">pytorch学习笔记-基础篇（卷积）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-28T05:41:02.000Z" title="发表于 2021-12-28 13:41:02">2021-12-28</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，卷积的一些基本情况    
+
+
+一、feature map&amp;ensp;&amp;ensp;对于灰度图片，用0255（或者压缩到01）表示灰度，即下图第一张图到第二张的转化。如果是彩色图片，则用3张表[R, G, B]分布表示3个通道的颜色信息  
+二、全连接层&amp;ensp;&amp;ensp;对于如下的简单全连接层，一共需要1.6 MB去存储参数，这对于当时的环境是一个很大的数。  
+1. weight sharing&amp;ensp;&amp;ensp;为了解决这一问题，科学家提出了一个模仿人眼的“局部相关性”的机制，并不一次看到全部视野，只看部分；简单来说，就是下图第一部分中的：用一个小窗口逐步扫描整张图片   
+三、卷积&amp;ensp;&amp;ensp;如下是卷积在数字信号处理中的定义&amp;ensp;&amp;ensp;下面是卷积在网络中的运作过程   
+y(0, 0) = 卷积核不偏移，对应位置相乘求和
+y(1, 0) = 卷积核x方向偏移一个单位，对应位置相乘求和
+...
+
+1. 卷积的应用
+锐化图片& ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/27/pytorch-learning-adv-tricks/" title="pytorch学习笔记-高阶篇（小技巧）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UqDDQo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（小技巧）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/27/pytorch-learning-adv-tricks/" title="pytorch学习笔记-高阶篇（小技巧）">pytorch学习笔记-高阶篇（小技巧）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-27T05:16:42.000Z" title="发表于 2021-12-27 13:16:42">2021-12-27</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要介绍一些pytorch的一些小技巧，包括动量，学习率衰减，early stopping,drop和随机梯度下降。    
+
+
+一、动量 momentum&amp;ensp;&amp;ensp;第一幅图是没有动量影响的更新过程，第二幅图加了动量，可以看到不考虑历史因素，只考虑当前值会使得更新曲线很尖锐，不平滑，最终也只到达了局部极小值而没有到达最优解的位置&amp;ensp;&amp;ensp;设置动量的写法如下，只需要在优化器中加上动量参数    
+二、学习率衰减&amp;ensp;&amp;ensp;图中可以看出学习率过大过小都会导致问题，比较好的办法是一开始大，然后逐渐变小，这就是学习率衰减。  
+方法1&amp;ensp;&amp;ensp;在loss的变化过程中，如果很长时间都不变，要么是已经到达了一个比较好的值，要么是此时的学习率已经不适用了，需要改变  
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.5, weight_decay=0.2)
+# 给参数min，表示在下面过程中 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/26/pytorch-learning-adv-overfitted/" title="pytorch学习笔记-高阶篇（交叉划分）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHJeS.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（交叉划分）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/26/pytorch-learning-adv-overfitted/" title="pytorch学习笔记-高阶篇（交叉划分）">pytorch学习笔记-高阶篇（交叉划分）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-26T08:05:04.000Z" title="发表于 2021-12-26 16:05:04">2021-12-26</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要介绍在训练过程中过拟合与欠拟合的判断方法和减轻办法，主要是交叉划分的介绍  
+
+  
+一、过拟合&amp;ensp;&amp;ensp;第三张图片很直观地解释了什么是过拟合  
+二、split1. split-&gt;Train Set,Test Set&amp;ensp;&amp;ensp;把数据集分为Train Set和Test Set&amp;ensp;&amp;ensp;如果在训练数据集上表现得很好，但是在测试数据集上表现地不好，此时就要考虑是不是过拟合了，在对测试数据集作测试的时候，如果loss曲线在本该一直下降的过程中开始上升。一般会设置一个保存最低点的量，标志着那个时候训练出来的是最好的模型 
+train_db = datasets.MNIST(&#39;../data&#39;, train=True, download=True,
+                   transform=transforms.Compose([
+                       transforms.ToTensor(),
+                    ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/25/pytorch-learning-adv-LRpractice/" title="pytorch学习笔记-高阶篇（多分类实战）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Uco8jW.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（多分类实战）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/25/pytorch-learning-adv-LRpractice/" title="pytorch学习笔记-高阶篇（多分类实战）">pytorch学习笔记-高阶篇（多分类实战）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-25T10:35:14.000Z" title="发表于 2021-12-25 18:35:14">2021-12-25</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要介是一个LR多分类问题的实战   
+
+
+一、网络部分   
+# 3个线性层
+# 在pytorch中[CH_out,CH_in]的格式
+w1, b1 = torch.randn(200, 784, requires_grad=True),\
+         torch.zeros(200, requires_grad=True)
+w2, b2 = torch.randn(200, 200, requires_grad=True),\
+         torch.zeros(200, requires_grad=True)
+w3, b3 = torch.randn(10, 200, requires_grad=True),\
+         torch.zeros(10, requires_grad=True)
+
+torch.nn.init.kaiming_normal_(w1)
+torch.nn.init.kaiming_normal_(w2)
+torch.nn.init.kaiming_normal_(w3)
+
+
+def forward(x):
+    # 这里的 x  ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/24/pytorch-learning-adv-LR/" title="pytorch学习笔记-高阶篇（逻辑回归与分类与交叉熵）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPI70.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（逻辑回归与分类与交叉熵）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/24/pytorch-learning-adv-LR/" title="pytorch学习笔记-高阶篇（逻辑回归与分类与交叉熵）">pytorch学习笔记-高阶篇（逻辑回归与分类与交叉熵）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-24T11:35:09.000Z" title="发表于 2021-12-24 19:35:09">2021-12-24</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要介绍Logistic Regression以及它和classfication的关系，以及交叉熵的引入   
+
+  
+一、linear regerssion(线性回归)到Logistic Regression(逻辑回归)
+&amp;ensp;&amp;ensp;在给线性函数加上sigmoid之后，它的输出值就不再是一个连续的范围，而是通过放缩为0&#x2F;1,来表示是否。&amp;ensp;&amp;ensp;对于回归问题，优化的方法可以用范数，目标是使得预测值与真实值尽量接近，但是对于分类问题，我们的目标是准确率，但是并不会直接优化准确率，因为会有一个阈值问题，对于0.5来说，从0.4提高到0.45对回归问题是有意义的，但对分类问题，它表现出来都是0.4&#x3D;&gt;0,0.45&#x3D;&gt;0，不会对下一次预测作出指导。因为这种阈值存在，会导致微小的权值变化，可能导致梯度一直是0，也可能导致准确率的骤变  
+
+二、为什么叫Logistic regression 而不叫classification
+首先，过程中会用到sigmoid函数，因此会是logistic
+ ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#content-inner">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#content-inner">8</a><a class="extend next" rel="next" href="/page/5/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/TVM/"><span class="card-category-list-name">TVM</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/VHDL/"><span class="card-category-list-name">VHDL</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vitis-AI/"><span class="card-category-list-name">Vitis-AI</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/hls/"><span class="card-category-list-name">hls</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/linux/"><span class="card-category-list-name">linux</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/markdown/"><span class="card-category-list-name">markdown</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/pytorch/"><span class="card-category-list-name">pytorch</span><span class="card-category-list-count">43</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/"><span class="card-category-list-name">人工智能导论</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/FIFO/" style="font-size: 1.1em; color: #999">FIFO</a> <a href="/tags/Linux%E4%BF%A1%E5%8F%B7%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">Linux信号机制</a> <a href="/tags/MQTT%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">MQTT协议</a> <a href="/tags/TVM/" style="font-size: 1.26em; color: #999fa8">TVM</a> <a href="/tags/Vitis-AI/" style="font-size: 1.1em; color: #999">Vitis-AI</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">_exit()函数</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">exit()函数</a> <a href="/tags/fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fcntl()函数</a> <a href="/tags/fork-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fork()函数</a> <a href="/tags/freopen-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">freopen()函数</a> <a href="/tags/hls%E5%AD%A6%E4%B9%A0/" style="font-size: 1.34em; color: #99a3b0">hls学习</a> <a href="/tags/index/" style="font-size: 1.1em; color: #999">index</a> <a href="/tags/inet-pton/" style="font-size: 1.1em; color: #999">inet_pton</a> <a href="/tags/pytorch%E5%AD%A6%E4%B9%A0/" style="font-size: 1.5em; color: #99a9bf">pytorch学习</a> <a href="/tags/select-%E5%87%BD%E6%95%B0/" style="font-size: 1.26em; color: #999fa8">select()函数</a> <a href="/tags/socket/" style="font-size: 1.18em; color: #999ca1">socket</a> <a href="/tags/tcp-ip/" style="font-size: 1.1em; color: #999">tcp/ip</a> <a href="/tags/tensor/" style="font-size: 1.1em; color: #999">tensor</a> <a href="/tags/udp/" style="font-size: 1.1em; color: #999">udp</a> <a href="/tags/yolo/" style="font-size: 1.42em; color: #99a6b7">yolo</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 1.1em; color: #999">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 1.1em; color: #999">个人随笔</a> <a href="/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/" style="font-size: 1.1em; color: #999">交叉熵</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E5%87%BD%E6%95%B0kill/" style="font-size: 1.1em; color: #999">信号发送函数kill()</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/" style="font-size: 1.1em; color: #999">信号量</a> <a href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">共享内存</a> <a href="/tags/%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">分类问题</a> <a href="/tags/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">回归问题</a> <a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.1em; color: #999">守护进程</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.34em; color: #99a3b0">实战</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 1.1em; color: #999">实验记录</a> <a href="/tags/%E5%BA%95%E5%B1%82IO/" style="font-size: 1.1em; color: #999">底层IO</a> <a href="/tags/%E6%97%A0%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.1em; color: #999">无名管道</a> <a href="/tags/%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.18em; color: #999ca1">有名管道</a> <a href="/tags/%E6%A0%87%E5%87%86IO/" style="font-size: 1.1em; color: #999">标准IO</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 1.1em; color: #999">模板</a> <a href="/tags/%E6%B6%88%E8%A7%A3%E5%8F%8D%E6%BC%94/" style="font-size: 1.1em; color: #999">消解反演</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">生产者消费者问题</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E8%A1%A8%E7%A4%BA/" style="font-size: 1.1em; color: #999">知识表示</a> <a href="/tags/%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%8E%A8%E7%90%86/" style="font-size: 1.1em; color: #999">确定性推理</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/02/"><span class="card-archive-list-date">二月 2022</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/12/"><span class="card-archive-list-date">十二月 2021</span><span class="card-archive-list-count">24</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">16</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">78</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-08-19T03:57:22.447Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

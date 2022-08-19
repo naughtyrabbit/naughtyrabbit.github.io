@@ -1,7 +1,379 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>不听话的兔子君 - 那破云的光终会洒落，将有人迎向你的身侧</title><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="记录生活，记录成长">
+<meta property="og:type" content="website">
+<meta property="og:title" content="不听话的兔子君">
+<meta property="og:url" content="https://naughtyrabbit.github.io/page/5/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="记录生活，记录成长">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg">
+<meta property="article:author" content="naughtyrabbit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/page/5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '不听话的兔子君',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-08-19 11:57:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  include ./includes/mixins/post-ui.pug
-  #recent-posts.recent-posts
-    +postUI
-    include includes/pagination.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/23/pytorch-learning-adv-Backpropagation/" title="pytorch学习笔记-高阶篇（反向传播算法）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Uco1ua.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（反向传播算法）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/23/pytorch-learning-adv-Backpropagation/" title="pytorch学习笔记-高阶篇（反向传播算法）">pytorch学习笔记-高阶篇（反向传播算法）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-23T08:47:59.000Z" title="发表于 2021-12-23 16:47:59">2021-12-23</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要是一个实战篇，分别讲了反向传播的推导和一个2d函数的优化实例  
+
+
+一、理论推导
+我要是能看懂我是那个-_-  
+
+二、2D函数优化实例
+经典测试函数  
+
+1.绘图def himmelblau(x):
+    return (x[0] ** 2 + x[1] - 11) ** 2 + (x[0] + x[1] ** 2 - 7) ** 2
+
+
+x = np.arange(-6, 6, 0.1)
+y = np.arange(-6, 6, 0.1)
+print(&#39;x,y range:&#39;, x.shape, y.shape)
+X, Y = np.meshgrid(x, y)
+print(&#39;X,Y maps:&#39;, X.shape, Y.shape)
+Z = himmelblau([X, Y])
+
+fig = plt.figure(&#39;himmelblau&#39;)
+ax = fig.gca(projection=&#39;3d&#39;)
+ax.plot_surface(X, Y, Z)
+ax.view_init(60, -30)
+ax.s ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/23/pytorch-learning-adv-chainrule/" title="pytorch学习笔记-高阶篇（链式法则）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcH0uh.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（链式法则）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/23/pytorch-learning-adv-chainrule/" title="pytorch学习笔记-高阶篇（链式法则）">pytorch学习笔记-高阶篇（链式法则）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-23T08:03:19.000Z" title="发表于 2021-12-23 16:03:19">2021-12-23</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些链式法则相关知识，和导数的加减复合的法则类似  
+
+
+一、常见梯度求导法则
+  
+
+二、链式法则
+其实很容易理解，和导数的复合是一致的下图是针对神经网络的一个具体的例子   
+
+# 验证链式法则
+x = torch.tensor(1.)
+w1 = torch.tensor(2., requires_grad=True)
+b1 = torch.tensor(1.)
+w2 = torch.tensor(2., requires_grad=True)
+b2 = torch.tensor(1.)
+
+y1 = x*w1 + b1
+y2 = y1*w2 + b2
+
+dy2_dy1 = torch.autograd.grad(y2, [y1], retain_graph=True)[0]
+dy1_dw1 = torch.autograd.grad(y1, [w1], retain_graph=True)[0]
+dy2_dw1 = torch.autograd.grad(y2, [w1], retain_graph=True)[0]
+
+dy2_dw1*dy1_dw1
+# Out[ ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/23/pytorch-learning-adv-perceptron/" title="pytorch学习笔记-高阶篇（感知机）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcovSH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（感知机）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/23/pytorch-learning-adv-perceptron/" title="pytorch学习笔记-高阶篇（感知机）">pytorch学习笔记-高阶篇（感知机）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-23T06:13:21.000Z" title="发表于 2021-12-23 14:13:21">2021-12-23</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些感知机的相关知识，完整地回顾并实践之前所学的梯度求导相关过程  
+
+
+一、感知机介绍
+感知机(perceptron)是二类分类的线性分类模型，其输入为实例的特征向量，输出为实例的类别。下图是单层感知机的示例图单层感知机梯度推导：  
+
+二、单层感知机梯度推导代码# 单层感知机梯度推导
+# 也就是输入x的特征有10个
+x = torch.randn(1, 10)
+&#39;&#39;&#39;
+Out[18]: 
+tensor([[ 0.8005, -0.2278,  0.4467,  1.4833,  0.2212, -0.0604, -1.8940, -0.1799,
+         -0.4088,  1.7971]])
+&#39;&#39;&#39;
+w = torch.randn(1, 10, requires_grad=True)
+&#39;&#39;&#39;
+Out[20]: 
+tensor([[-0.4720, -0.2564,  1.5323, -0.2673,  0.4987,  0.0123, -1.1776,  1.0636,
+      ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/18/pytorch-learning-adv-grad/" title="pytorch学习笔记-高阶篇（梯度相关）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UctLbq.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（梯度相关）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/18/pytorch-learning-adv-grad/" title="pytorch学习笔记-高阶篇（梯度相关）">pytorch学习笔记-高阶篇（梯度相关）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-18T07:50:34.000Z" title="发表于 2021-12-18 15:50:34">2021-12-18</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些相对高阶的梯度相关知识   
+
+  
+梯度介绍一.概念      
+导数 =&gt; 偏微分 =&gt; 梯度
+
+前两者都是标量
+
+梯度是所有的偏导组成的向量，反映了函数变化的趋势（方向和大小）
+
+二.梯度求loss的问题    
+
+局部极小值
+saddle point鞍点（x 取得局部极小值的同时y取得几部极大值）
+
+三.影响优化性能的因素
+initialization status 初始状态    
+learning rate 学习率  
+momentun 动量（逃离局部极小值）
+
+常见函数梯度   
+激活函数及其梯度一.激活函数  
+
+第一个输出是输入的加权求和的过程，第二个则不是简单的线性过程，而是一个阈值函数，为解决上述的阶梯函数在0处不可导，提出了下面的sigmod函数，作了一个平滑处理  
+
+1. sigmod函数  
+
+下面是sigmoid函数的求导过程一般在想要把数据范围压缩到[0, 1]内可以用sigmoid函数。例如prob(概率)，RGB(颜色等)；sigmoid函数存在的缺点是在两端函数的导数会接近于0，此时loss会出现长时间保持不便的 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/18/pytorch-learning-adv-tensor/" title="pytorch学习笔记-高阶篇（where和gather）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-高阶篇（where和gather）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/18/pytorch-learning-adv-tensor/" title="pytorch学习笔记-高阶篇（where和gather）">pytorch学习笔记-高阶篇（where和gather）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-18T02:29:25.000Z" title="发表于 2021-12-18 10:29:25">2021-12-18</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些相对高阶的tensor操作，where和gather   
+
+
+API介绍1.where
+详细介绍看官方链接：https://pytorch.org/docs/stable/generated/torch.where.html?highlight=where&amp;ensp;&amp;ensp;与 for i: for j: if cond: op 这种写法的区别是这种写法是完全不并行的，只能用CPU跑，而pytorch提供的where这个API则可以利用GPU来完成，包括cond的生成，既可以用CPU也可以用GPU   
+
+# 1.where
+cond = torch.rand(2, 2)
+&#39;&#39;&#39;
+Out[10]: 
+tensor([[0.0532, 0.3245],
+        [0.5223, 0.5285]])
+&#39;&#39;&#39;
+a = torch.full([2, 2], 0)
+b = torch.full([2, 2], 1)
+torch.where(cond&gt;0.5, a, b)
+&#39;&#39; ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/17/pytorch-learning-basic-statisics/" title="pytorch学习笔记-基础篇（统计操作）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHmK7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（统计操作）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/17/pytorch-learning-basic-statisics/" title="pytorch学习笔记-基础篇（统计操作）">pytorch学习笔记-基础篇（统计操作）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-17T09:55:46.000Z" title="发表于 2021-12-17 17:55:46">2021-12-17</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，一些基本的统计操作  
+
+
+常用API1.norm 范数  
+# 1.norm 范数
+# 不同于正则化（normalize）
+# 在数学上，范数包括向量范数和矩阵范数，向量范数表征向量空间中向量的大小，矩阵范数表征矩阵引起变化的大小
+a = torch.full([8], 1)
+b = a.view(2, 4)
+c = a.view(2, 2, 2)
+b
+&#39;&#39;&#39;
+Out[37]: 
+tensor([[1, 1, 1, 1],
+        [1, 1, 1, 1]])
+&#39;&#39;&#39;
+c
+&#39;&#39;&#39;
+Out[38]: 
+tensor([[[1, 1],
+         [1, 1]],
+        [[1, 1],
+         [1, 1]]])
+&#39;&#39;&#39;
+# 默认类型是long，norm不支持
+a = a.float()
+b = b.float()
+c = c.float()
+# 1范数是Σ∣x∣，即对所以元素的绝对值求和
+a.norm(1) ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/15/pytorch-learning-basic-mathop/" title="pytorch学习笔记-基础篇（数学运算）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHQxo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（数学运算）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/15/pytorch-learning-basic-mathop/" title="pytorch学习笔记-基础篇（数学运算）">pytorch学习笔记-基础篇（数学运算）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-15T11:52:43.000Z" title="发表于 2021-12-15 19:52:43">2021-12-15</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，一些基本的数学操作  
+
+
+常用API1.矩阵内元素的加减乘除a = torch.rand(3, 4)
+b = torch.rand(4)
+# 这里能加是因为会做broadcast
+a+b
+torch.add(a, b)
+&#39;&#39;&#39;
+a = torch.rand(3, 4)
+b = torch.rand(4)
+a+b
+Out[3]: 
+tensor([[0.8518, 1.1405, 1.1919, 1.2886],
+        [1.4325, 1.1519, 0.6564, 1.8520],
+        [0.9096, 1.0659, 1.0295, 0.9981]])
+torch.add(a, b)
+Out[4]: 
+tensor([[0.8518, 1.1405, 1.1919, 1.2886],
+        [1.4325, 1.1519, 0.6564, 1.8520],
+        [0.9096, 1.0659, 1.0295, 0.9981]])
+&#39;&#39;&#39;
+#  ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/15/pytorch-learning-basic-MergeOrSplit/" title="pytorch学习笔记-基础篇（拼接与拆分）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHrSy.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（拼接与拆分）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/15/pytorch-learning-basic-MergeOrSplit/" title="pytorch学习笔记-基础篇（拼接与拆分）">pytorch学习笔记-基础篇（拼接与拆分）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-15T11:05:51.000Z" title="发表于 2021-12-15 19:05:51">2021-12-15</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，tensor之间的拼接与拆分，主要涉及4个经典的API  
+
+
+一、API介绍1. Cat(不新加维度)# 1. cat
+# 场景：两份关于成绩单的数据,现在需要合并两份成绩单
+# [class 1~4, stu, scores]
+# [class 5~9, stu, scores]
+a = torch.rand(4, 32, 8)
+b = torch.rand(5, 32, 8)
+# 第一个参数的所有tensor的List，第二个参数是拼接的维度，如果不能拼接会报错
+torch.cat([a, b], dim=0).shape
+&#39;&#39;&#39;
+a = torch.rand(4, 32, 8)
+b = torch.rand(5, 32, 8)
+torch.cat([a, b], dim=0).shape
+Out[5]: torch.Size([9, 32, 8])
+&#39;&#39;&#39;
+
+2. Stack(新加维度)# 2. Stack
+# stack 会创建一个新的维度
+a1 = torch.rand(4, 3 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/12/09/pytorch-learning-basic-broadcast/" title="pytorch学习笔记-基础篇（broadcast自动扩展）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcH3bX.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（broadcast自动扩展）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/09/pytorch-learning-basic-broadcast/" title="pytorch学习笔记-基础篇（broadcast自动扩展）">pytorch学习笔记-基础篇（broadcast自动扩展）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-09T08:20:06.000Z" title="发表于 2021-12-09 16:20:06">2021-12-09</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，broadcast相关内容，主要特点是不复制数据地expand，但是是自动的  
+
+  
+
+api简介特点1. expand(自动)
+2. without copying data
+
+实施方法1. 从最小的维度开始匹配，如果前面没有维度，则在前面加 1 个维度
+2. 把新建的1维数的 size 1 扩展成和目标相同的维数
+
+    
+
+以上图第二排为例，为了符合第一个tensor [4,3] 的size,第二size是[3]的tensor 经过broadcast，会首先把自己加一维变成[1,3], 然后再做维数的扩展，变成[4,3]的tensor，好和第一个可以相加
+
+broadcast存在的意义
+实际需求   
+比如[class,stu,scores] 这个tensor [4,32,8],现在要给所有学生加5分，我们就希望[4,32,8]和一个维度是1的tensor[5]可以直接相加，此时，使用broadcast相当于两次 unsqueeze 和一次 expand_as
+
+
+内存消耗  
+[4,32,8] &#x3D;&gt; 1024 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/12/03/pytorch-learning-basic-dimension/" title="pytorch学习笔记-基础篇（维度变换）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcoQiw.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（维度变换）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/12/03/pytorch-learning-basic-dimension/" title="pytorch学习笔记-基础篇（维度变换）">pytorch学习笔记-基础篇（维度变换）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-12-03T07:23:14.000Z" title="发表于 2021-12-03 15:23:14">2021-12-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，接上一篇文章的tensor基础，维度变换的相关的常用api
+
+  
+常用api·View&#x2F;reshape(改变维度)# view 和 reshape 功能相同 会造成维度信息丢失，信息污染
+a = torch.randn(4, 1, 28, 28)
+# view要保证前后的 元素 个数一致
+a.view(4, 28*28)
+&#39;&#39;&#39;
+a.shape
+Out[24]: torch.Size([4, 1, 28, 28])
+a.view(4, 28*28).shape
+Out[25]: torch.Size([4, 784])
+&#39;&#39;&#39;
+a.view(4*28, 28)
+&#39;&#39;&#39;
+a.view(4*28, 28).shape
+Out[26]: torch.Size([112, 28])
+&#39;&#39;&#39;  
+
+·Squeeze&#x2F;unsqueeze(增减维度)&amp;ensp;&amp;ensp;注意，可插入的维度范围（以4维的tensor为例 ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/4/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#content-inner">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/#content-inner">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#content-inner">8</a><a class="extend next" rel="next" href="/page/6/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/TVM/"><span class="card-category-list-name">TVM</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/VHDL/"><span class="card-category-list-name">VHDL</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vitis-AI/"><span class="card-category-list-name">Vitis-AI</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/hls/"><span class="card-category-list-name">hls</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/linux/"><span class="card-category-list-name">linux</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/markdown/"><span class="card-category-list-name">markdown</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/pytorch/"><span class="card-category-list-name">pytorch</span><span class="card-category-list-count">43</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/"><span class="card-category-list-name">人工智能导论</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/FIFO/" style="font-size: 1.1em; color: #999">FIFO</a> <a href="/tags/Linux%E4%BF%A1%E5%8F%B7%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">Linux信号机制</a> <a href="/tags/MQTT%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">MQTT协议</a> <a href="/tags/TVM/" style="font-size: 1.26em; color: #999fa8">TVM</a> <a href="/tags/Vitis-AI/" style="font-size: 1.1em; color: #999">Vitis-AI</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">_exit()函数</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">exit()函数</a> <a href="/tags/fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fcntl()函数</a> <a href="/tags/fork-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fork()函数</a> <a href="/tags/freopen-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">freopen()函数</a> <a href="/tags/hls%E5%AD%A6%E4%B9%A0/" style="font-size: 1.34em; color: #99a3b0">hls学习</a> <a href="/tags/index/" style="font-size: 1.1em; color: #999">index</a> <a href="/tags/inet-pton/" style="font-size: 1.1em; color: #999">inet_pton</a> <a href="/tags/pytorch%E5%AD%A6%E4%B9%A0/" style="font-size: 1.5em; color: #99a9bf">pytorch学习</a> <a href="/tags/select-%E5%87%BD%E6%95%B0/" style="font-size: 1.26em; color: #999fa8">select()函数</a> <a href="/tags/socket/" style="font-size: 1.18em; color: #999ca1">socket</a> <a href="/tags/tcp-ip/" style="font-size: 1.1em; color: #999">tcp/ip</a> <a href="/tags/tensor/" style="font-size: 1.1em; color: #999">tensor</a> <a href="/tags/udp/" style="font-size: 1.1em; color: #999">udp</a> <a href="/tags/yolo/" style="font-size: 1.42em; color: #99a6b7">yolo</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 1.1em; color: #999">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 1.1em; color: #999">个人随笔</a> <a href="/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/" style="font-size: 1.1em; color: #999">交叉熵</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E5%87%BD%E6%95%B0kill/" style="font-size: 1.1em; color: #999">信号发送函数kill()</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/" style="font-size: 1.1em; color: #999">信号量</a> <a href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">共享内存</a> <a href="/tags/%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">分类问题</a> <a href="/tags/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">回归问题</a> <a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.1em; color: #999">守护进程</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.34em; color: #99a3b0">实战</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 1.1em; color: #999">实验记录</a> <a href="/tags/%E5%BA%95%E5%B1%82IO/" style="font-size: 1.1em; color: #999">底层IO</a> <a href="/tags/%E6%97%A0%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.1em; color: #999">无名管道</a> <a href="/tags/%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.18em; color: #999ca1">有名管道</a> <a href="/tags/%E6%A0%87%E5%87%86IO/" style="font-size: 1.1em; color: #999">标准IO</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 1.1em; color: #999">模板</a> <a href="/tags/%E6%B6%88%E8%A7%A3%E5%8F%8D%E6%BC%94/" style="font-size: 1.1em; color: #999">消解反演</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">生产者消费者问题</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E8%A1%A8%E7%A4%BA/" style="font-size: 1.1em; color: #999">知识表示</a> <a href="/tags/%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%8E%A8%E7%90%86/" style="font-size: 1.1em; color: #999">确定性推理</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/02/"><span class="card-archive-list-date">二月 2022</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/12/"><span class="card-archive-list-date">十二月 2021</span><span class="card-archive-list-count">24</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">16</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">78</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-08-19T03:57:22.447Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

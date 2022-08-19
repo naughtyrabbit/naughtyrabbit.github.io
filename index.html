@@ -1,7 +1,231 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>不听话的兔子君 - 那破云的光终会洒落，将有人迎向你的身侧</title><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="记录生活，记录成长">
+<meta property="og:type" content="website">
+<meta property="og:title" content="不听话的兔子君">
+<meta property="og:url" content="https://naughtyrabbit.github.io/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="记录生活，记录成长">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg">
+<meta property="article:author" content="naughtyrabbit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '不听话的兔子君',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-08-19 11:57:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  include ./includes/mixins/post-ui.pug
-  #recent-posts.recent-posts
-    +postUI
-    include includes/pagination.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2022/08/17/hello-world/" title="Hello World">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></span></div><div class="content">Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+
+More info: Writing
+Run server$ hexo server
+
+More info: Server
+Generate static files$ hexo generate
+
+More info: Generating
+Deploy to remote sites$ hexo deploy
+
+More info: Deployment
+</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Vitis-AI/">Vitis-AI</a></span></div><div class="content">
+由于TVM框架目前未找到合适的方法部署神经网络（pytorch框架）在FPGA上，故想要单独尝试Vitis-AI编译网络流程。一下是官方的以手写数字识别的vitis-ai pytorch流的指导。记录执行过程并分析。
+
+
+&amp;ensp;&amp;ensp;整体的flow如下图所示：&amp;ensp;&amp;ensp;首先利用数据集训练得到模型文件，然后用校准数据和模型共同输入到量化器中，然后编译生成的.xmodel得到可以再FPGA上运行的.xmodel文件。最后在目标FPGA平台上使用生成的.xmodel模型文件。
+一、训练&amp;ensp;&amp;ensp;该脚本将执行 CNN 的训练，并将训练的浮点模型另存为 .&#x2F;build&#x2F;float_model 文件夹中的 .pth 文件。即f_model.pth
+# folders
+export BUILD=./build
+export LOG=$&#123;BUILD&#125;/logs
+mkdir -p $&#123;LOG&#125;
+
+# run training
+python -u train ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/TVM/">TVM</a></span></div><div class="content">
+本篇主要记录一下TVM编译yolov3_tf模型的例子，FPGA开发板：zcu102  
+
+
+一、主机前置环境安装&amp;ensp;&amp;ensp;即setup_custom_yolov3.sh这个脚本，下面是详细内容，部分文件以及git仓库是我预先下载好的，以cp取代下载。下面的脚本主要就是：下载了yolov3_coco.tar.gz（即checkpoint文件），解压至checkpoint文件夹。然后利用convert_weight.py将相关权重文件转换为pb格式。使用freeze_graph.py将模型文件和权重数据整合在一起并去除无关的op。最后将整合的tf模型转换为ONNX格式（如代码块后的图所示）
+. $VAI_ROOT/conda/etc/profile.d/conda.sh  
+conda activate vitis-ai-tensorflow
+
+/opt/vitis_ai/conda/envs/vitis-ai-tensorflow/bin/python3.6 -m pip install --upgrade pip
+# 加了个换源操作，方便后面pip安装 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/TVM/">TVM</a></span></div><div class="content">
+本篇主要记录一下TVM编译一个使用tf框架模型的例子，FPGA开发板：zcu102  
+
+
+一、流程记录&amp;ensp;&amp;ensp;需要注意的是，显然（我就不知道） https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html   TVM官方这里给的流程，不是完整脚本，只是一个介绍，完整Py脚本可以在编译模型的相关网页最下面下载得到。&amp;ensp;&amp;ensp;过程跟着 https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/docs/compiling_a_model.md  这个走。  
+
+运行容器镜像：.&#x2F;docker_run.sh tvm.ci_vai_1x  
+进入tf虚拟环境  
+进入example文件夹
+编译生成对应目标的文件 python3 compile_mxnet_resnet_18.py “DPUCZDX8G-zcu102”最后一个参数指DPU target ID 参照： https://github.com/Xilinx ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2022/03/12/TVM-setup/" title="TVM环境搭建">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/TVM/">TVM</a></span></div><div class="content">
+本篇主要记录一下TVM环境搭建过程，FPGA开发板：zcu102  
+
+
+一、主机环境搭建&amp;ensp;&amp;ensp;大部分的流程跟着官方文档：https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html， 这篇的内容是利用Vitis-AI环境去搭建安装VTM。这里重点记录一些需要注意的地方。
+1.docker相关1.1 docker容器拉取&amp;ensp;&amp;ensp;利用docker去pull官方的container(容器)的时候可以换源来加速（由于要下载的内容较多，科学上网中途可能因为安全问题被断开连接）。daocloud的加速教程：http://guide.daocloud.io/dcs/daocloud-9153151.html#docker-toolbox    
+1.2 GPG ERRORGPG error: https://apt.kitware.com/ubuntu bionic InRelease:
+The following signatures couldn&#39;t be verifi ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2022/03/07/hls-learning-FFT/" title="HLS学习入门（FFT（快速傅里叶变换））">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHkq7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HLS学习入门（FFT（快速傅里叶变换））"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/07/hls-learning-FFT/" title="HLS学习入门（FFT（快速傅里叶变换））">HLS学习入门（FFT（快速傅里叶变换））</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-07T03:13:07.000Z" title="发表于 2022-03-07 11:13:07">2022-03-07</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/hls/">hls</a></span></div><div class="content">
+本节介绍了FFT(快速傅里叶变换)的HLS实现，使用tcl脚本创建HLS工程的过程，以及如何在vivado中使用生成的IP。
+
+
+一、FFT原理&amp;ensp;&amp;ensp;FFT 是离散傅立叶变换的快速算法，可以将一个信号变换到频域。有些信号在时域上是很难看出什么特征的，但是如果变换到频域之后，就很容易看出特征了。这就是很多信号分析采用 FFT 变换的原因。另外，FFT 可以将一个信号的频谱提取出来，这在频谱分析方面也是经常用的。&amp;ensp;&amp;ensp;FFT 结果的物理意义网上有一大神圈圈对此做了详细的描述，我们在这里摘录如下方便大家理解 FFT。&amp;ensp;&amp;ensp;一个模拟信号，经过 ADC 采样之后，就变成了数字信号。根据采样定理，采样频率要大于信号频率的两倍。采样得到的数字信号，就可以做 FFT 变换了。N 个采样点，经过 FFT 之后，就可以得到 N 个点的 FFT 结果。为了方便进行 FFT 运算，通常 N 取 2 的整数次方。&amp;ensp;&amp;ensp;假设采样频率为 Fs，信号频率 F，采样点数为 N。那么  ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2022/03/06/hls-learning-sobel/" title="HLS学习入门（索贝尔算子1）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcoXqB.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HLS学习入门（索贝尔算子1）"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/06/hls-learning-sobel/" title="HLS学习入门（索贝尔算子1）">HLS学习入门（索贝尔算子1）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-06T03:35:02.000Z" title="发表于 2022-03-06 11:35:02">2022-03-06</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/hls/">hls</a></span></div><div class="content">
+本节介绍了一种使用 HLS 实现 Sobel 检测的方法
+
+
+一、Sobel 原理介绍&amp;ensp;&amp;ensp;索贝尔算子（Sobel operator）主要用作边缘检测，在技术上，它是一离散性差分算子，用来运算图像亮度函数的灰度之近似值。在图像的任何一点使用此算子，将会产生对应的灰度矢量或是其法矢量。&amp;ensp;&amp;ensp;Sobel 卷积因子为：&amp;ensp;&amp;ensp;该算子包含两组 3x3 的矩阵，分别为横向及纵向，将之与图像作平面卷积，即可分别得出横向及纵向的亮度差分近似值。如果以 A 代表原始图像，Gx 及 Gy 分别代表经横向及纵向边缘检测的图像灰度值，其公式如下：&amp;ensp;&amp;ensp;具体计算如下：  
+Gx = (-1)*f(x-1, y-1) + 0*f(x,y-1) + 1*f(x+1,y-1)
+        +(-2)*f(x-1,y) + 0*f(x,y)+2*f(x+1,y)
+        +(-1)*f(x-1,y+1) + 0*f(x,y+1) + 1*f(x+1,y+1)
+    =  ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2022/03/05/hls-learning-hough/" title="HLS学习入门（霍夫圆检测）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPlkp.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HLS学习入门（霍夫圆检测）"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/05/hls-learning-hough/" title="HLS学习入门（霍夫圆检测）">HLS学习入门（霍夫圆检测）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-05T01:29:37.000Z" title="发表于 2022-03-05 09:29:37">2022-03-05</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/hls/">hls</a></span></div><div class="content">
+学习使用 HLS 设计一个基于 Hough 变换的圆检测算法
+
+
+一、Hough变换原理&amp;ensp;&amp;ensp;霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，该过程在一个参数空间中通过计算累计结果的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。霍夫变换于 1962 年由 Paul Hough 首次提出，后于 1972 年由 Richard Duda 和 Peter Hart 推广使用，经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到任意形状物体的识别，多为圆和椭圆。霍夫变换运用两个坐标空间之间的变换将在一个空间中具有相同形状的曲线或直线映射到另一个坐标空间的一个点上形成峰值，从而把检测任意形状的问题转化为统计峰值问题。  
+1.Hough 变换直线检测&amp;ensp;&amp;ensp;简单的说，就是：图像空间中的直线与参数空间中的点是一一对应的，参数空间中的直线与图像空间中的点也是一一对应的说实话我不是很懂百度或者原文中的原理解释，我的理解就是图像空间中的直线由两个参数（k,b）决定，这两个参数在参数空间反映为1点。反之 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2022/03/04/hls-learning-SkinDetection/" title="HLS学习入门（肤色检测）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHypB.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HLS学习入门（肤色检测）"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/04/hls-learning-SkinDetection/" title="HLS学习入门（肤色检测）">HLS学习入门（肤色检测）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-04T01:42:02.000Z" title="发表于 2022-03-04 09:42:02">2022-03-04</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/hls/">hls</a></span></div><div class="content">
+本节通过设计一个肤色检测的算法对前面几章的内容进行了巩固和验证，通过一组仿真验证了整个算法的有效性。
+
+
+一、肤色检测原理&amp;ensp;&amp;ensp;肤色作为人的体表显著特征之一,尽管人的肤色因为人种的不同有差异,呈现出不同的颜色,但是在排除了亮度和视觉环境等对肤色的影响后,皮肤的色调基本一致,这就为利用颜色信息来做肤色分割提供了理论的依据。&amp;ensp;&amp;ensp;在肤色识别中,常用的颜色空间为 YCbCr 颜色空间。在 YCbCr 颜色空间中,Y 代表亮度,Cb 和 Cr 分别代表蓝色分量和红色分量,两者合称为色彩分量。YCbCr 颜色空间具有将色度与亮度分离的特点,在 YCbCr 色彩空间中,肤色的聚类特性比较好,而且是两维独立分布,能够比较好地限制肤色的分布区域,并且受人种的影响不大。对比 RGB 颜色空间和 YCbCr 颜色空间,当光强发生变化时,RGB 颜色空间中(R,G,B)会同时发生变化,而 YCbCr 颜色空间中受光强相对独立,色彩分量受光强度影响不大,因此 YCbCr 颜色空间更适合用于肤色识别。&amp;ensp;&amp;ensp;由 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2022/03/03/hls-learning-imageload/" title="HLS学习入门（图像加载）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcH2xC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HLS学习入门（图像加载）"></a></div><div class="recent-post-info"><a class="article-title" href="/2022/03/03/hls-learning-imageload/" title="HLS学习入门（图像加载）">HLS学习入门（图像加载）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2022-03-03T04:39:46.000Z" title="发表于 2022-03-03 12:39:46">2022-03-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/hls/">hls</a></span></div><div class="content">
+学习如何加载图片，视频；一些常用的API。
+
+
+一、前言&amp;ensp;&amp;ensp;创建工程的步骤见上一节，这里注意一下，执行C仿真之前，不需要添加源文件，只需要添加test文件。另外注意不要opencv_top.cpp文件，否则仿真失败。
+二、图片数据的获取1. 通过 cvLoadImage 函数加载图片&amp;ensp;&amp;ensp;cvSaveImage函数  
+
+格式：通过 cvLoadImage 函数加载图片格式如下IplImage* src &#x3D; cvLoadImage(INPUT_IMAGE);cvShowImage(“src”,src);    
+
+&amp;ensp;&amp;ensp;函数cvSaveImage保存图像到指定文件。 图像格式的的选择依赖于filename的扩展名，请参考 cvLoadImage。只有8位单通道或者3通道（通道顺序为’BGR’ ）可以使用这个函数保存。如果格式，深度或者通道不符合要求，请先用cvCvtScale 和 cvCvtColor转换；或者使用通用的cvSave保存图像为XML或者YAML格式。  
+ ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#content-inner">8</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/TVM/"><span class="card-category-list-name">TVM</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/VHDL/"><span class="card-category-list-name">VHDL</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vitis-AI/"><span class="card-category-list-name">Vitis-AI</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/hls/"><span class="card-category-list-name">hls</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/linux/"><span class="card-category-list-name">linux</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/markdown/"><span class="card-category-list-name">markdown</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/pytorch/"><span class="card-category-list-name">pytorch</span><span class="card-category-list-count">43</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/"><span class="card-category-list-name">人工智能导论</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/FIFO/" style="font-size: 1.1em; color: #999">FIFO</a> <a href="/tags/Linux%E4%BF%A1%E5%8F%B7%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">Linux信号机制</a> <a href="/tags/MQTT%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">MQTT协议</a> <a href="/tags/TVM/" style="font-size: 1.26em; color: #999fa8">TVM</a> <a href="/tags/Vitis-AI/" style="font-size: 1.1em; color: #999">Vitis-AI</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">_exit()函数</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">exit()函数</a> <a href="/tags/fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fcntl()函数</a> <a href="/tags/fork-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fork()函数</a> <a href="/tags/freopen-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">freopen()函数</a> <a href="/tags/hls%E5%AD%A6%E4%B9%A0/" style="font-size: 1.34em; color: #99a3b0">hls学习</a> <a href="/tags/index/" style="font-size: 1.1em; color: #999">index</a> <a href="/tags/inet-pton/" style="font-size: 1.1em; color: #999">inet_pton</a> <a href="/tags/pytorch%E5%AD%A6%E4%B9%A0/" style="font-size: 1.5em; color: #99a9bf">pytorch学习</a> <a href="/tags/select-%E5%87%BD%E6%95%B0/" style="font-size: 1.26em; color: #999fa8">select()函数</a> <a href="/tags/socket/" style="font-size: 1.18em; color: #999ca1">socket</a> <a href="/tags/tcp-ip/" style="font-size: 1.1em; color: #999">tcp/ip</a> <a href="/tags/tensor/" style="font-size: 1.1em; color: #999">tensor</a> <a href="/tags/udp/" style="font-size: 1.1em; color: #999">udp</a> <a href="/tags/yolo/" style="font-size: 1.42em; color: #99a6b7">yolo</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 1.1em; color: #999">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 1.1em; color: #999">个人随笔</a> <a href="/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/" style="font-size: 1.1em; color: #999">交叉熵</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E5%87%BD%E6%95%B0kill/" style="font-size: 1.1em; color: #999">信号发送函数kill()</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/" style="font-size: 1.1em; color: #999">信号量</a> <a href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">共享内存</a> <a href="/tags/%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">分类问题</a> <a href="/tags/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">回归问题</a> <a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.1em; color: #999">守护进程</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.34em; color: #99a3b0">实战</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 1.1em; color: #999">实验记录</a> <a href="/tags/%E5%BA%95%E5%B1%82IO/" style="font-size: 1.1em; color: #999">底层IO</a> <a href="/tags/%E6%97%A0%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.1em; color: #999">无名管道</a> <a href="/tags/%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.18em; color: #999ca1">有名管道</a> <a href="/tags/%E6%A0%87%E5%87%86IO/" style="font-size: 1.1em; color: #999">标准IO</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 1.1em; color: #999">模板</a> <a href="/tags/%E6%B6%88%E8%A7%A3%E5%8F%8D%E6%BC%94/" style="font-size: 1.1em; color: #999">消解反演</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">生产者消费者问题</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E8%A1%A8%E7%A4%BA/" style="font-size: 1.1em; color: #999">知识表示</a> <a href="/tags/%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%8E%A8%E7%90%86/" style="font-size: 1.1em; color: #999">确定性推理</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/02/"><span class="card-archive-list-date">二月 2022</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/12/"><span class="card-archive-list-date">十二月 2021</span><span class="card-archive-list-count">24</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">16</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">78</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-08-19T03:57:22.447Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

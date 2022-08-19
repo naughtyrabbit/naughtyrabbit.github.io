@@ -1,32 +1,285 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HLS学习入门（霍夫圆检测） | 不听话的兔子君</title><meta name="keywords" content="hls学习"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="学习使用 HLS 设计一个基于 Hough 变换的圆检测算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HLS学习入门（霍夫圆检测）">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2022/03/05/hls-learning-hough/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="学习使用 HLS 设计一个基于 Hough 变换的圆检测算法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/19/UcPlkp.jpg">
+<meta property="article:published_time" content="2022-03-05T01:29:37.000Z">
+<meta property="article:modified_time" content="2022-03-05T06:05:38.000Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="hls学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/19/UcPlkp.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/03/05/hls-learning-hough/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HLS学习入门（霍夫圆检测）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-05 14:05:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-    article#article-container.post-content!=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-    if theme.reward.enable
-      !=partial('includes/post/reward', {}, {cache: true})
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">HLS学习入门（霍夫圆检测）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-05T01:29:37.000Z" title="发表于 2022-03-05 09:29:37">2022-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-05T06:05:38.000Z" title="更新于 2022-03-05 14:05:38">2022-03-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/hls/">hls</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HLS学习入门（霍夫圆检测）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>学习使用 HLS 设计一个基于 Hough 变换的圆检测算法</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="一、Hough变换原理"><a href="#一、Hough变换原理" class="headerlink" title="一、Hough变换原理"></a>一、Hough变换原理</h3><p>&amp;ensp;&amp;ensp;霍夫变换(Hough Transform)是图像处理中的一种特征提取技术，该过程在一个参数空间中通过计算累计结果<br>的局部最大值得到一个符合该特定形状的集合作为霍夫变换结果。霍夫变换于 1962 年由 Paul Hough 首次提出，后<br>于 1972 年由 Richard Duda 和 Peter Hart 推广使用，经典霍夫变换用来检测图像中的直线，后来霍夫变换扩展到<br>任意形状物体的识别，多为圆和椭圆。霍夫变换运用两个坐标空间之间的变换将在一个空间中具有相同形状的曲线<br>或直线映射到另一个坐标空间的一个点上形成峰值，从而把检测任意形状的问题转化为统计峰值问题。  </p>
+<h4 id="1-Hough-变换直线检测"><a href="#1-Hough-变换直线检测" class="headerlink" title="1.Hough 变换直线检测"></a>1.Hough 变换直线检测</h4><p>&amp;ensp;&amp;ensp;简单的说，就是：<strong>图像空间中的直线与参数空间中的点是一一对应的，参数空间中的直线与图像空间中的点也是一一对应的</strong><br>说实话我不是很懂百度或者原文中的原理解释，我的理解就是图像空间中的直线由两个参数（k,b）决定，这两个参数在参数空间反映为1点。反之同理<br><img src="https://s4.ax1x.com/2022/03/05/bwVtPK.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;简单的说，比如如图的黑色直线，假定它的参数是[k, b]，现在扫描整幅图像上的点，而经过每一个点都有无数条直线（红色），根据前文我们知道每一条图像空间中的直线都对于参数空间的一个点。因为这条直线上的所有点它所产生的直线簇一定有一条经过原直线（即在参数空间会存在一个点[k, b]与之对应），所以，这一趟扫描下来，会在参数空间这得到较为多的对应点[k ,b]，据此，我们可以认为原图空间存在这样一条直线与参数空间[k ,b]点相对应。</p>
+<h4 id="2-Hough-变换圆检测"><a href="#2-Hough-变换圆检测" class="headerlink" title="2.Hough 变换圆检测"></a>2.Hough 变换圆检测</h4><p>&amp;ensp;&amp;ensp;继使用 hough 变换检测出直线之后，顺着坐标变换的思路，提出了一种检测圆的方法。<br>1 如何表示一个圆？<br>与使用（r,theta）来表示一条直线相似，使用（a,b,r）来确定一个圆心为（a,b）半径为 r 的圆。<br>2 如何表示过某个点的所有圆？<br>某个圆过点（x1,y1），则有：(x1-a1)^2 + (y1-b1)^2 &#x3D; r1^2 。<br>那么过点（x1,y1）的所有圆可以表示为（a1(i),b1(i),r1(i)），其中 r1∈（0，无穷），每一个 i 值都对应一个<br>不同的圆，（a1(i),b1(i),r1(i)）表示了无穷多个过点（x1,y1）的圆。<br>3 如何确定多个点在同一个圆上？<br>如(2)中说明，过点（x1,y1）的所有圆可以表示为（a1(i),b1(i),r1(i)），过点（x2,y2）的所有圆可以表示为<br>（a2(i),b2(i),r2(i)），过点（x3,y3）的所有圆可以表示为（a3(i),b3(i),r3(i)），如果这三个点在同一个圆<br>上 ， 那 么 存 在 一 个 值 （ a0,b0,r0 ） ， 使 得 a0 &#x3D; a1(k)&#x3D;a2(k)&#x3D;a3(k) 且 b0 &#x3D; b1(k)&#x3D;b2(k)&#x3D;b3(k) 且 r0<br>&#x3D; r1(k)&#x3D;r2(k)&#x3D;r3(k)，即这三个点同时在圆（a0,b0,r0)上。<br>从下图可以形象的看出：<br><img src="https://s4.ax1x.com/2022/03/05/bdrRds.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;首先，分析过点（x1,y1）的所有圆（a1(i),b1(i),r1(i)），当确定 r1(i)时 ，（a1(i),b1(i)）的轨迹是一<br>个以（x1,y1,r1(i)）为中心半径为 r1(i)的圆。那么，所有圆（a1(i),b1(i),r1(i)）的组成了一个以（x1,y1,0）<br>为顶点，锥角为 90 度的圆锥面。<br>三个圆锥面的交点 A 既是同时过这三个点的圆。</p>
+<h4 id="3-Hough-变换圆检测流程"><a href="#3-Hough-变换圆检测流程" class="headerlink" title="3.Hough 变换圆检测流程"></a>3.Hough 变换圆检测流程</h4><p>&amp;ensp;&amp;ensp;Hough 变换时一种利用图像的全局特征将特定形状边缘链接起来。它通过点线的对偶性，将源图像上的点影射<br>到用于累加的参数空间，把原始图像中给定曲线的检测问题转化为寻找参数空间中的峰值问题。由于利用全局特征，<br>所以受噪声和边界间断的影响较小，比较鲁棒。<br>&amp;ensp;&amp;ensp;Hough 变换思想为：在原始图像坐标系下的一个点对应了参数坐标系中的一条直线，同样参数坐标系的一条直<br>线对应了原始坐标系下的一个点，然后，原始坐标系下呈现直线的所有点，它们的斜率和截距是相同的，所以它们<br>在参数坐标系下对应于同一个点。这样在将原始坐标系下的各个点投影到参数坐标系下之后，看参数坐标系下有没<br>有聚集点，这样的聚集点就对应了原始坐标系下的直线。<br>&amp;ensp;&amp;ensp;因此采用 hough 变换主要有以下几个步骤：<br>1）Detect the edge<br>&amp;ensp;&amp;ensp;检测得到图像的边缘<br>2）Create accumulator<br>&amp;ensp;&amp;ensp;采用二维向量描述图像上每一条直线区域，将图像上的直线区域计数器映射到参数空间中的存储单元，p 为直<br>线区域到原点的距离，所以对于对角线长度为 n 的图像，p 的取值范围为（0， n），θ 值得取值范围为（0， 360），<br>定义为二维数组 HoughBuf[n][360]为存储单元。<br>&amp;ensp;&amp;ensp;对所有像素点（x，y）在所有 θ 角的时候，求出ρ.从而累加ρ值出现的次数。高于某个阈值的ρ就是一个直<br>线。这个过程就类似于横坐标是 θ 角，ρ就是到直线的最短距离。横坐标 θ 不断变换，根据直线方程公司，ρ &#x3D;<br>xcosθ + ysinθ 对于所有的不为 0 的像素点，计算出ρ，找到ρ在坐标(θ,ρ)的位置累加 1.<br>3) Detect the peaks, maximal in the accumulator<br>&amp;ensp;&amp;ensp;通过统计特性，假如图像平面上有两条直线，那么最终会出现 2 个峰值，累加得到最高的数组的值为所求直线<br>参数  </p>
+<h3 id="二、Hough圆检测的HLS实现"><a href="#二、Hough圆检测的HLS实现" class="headerlink" title="二、Hough圆检测的HLS实现"></a>二、Hough圆检测的HLS实现</h3><p>&amp;ensp;&amp;ensp;我们看下面一个实际问题：我们要从一副图像中检测出半径以知的圆形来。我们可以取和图像平面一样的参数<br>平面，以图像上每一个前景点为圆心，以已知的半径在参数平面上画圆，并把结果进行累加。最后找出参数平面上<br>的峰值点，这个位置就对应了图像上的圆心。在这个问题里，图像平面上的每一点对应到参数平面上的一个圆。<br>&amp;ensp;&amp;ensp;把上面的问题改一下，假如我们不知道半径的值，而要找出图像上的圆来。这样，一个办法是把参数平面扩大<br>称为三维空间。就是说，参数空间变为 x–y–R 三维，对应圆的圆心和半径。图像平面上的每一点就对应于参数空<br>间中每个半径下的一个圆，这实际上是一个圆锥。最后当然还是找参数空间中的峰值点。不过，这个方法显然需要<br>大量的存储空间，运行速度也会是很大问题。<br>&amp;ensp;&amp;ensp;那么有什么比较好的解决方法么?我们前面假定的图像都是黑白图像(二值图像)，实际上这些二值图像多是彩<br>色或灰度图像通过边缘提取来的。我们前面提到过，图像边缘除了位置信息，还有方向信息也很重要，这里就用上<br>了。根据圆的性质，圆的半径一定在垂直于圆的切线的直线上，也就是说， 在圆上任意一点的法线上。这样，解<br>决上面的问题，我们仍采用 2 维的参数空间，对于图像上的每 一前景点，加上它的方向信息，都可以确定出一条<br>直线，圆的圆心就在这条直线上。这样一来，问题就会简单了许多</p>
+<h3 id="三、代码解析"><a href="#三、代码解析" class="headerlink" title="三、代码解析"></a>三、代码解析</h3><pre><code class="c++">#include &quot;top.h&quot;
+//#include &quot;opencv_top.h&quot;
+#include &lt;stdio.h&gt;
+#include &lt;iostream&gt;
 
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
+using namespace std;
 
-    if theme.post_pagination
-      include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
+void hls::hls_hough_line(GRAY_IMAGE &amp;src,GRAY_IMAGE &amp;dst,int rows,int cols)
+&#123;
 
-    if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache: true})
-      
+    GRAY_PIXEL result;
+    int row ,col,k;
+    ///参数空间的参数圆心O（a,b）半径radius
+    int a = 0,b = 0,radius = 0;
+
+    //累加器
+    int A0 = rows;
+    int B0 = cols;
+
+    //注意HLS不支持变长数组，所以这里直接指定数据长度
+    const int Size = 1089900;//Size = rows*cols*(120-110);
+
+    #ifdef __SYNTHESIS__
+        int _count[Size];
+        int *count = &amp;_count[0];
+    #else
+        //这一步在HLS中不能被综合，仅仿真使用
+        int	*count =(int *) malloc(Size * sizeof(int));
+    #endif
+
+    //偏移
+    int  index ;
+
+    //为累加器赋值0
+    for (row = 0;row &lt; Size;row++)
+    &#123;
+        count[row] = 0;
+    &#125;
+
+    GRAY_PIXEL src_data;
+    uchar temp0;
+    for (row = 0; row&lt; rows;row++)
+    &#123;
+#pragma HLS PIPELINE II=1 off
+
+        for (col = 0; col&lt; cols;col++)
+        &#123;
+            src &gt;&gt; src_data;
+            uchar temp = src_data.val[0];
+            //检测黑线
+            if (temp == 0)
+            &#123;
+                //遍历a ,b 为;累加器赋值
+                for (a = 0;a &lt; A0;a++)
+                &#123;
+                    for (b = 0;b &lt; B0;b++)
+                    &#123;
+
+                        radius = (int)(sqrt(pow((double)(row-a),(double)2) + pow((double)(col - b),(double)2)));
+                        if(radius &gt; 110 &amp;&amp; radius &lt; 120)
+                        &#123;
+                            index  = A0 * B0 *(radius-110) + A0*b + a;
+                            count[index]++;
+                        &#125;
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    //遍历累加器数组，找出所有的圆
+    for (a = 0 ; a &lt; A0 ; a++)
+    &#123;
+#pragma HLS PIPELINE II=1 off
+
+        for (b = 0 ; b &lt; B0; b++)
+        &#123;
+            for (radius = 110 ; radius &lt; 120; radius++)
+            &#123;
+                index  = A0 * B0 *(radius-110) + A0*b + a;
+                if (count[index] &gt; 210)
+                &#123;
+                    //在image2中绘制该圆
+                    for(k = 0; k &lt; rows;k++)
+                    &#123;
+                        for (col = 0 ; col&lt; cols;col++)
+                        &#123;
+                        	//x有两个值，根据圆公式(x-a)^2+(y-b)^2=r^2得到
+                        	int temp = (int)(sqrt(pow((double)radius,(double)2)- pow((double)(col-b),(double)2)));
+                        	int x1 = a + temp;
+                            int x2 = a - temp;
+                            if ( (k == x1)||(k == x2) )&#123;
+                                result.val[0] = (uchar)255;
+                            &#125;
+                            else&#123;
+                                result.val[0] = (uchar)0;
+                            &#125;
+                            dst &lt;&lt; result;
+                        &#125;
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+
+void hls_hough(AXI_STREAM&amp; src_axi, AXI_STREAM&amp; dst_axi, int rows, int cols)
+&#123;
+
+#pragma HLS INTERFACE axis port=src_axi
+#pragma HLS INTERFACE axis port=dst_axi
+
+
+#pragma HLS RESOURCE core=AXI_SLAVE variable=rows metadata=&quot;-bus_bundle CONTROL_BUS&quot;
+#pragma HLS RESOURCE core=AXI_SLAVE variable=cols metadata=&quot;-bus_bundle CONTROL_BUS&quot;
+#pragma HLS RESOURCE core=AXI_SLAVE variable=return metadata=&quot;-bus_bundle CONTROL_BUS&quot;
+
+#pragma HLS INTERFACE ap_stable port=rows
+#pragma HLS INTERFACE ap_stable port=cols
+
+
+    GRAY_IMAGE  img_src(rows, cols);
+    GRAY_IMAGE  img_dst(rows, cols);
+
+    #pragma HLS dataflow
+
+    hls::AXIvideo2Mat(src_axi,img_src);
+    hls::hls_hough_line(img_src,img_dst,rows,cols);
+    hls::Mat2AXIvideo(img_dst,dst_axi);
+&#125;
+</code></pre>
+<h3 id="四、仿真结果"><a href="#四、仿真结果" class="headerlink" title="四、仿真结果"></a>四、仿真结果</h3><p><img src="https://s4.ax1x.com/2022/03/05/bwGCFg.png" alt="图片描述">  </p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/03/05/hls-learning-hough/">https://naughtyrabbit.github.io/2022/03/05/hls-learning-hough/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hls%E5%AD%A6%E4%B9%A0/">hls学习</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/19/UcPlkp.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/06/hls-learning-sobel/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/17/UcoXqB.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">HLS学习入门（索贝尔算子1）</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/04/hls-learning-SkinDetection/"><img class="next-cover" src="https://m1.im5i.com/2022/08/18/UcHypB.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HLS学习入门（肤色检测）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/03/04/hls-learning-SkinDetection/" title="HLS学习入门（肤色检测）"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHypB.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="title">HLS学习入门（肤色检测）</div></div></a></div><div><a href="/2022/03/07/hls-learning-FFT/" title="HLS学习入门（FFT（快速傅里叶变换））"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHkq7.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-07</div><div class="title">HLS学习入门（FFT（快速傅里叶变换））</div></div></a></div><div><a href="/2022/03/03/hls-learning-imageload/" title="HLS学习入门（图像加载）"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcH2xC.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-03</div><div class="title">HLS学习入门（图像加载）</div></div></a></div><div><a href="/2022/03/02/hls-learning-shiftled/" title="HLS学习入门（流水灯）"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPHgz.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-02</div><div class="title">HLS学习入门（流水灯）</div></div></a></div><div><a href="/2022/03/06/hls-learning-sobel/" title="HLS学习入门（索贝尔算子1）"><img class="cover" src="https://m1.im5i.com/2022/08/17/UcoXqB.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-06</div><div class="title">HLS学习入门（索贝尔算子1）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81Hough%E5%8F%98%E6%8D%A2%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">一、Hough变换原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Hough-%E5%8F%98%E6%8D%A2%E7%9B%B4%E7%BA%BF%E6%A3%80%E6%B5%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1.Hough 变换直线检测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Hough-%E5%8F%98%E6%8D%A2%E5%9C%86%E6%A3%80%E6%B5%8B"><span class="toc-number">1.2.</span> <span class="toc-text">2.Hough 变换圆检测</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-Hough-%E5%8F%98%E6%8D%A2%E5%9C%86%E6%A3%80%E6%B5%8B%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">3.Hough 变换圆检测流程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Hough%E5%9C%86%E6%A3%80%E6%B5%8B%E7%9A%84HLS%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">二、Hough圆检测的HLS实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">三、代码解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C"><span class="toc-number">4.</span> <span class="toc-text">四、仿真结果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,7 +1,386 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>不听话的兔子君 - 那破云的光终会洒落，将有人迎向你的身侧</title><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="记录生活，记录成长">
+<meta property="og:type" content="website">
+<meta property="og:title" content="不听话的兔子君">
+<meta property="og:url" content="https://naughtyrabbit.github.io/page/7/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="记录生活，记录成长">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg">
+<meta property="article:author" content="naughtyrabbit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/page/7/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '不听话的兔子君',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-08-19 11:57:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  include ./includes/mixins/post-ui.pug
-  #recent-posts.recent-posts
-    +postUI
-    include includes/pagination.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/22/web-linux-udp/" title="linux网络编程-UDP套接字编程典型模型">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHwKx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux网络编程-UDP套接字编程典型模型"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/22/web-linux-udp/" title="linux网络编程-UDP套接字编程典型模型">linux网络编程-UDP套接字编程典型模型</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-22T07:11:19.000Z" title="发表于 2021-06-22 15:11:19">2021-06-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux网络编程-UDP套接字通信实验,注意和上一篇文章的区分（TCP编程）
+
+
+代码分析 client.c&amp;ensp;&amp;ensp;程序分析client.c  
+//client.c
+//
+//  UDP 套接字编程典型模型
+//
+//		客户端							服务器端
+//	创建套接字(socket)				创建套接字(socket)
+//									绑定服务器地址和端口(bind)
+//	客户端发送请求(sendto)	----&gt;	接收客户端请求(recvfrom)
+//	客户端接收响应(recvfrom)&lt;----	回送响应(sendto)
+//	关闭套接字(close)
+//man 7 socket
+//accept() , bind() , connect() ,  getsockname()  ,  getsockopt()  ,
+//listen()  , recv() , recvfrom() , recvmsg() , send() , sendmsg() ,
+//sendto() , setsockopt() , shutdown ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/22/procom-linux-shm/" title="linux进程间通信编程-共享内存">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPBka.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux进程间通信编程-共享内存"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/22/procom-linux-shm/" title="linux进程间通信编程-共享内存">linux进程间通信编程-共享内存</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-22T05:11:19.000Z" title="发表于 2021-06-22 13:11:19">2021-06-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux 进程间通信编程，共享内存的实验
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析&amp;ensp;&amp;ensp;共享内存实现的步骤大体如下：  
+
+
+创建共享内存对象，shm_open  
+分配共享内存大小，ftruncate  
+映射共享内存（到具体的进程空间），mmap
+
+
+//producer_customer.c
+//在多线程中
+//使用SYSTEM V API实现生产者消费者经典程序
+//实际上这是POSIX的实现方法，上面那句话可能有误？
+#include &lt;signal.h&gt;
+#include &quot;shm_com.h&quot;
+#include &quot;sem_com.h&quot;
+#include &lt;pthread.h&gt;
+
+#define SHM_NAME	&quot;/MY_SHM&quot;
+
+int semid ;				//信号量id
+char *shm_addr = NULL;	//共享内存映射地址
+struct shm_buf *shm_buf_inst = NULL;
+
+int ig ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/22/procom-linux-pipecom/" title="linux进程间通信编程-管道通信">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux进程间通信编程-管道通信"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/22/procom-linux-pipecom/" title="linux进程间通信编程-管道通信">linux进程间通信编程-管道通信</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-22T03:11:19.000Z" title="发表于 2021-06-22 11:11:19">2021-06-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux 进程间通信编程，管道通信的实验
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析  
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;time.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt;	//mkfifo
+#include &lt;sys/stat.h&gt;	//mkfifo
+
+// 定义FIFO有名管道名
+#define FIFO1	&quot;in1&quot;			
+#define FIFO2	&quot;in2&quot;
+//设定缓冲区大小
+#define BUF_SIZE	512
+//超时时间
+#define DELAY_TIME	60
+//多路复用文件数目
+#define IN_FILES	3
+#define MAX(a,b)	((a) & ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/22/procom-linux-fifo/" title="linux进程间通信编程-有名管道">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Uctd3x.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux进程间通信编程-有名管道"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/22/procom-linux-fifo/" title="linux进程间通信编程-有名管道">linux进程间通信编程-有名管道</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-22T03:11:19.000Z" title="发表于 2021-06-22 11:11:19">2021-06-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux 进程间通信编程，有名管道的实验（存疑，为什么管道的创建在read.c里？）
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析 write.c  
+//fifo_write.c
+//有名管道的创建与使用write部分
+// mkfifo - make a FIFO special file (a named pipe)
+//#include &lt;sys/types.h&gt;
+//#include &lt;sys/stat.h&gt;
+//int mkfifo(const char *pathname, mode_t mode);
+
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;limits.h&gt;
+
+#define FIFONAME	&quot;./myfif ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/21/thread-linux-fork/" title="linux进程控制编程-fork()函数">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPVDx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux进程控制编程-fork()函数"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/21/thread-linux-fork/" title="linux进程控制编程-fork()函数">linux进程控制编程-fork()函数</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-21T15:44:22.000Z" title="发表于 2021-06-21 23:44:22">2021-06-21</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux进程控制编程，通过一个相对复杂程序分析fork()函数
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析  
+#include &lt;unistd.h&gt;  
+#include &lt;stdio.h&gt;  
+
+int main(void)  
+&#123;  
+    int i=0, k=0;  
+    for(i=0;i&lt;2;i++)
+    &#123;  
+        pid_t fpid=fork();  
+        if(fpid==0)
+        &#123;
+            printf(&quot;son, %d, */n&quot;, ++k);
+        &#125;
+        else
+        &#123;
+            printf(&quot;father, %d, */n&quot;, ++k);
+        &#125;
+    &#125;  
+    return 0;  
+&#125;  
+
+执行结果&amp;ensp;&amp;ensp;父子进程 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/21/thread-linux-exitand_exit/" title="linux进程控制编程-exit()和_exit()函数区别">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPAES.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux进程控制编程-exit()和_exit()函数区别"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/21/thread-linux-exitand_exit/" title="linux进程控制编程-exit()和_exit()函数区别">linux进程控制编程-exit()和_exit()函数区别</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-21T15:41:22.000Z" title="发表于 2021-06-21 23:41:22">2021-06-21</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux进程控制编程，通过程序分析-exit()和_exit()函数区别
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析  
+//exit() _exit function
+
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt;
+
+//#include &lt;stdlib.h&gt;
+//void exit(int status);
+//#include &lt;unistd.h&gt;
+//void _exit(int status);
+
+int main()
+&#123;
+    if ((fork()) == 0 )
+    &#123;
+        printf(&quot;This is child process Using exit\n&quot;);
+        printf(&quot; Print content in child buff &quot;);
+        exit(0);
+    &#125;
+    else
+     ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/21/thread-linux-protect/" title="linux进程控制编程-守护进程的编写">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHILM.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux进程控制编程-守护进程的编写"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/21/thread-linux-protect/" title="linux进程控制编程-守护进程的编写">linux进程控制编程-守护进程的编写</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-21T14:41:22.000Z" title="发表于 2021-06-21 22:41:22">2021-06-21</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux进程控制编程，介绍守护进程编写的步骤
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析  
+//daemon.c
+//1.创建子进程，父进程退出
+//2.在子进程中创建新会话
+//3.改变当前目录为根目录
+//4.重设文件权限掩码
+//5.关闭文件描述符
+
+
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;wait.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main()
+&#123;
+    pid_t pid;
+    int i, fd;
+    char *str = &quot;This is my first daemon process\n&quot;;
+
+    pid = fork();			//step1 创建子进程
+   ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/21/fileio-linux-freopen/" title="linux文件读写编程-freopen()函数">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Ucokcz.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux文件读写编程-freopen()函数"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/21/fileio-linux-freopen/" title="linux文件读写编程-freopen()函数">linux文件读写编程-freopen()函数</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-21T11:41:22.000Z" title="发表于 2021-06-21 19:41:22">2021-06-21</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux I&#x2F;O编程，用freopen实现重定向，将一个文件设置为标准输入，另外一个设置为标准输出
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析  
+//main.c
+#include  &lt;stdio.h&gt;
+#define FILE_IN		&quot;in_file.txt&quot;
+#define FILE_OUT	&quot;out_file.txt&quot;
+
+int main()
+&#123;
+    int a, b;
+    FILE *fp1, *fp2;
+    fp1 = freopen(FILE_IN, &quot;r&quot;, stdin);
+    //将in_file.txt设置为标准输入之后，下面的scanf就会从中读
+    fp2 = freopen(FILE_OUT, &quot;w&quot;, stdout);
+    //将out_file.txt设置为标准输出之后，下面的printf就会打印到其中
+    if ((fp1 == NULL) || (fp2 == NULL))
+    &#12 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/21/fileio-linux-stiioandio/" title="linux文件读写编程-标准IO和底层IO对比">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHrSy.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux文件读写编程-标准IO和底层IO对比"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/21/fileio-linux-stiioandio/" title="linux文件读写编程-标准IO和底层IO对比">linux文件读写编程-标准IO和底层IO对比</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-21T11:41:22.000Z" title="发表于 2021-06-21 19:41:22">2021-06-21</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux I&#x2F;O编程，两个程序都是copy功能，一个用标准IO实现，一个用底层IO实现，比较之
+
+
+代码分析&amp;ensp;&amp;ensp;标准IO  
+/* standard_io.c */
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+#define	BUFFER_SIZE	1024		/* 每次读写缓存大小 */
+#define SRC_FILE_NAME	&quot;src_file&quot;	/* 源文件名 */
+#define DEST_FILE_NAME	&quot;dest_file&quot;	/* 目标文件名文件名 */
+#define OFFSET		10240		/* 拷贝的数据大小 */
+     
+int main()
+&#123;
+    FILE *src_file, *dest_file;
+    unsigned char buff[BUFFER_SIZE];
+    int real_read_len;
+    
+    /* 以只读方式打开源文件 */
+    s ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/21/fileio-linux-select/" title="linux文件读写编程-select()函数">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UcoTw0.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux文件读写编程-select()函数"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/21/fileio-linux-select/" title="linux文件读写编程-select()函数">linux文件读写编程-select()函数</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-21T07:41:22.000Z" title="发表于 2021-06-21 15:41:22">2021-06-21</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux I&#x2F;O编程，用select()函数和无名管道机制实现
+
+
+代码分析&amp;ensp;&amp;ensp;程序分析  
+//select.c
+#include &quot;select.h&quot;
+/*
+ * comment:
+ * pipe is used between two processes on the same computer.
+ * */
+#define TIMES 50
+int main()
+&#123;
+    int pipefds[2];
+    int i;
+    //int pipe(int fd[2]) 
+    if( -1 == pipe( pipefds))
+    &#123; 
+        printf( &quot;Error when create pipes\n&quot;);
+    &#125;
+    else
+    &#123;
+        pid_t pid = fork();
+        //pid_t fork(void)
+        if( 0 == pid)
+        ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/6/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/#content-inner">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/#content-inner">8</a><a class="extend next" rel="next" href="/page/8/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/TVM/"><span class="card-category-list-name">TVM</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/VHDL/"><span class="card-category-list-name">VHDL</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vitis-AI/"><span class="card-category-list-name">Vitis-AI</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/hls/"><span class="card-category-list-name">hls</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/linux/"><span class="card-category-list-name">linux</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/markdown/"><span class="card-category-list-name">markdown</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/pytorch/"><span class="card-category-list-name">pytorch</span><span class="card-category-list-count">43</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/"><span class="card-category-list-name">人工智能导论</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/FIFO/" style="font-size: 1.1em; color: #999">FIFO</a> <a href="/tags/Linux%E4%BF%A1%E5%8F%B7%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">Linux信号机制</a> <a href="/tags/MQTT%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">MQTT协议</a> <a href="/tags/TVM/" style="font-size: 1.26em; color: #999fa8">TVM</a> <a href="/tags/Vitis-AI/" style="font-size: 1.1em; color: #999">Vitis-AI</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">_exit()函数</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">exit()函数</a> <a href="/tags/fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fcntl()函数</a> <a href="/tags/fork-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fork()函数</a> <a href="/tags/freopen-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">freopen()函数</a> <a href="/tags/hls%E5%AD%A6%E4%B9%A0/" style="font-size: 1.34em; color: #99a3b0">hls学习</a> <a href="/tags/index/" style="font-size: 1.1em; color: #999">index</a> <a href="/tags/inet-pton/" style="font-size: 1.1em; color: #999">inet_pton</a> <a href="/tags/pytorch%E5%AD%A6%E4%B9%A0/" style="font-size: 1.5em; color: #99a9bf">pytorch学习</a> <a href="/tags/select-%E5%87%BD%E6%95%B0/" style="font-size: 1.26em; color: #999fa8">select()函数</a> <a href="/tags/socket/" style="font-size: 1.18em; color: #999ca1">socket</a> <a href="/tags/tcp-ip/" style="font-size: 1.1em; color: #999">tcp/ip</a> <a href="/tags/tensor/" style="font-size: 1.1em; color: #999">tensor</a> <a href="/tags/udp/" style="font-size: 1.1em; color: #999">udp</a> <a href="/tags/yolo/" style="font-size: 1.42em; color: #99a6b7">yolo</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 1.1em; color: #999">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 1.1em; color: #999">个人随笔</a> <a href="/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/" style="font-size: 1.1em; color: #999">交叉熵</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E5%87%BD%E6%95%B0kill/" style="font-size: 1.1em; color: #999">信号发送函数kill()</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/" style="font-size: 1.1em; color: #999">信号量</a> <a href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">共享内存</a> <a href="/tags/%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">分类问题</a> <a href="/tags/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">回归问题</a> <a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.1em; color: #999">守护进程</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.34em; color: #99a3b0">实战</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 1.1em; color: #999">实验记录</a> <a href="/tags/%E5%BA%95%E5%B1%82IO/" style="font-size: 1.1em; color: #999">底层IO</a> <a href="/tags/%E6%97%A0%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.1em; color: #999">无名管道</a> <a href="/tags/%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.18em; color: #999ca1">有名管道</a> <a href="/tags/%E6%A0%87%E5%87%86IO/" style="font-size: 1.1em; color: #999">标准IO</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 1.1em; color: #999">模板</a> <a href="/tags/%E6%B6%88%E8%A7%A3%E5%8F%8D%E6%BC%94/" style="font-size: 1.1em; color: #999">消解反演</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">生产者消费者问题</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E8%A1%A8%E7%A4%BA/" style="font-size: 1.1em; color: #999">知识表示</a> <a href="/tags/%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%8E%A8%E7%90%86/" style="font-size: 1.1em; color: #999">确定性推理</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/02/"><span class="card-archive-list-date">二月 2022</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/12/"><span class="card-archive-list-date">十二月 2021</span><span class="card-archive-list-count">24</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">16</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">78</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-08-19T03:57:22.447Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,32 +1,271 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HLS学习入门（FFT（快速傅里叶变换）） | 不听话的兔子君</title><meta name="keywords" content="hls学习"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本节介绍了FFT(快速傅里叶变换)的HLS实现，使用tcl脚本创建HLS工程的过程，以及如何在vivado中使用生成的IP。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HLS学习入门（FFT（快速傅里叶变换））">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2022/03/07/hls-learning-FFT/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="本节介绍了FFT(快速傅里叶变换)的HLS实现，使用tcl脚本创建HLS工程的过程，以及如何在vivado中使用生成的IP。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcHkq7.jpg">
+<meta property="article:published_time" content="2022-03-07T03:13:07.000Z">
+<meta property="article:modified_time" content="2022-03-07T08:59:14.000Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="hls学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcHkq7.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/03/07/hls-learning-FFT/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HLS学习入门（FFT（快速傅里叶变换））',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-07 16:59:14'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-    article#article-container.post-content!=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-    if theme.reward.enable
-      !=partial('includes/post/reward', {}, {cache: true})
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">HLS学习入门（FFT（快速傅里叶变换））</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-07T03:13:07.000Z" title="发表于 2022-03-07 11:13:07">2022-03-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-07T08:59:14.000Z" title="更新于 2022-03-07 16:59:14">2022-03-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/hls/">hls</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HLS学习入门（FFT（快速傅里叶变换））"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>本节介绍了FFT(快速傅里叶变换)的HLS实现，使用tcl脚本创建HLS工程的过程，以及如何在vivado中使用生成的IP。</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="一、FFT原理"><a href="#一、FFT原理" class="headerlink" title="一、FFT原理"></a>一、FFT原理</h3><p>&amp;ensp;&amp;ensp;FFT 是离散傅立叶变换的快速算法，可以将一个信号变换到频域。有些信号在时域上是很难看出什么特征的，<br>但是如果变换到频域之后，就很容易看出特征了。这就是很多信号分析采用 FFT 变换的原因。另外，FFT 可以将一<br>个信号的频谱提取出来，这在频谱分析方面也是经常用的。<br>&amp;ensp;&amp;ensp;FFT 结果的物理意义网上有一大神圈圈对此做了详细的描述，我们在这里摘录如下方便大家理解 FFT。<br>&amp;ensp;&amp;ensp;一个模拟信号，经过 ADC 采样之后，就变成了数字信号。根据采样定理，采样频率要大于信号频率的两倍。采<br>样得到的数字信号，就可以做 FFT 变换了。N 个采样点，经过 FFT 之后，就可以得到 N 个点的 FFT 结果。为了方便<br>进行 FFT 运算，通常 N 取 2 的整数次方。<br>&amp;ensp;&amp;ensp;假设采样频率为 Fs，信号频率 F，采样点数为 N。那么 FFT 之后结果就是一个为 N 点的复数。每一个点就对应<br>着一个频率点。这个点的模值，就是该频率值下的幅度特性。具体跟原始信号的幅度有什么关系呢？假设原始信号<br>的峰值为 A，那么 FFT 的结果的每个点（除了第一个点直流分量之外）的模值就是 A 的 N&#x2F;2 倍。而第一个点就是直<br>流分量，它的模值就是直流分量的 N 倍。而每个点的相位就是在该频率下的信号的相位。第一个点表示直流分量（即<br>0Hz），而最后一个点 N 的再下一个点（实际上这个点是不存在的，这里是假设的第 N+1 个点，也可以看做是将第<br>一个点分做两半分，另一半移到最后）则表示采样频率 Fs，中间被 N-1 个点平均分成 N 等份，每个点的频率依次增<br>加。例如某点 n 所表示的频率为：Fn&#x3D;(n-1)<em>Fs&#x2F;N。由上面的公式可以看出，Fn 所能分辨到频率为为 Fs&#x2F;N，如果采<br>样频率 Fs 为 1024Hz，采样点数为 1024 点，则可以分辨到 1Hz。1024Hz 的采样率采样 1024 点，刚好是 1 秒，也就<br>是说，采样 1 秒时间的信号并做 FFT，则结果可以分析到 1Hz，如果采样 2 秒时间的信号并做 FFT，则结果可以分析<br>到 0.5Hz。如果要提高频率分辨力，则必须增加采样点数，也即采样时间。频率分辨率和采样时间是倒数关系。<br>&amp;ensp;&amp;ensp;假设 FFT 之后某点 n 用复数 a+bi 表示，那么这个复数的模就是 An&#x3D;根号 a</em>a+b<em>b，相位就是 Pn&#x3D;atan2(b,a)。<br>根据以上的结果，就可以计算出 n 点（n≠1，且 n&lt;&#x3D;N&#x2F;2）对应的信号的表达式为：An&#x2F;(N&#x2F;2)<em>cos(2</em>pi</em>Fn<em>t+Pn)， 即 2</em>An&#x2F;N<em>cos(2</em>pi<em>Fn</em>t+Pn)。<br>对于 n&#x3D;1 点的信号，是直流分量，幅度即为 A1&#x2F;N。<br>&amp;ensp;&amp;ensp;由于 FFT 结果的对称性，通常我们只使用前半部分的结果，即小于采样频率一半的结果。<br>&amp;ensp;&amp;ensp;假设我们有一个信号，它含有 2V 的直流分量，频率为 50Hz、相位为-30 度、幅度为 3V 的交流信号，以及一个<br>频 率 为 75Hz 、相位为 90 度 、 幅 度 为 1.5V 的交流信号。用数学表达式就是如下：<br>S&#x3D;2+3<em>cos(2</em>pi<em>50</em>t-pi<em>30&#x2F;180)+1.5</em>cos(2<em>pi</em>75<em>t+pi</em>90&#x2F;180)<br>&amp;ensp;&amp;ensp;式中 cos 参数为弧度，所以-30 度和 90 度要分别换算成弧度。我们以 256Hz 的采样率对这个信号进行采样，总<br>共采样 256 点。按照我们上面的分析，Fn&#x3D;(n-1)*Fs&#x2F;N，我们可以知道，每两个点之间的间距就是 1Hz，第 n 个点的频率就是 n-1。我们的信号有 3 个频率：0Hz、50Hz、75Hz，应该分别在第 1 个点、第 51 个点、第 76 个点上出现峰<br>值，其它各点应该接近 0。实际情况如何呢？<br>&amp;ensp;&amp;ensp;我们来看看 FFT 的结果的模值如图所示。<br><img src="https://s1.ax1x.com/2022/03/07/bsb1XV.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;从图中我们可以看到，在第 1 点、第 51 点、和第 76 点附近有比较大的值。我们分别将这三个点附近的数据拿<br>上来细看：  </p>
+<pre><code>1 点： 512+0i
+2 点： -2.6195E-14 - 1.4162E-13i
+3 点： -2.8586E-14 - 1.1898E-13i
+50 点：-6.2076E-13 - 2.1713E-12i
+51 点：332.55 - 192i
+52 点：-1.6707E-12 - 1.5241E-12i
+75 点：-2.2199E-13 -1.0076E-12i
+76 点：3.4315E-12 + 192i
+77 点：-3.0263E-14 +7.5609E-13i
+</code></pre>
+<p>&amp;ensp;&amp;ensp;很明显，1 点、51 点、76 点的值都比较大，它附近的点值都很小，可以认为是 0，即在那些频率点上的信号幅<br>度为 0。接着，我们来计算各点的幅度值。分别计算这三个点的模值，<br>结果如下：  </p>
+<pre><code>1 点： 512
+51 点：384
+76 点：192
+</code></pre>
+<p>&amp;ensp;&amp;ensp;按照公式，可以计算出直流分量为：512&#x2F;N&#x3D;512&#x2F;256&#x3D;2；50Hz 信号的幅度为：384&#x2F;(N&#x2F;2)&#x3D;384&#x2F;(256&#x2F;2)&#x3D;3；75Hz<br>信号的幅度为 192&#x2F;(N&#x2F;2)&#x3D;192&#x2F;(256&#x2F;2)&#x3D;1.5。可见，从频谱分析出来的幅度是正确的。<br>&amp;ensp;&amp;ensp;然后再来计算相位信息。直流信号没有相位可言，不用管它。先计算 50Hz 信号的相位，atan2(-192,<br>332.55)&#x3D;-0.5236,结果是弧度，换算为角度就是 180*(-0.5236)&#x2F;pi&#x3D;-30.0001。再计算 75Hz 信号的相位，atan2(192,<br>3.4315E-12)&#x3D;1.5708 弧度，换算成角度就是 180*1.5708&#x2F;pi&#x3D;90.0002。可见，相位也是对的。根据 FFT 结果以及上<br>面的分析计算，我们就可以写出信号的表达式了，它就是我们开始提供的信号。<br>&amp;ensp;&amp;ensp;总结：假设采样频率为 Fs，采样点数为 N，做 FFT 之后，某一点 n（n 从 1 开始）表示的频率为：Fn&#x3D;(n-1)*Fs&#x2F;N；<br>该点的模值除以 N&#x2F;2 就是对应该频率下的信号的幅度（对于直流信号是除以 N）；该点的相位即是对应该频率下的<br>信号的相位。相位的计算可用函数 atan2(b,a)计算。atan2(b,a)是求坐标为(a,b)点的角度值，范围从-pi 到 pi。<br>要精确到 xHz，则需要采样长度为 1&#x2F;x 秒的信号，并做 FFT。要提高频率分辨率，就需要增加采样点数，这在一些<br>实际的应用中是不现实的，需要在较短的时间内完成分析。解决这个问题的方法有频率细分法，比较简单的方法是<br>采样比较短时间的信号，然后在后面补充一定数量的 0，使其长度达到需要的点数，再做 FFT，这在一定程度上能<br>够提高频率分辨力。具体的频率细分法可参考相关文献。  </p>
+<h3 id="二、使用tcl脚本创建工程"><a href="#二、使用tcl脚本创建工程" class="headerlink" title="二、使用tcl脚本创建工程"></a>二、使用tcl脚本创建工程</h3><p>&amp;ensp;&amp;ensp;在官方的参考手册 ug871-vivado-high-level-synthesis-tutorial.pdf 中对 FFT 有比较详细的介绍，并且官<br>方提供的 Example 中也有对应的工程方便学习<br>&amp;ensp;&amp;ensp;脚本内容：</p>
+<pre><code class="tcl">puts &#123;==            Hello Boards                     ==&#125;
 
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
+##############################################
+# Project settings
 
-    if theme.post_pagination
-      include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
+# HLS工程参数
+set hls_prj_name    fft_ifft_hls          ;#指定工程路径名
+set prj_name        fft_ifft              ;#指定工程名
+set part            xc7z020clg400-2       ;#指定芯片类型
+set Period          10                    ;#指定时钟周期
+set Img_name        test_1080p.bmp        ;#指定视频图片文件名
+set image           0                     ;#是否添加图片文件进行仿真1--添加 0--不添加
+set run_cosim       0                     ;#是否进行C_RTL联合仿真1--仿真 0--不仿真
 
-    if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache: true})
-      
+
+set run_frontend_prj 1
+set run_backend_prj  1
+set run_csim         1
+set run_cosim        1
+
+
+# 获取当前路径.../tcl
+set path  [pwd]
+
+# 返回上层目录...
+set dir   [file dirname $path]
+
+# 判断是否存在prj文件夹，没有则新建一个
+set prj   [file join [file join $dir &quot;prj&quot;]]
+if &#123;![file isdirectory $prj ]&#125; &#123;
+    file mkdir $prj
+&#125;
+
+# 判断是否在prj里面存在HLS工程文件夹，没有则新建一个
+set hls_prj   [file join [file join $prj [file join $hls_prj_name]]]
+if &#123;![file isdirectory $hls_prj ]&#125; &#123;
+    file mkdir $hls_prj
+&#125;
+
+puts &#123;==         Miz701N Create a New Project         ==&#125;
+
+# Create a project
+# ****************************************************************************
+# real2xfft project
+# ****************************************************************************
+cd $hls_prj
+if &#123; $run_frontend_prj &#125; &#123;
+    open_project -reset real2xfft_prj
+    # The source file and test bench
+    set hls_src   [file join [file join $hls_prj &quot;src&quot;]]
+    puts $hls_src
+    cd $hls_src
+    
+    set_top hls_real2xfft
+
+    add_files $hls_src/real2xfft.cpp
+    add_files -tb xfft2real.cpp
+    add_files -tb hls_realfft_test.cpp
+
+    if &#123; $run_csim &#125; &#123;
+        open_solution &quot;solution1&quot;
+        set_part $part
+        create_clock -period $Period
+
+        csim_design -clean
+    &#125;
+
+    open_solution &quot;solution1&quot;
+    set_part $part
+    create_clock -period $Period
+
+    csynth_design
+    if &#123;$run_cosim&#125; &#123;
+        cosim_design -trace_level all -rtl verilog
+    &#125;
+    export_design
+&#125;
+
+# ****************************************************************************
+# xfft2real project
+# ****************************************************************************
+cd $hls_prj
+if &#123; $run_backend_prj &#125; &#123;
+    open_project -reset xfft2real_prj
+    # The source file and test bench
+    set hls_src   [file join [file join $hls_prj &quot;src&quot;]]
+    puts $hls_src
+    cd $hls_src
+    set_top hls_xfft2real
+
+    add_files $hls_src/xfft2real.cpp
+    add_files -tb real2xfft.cpp
+    add_files -tb hls_realfft_test.cpp
+
+    open_solution &quot;solution1&quot;
+    set_part $part
+    create_clock -period $Period
+
+    csynth_design
+    export_design
+&#125;
+
+exit
+</code></pre>
+<p>&amp;ensp;&amp;ensp;打开Vivado HLS 2019.2Command Prompt<br>&amp;ensp;&amp;ensp;输入：vivado_hls -f run_hls.tcl<br><img src="https://s1.ax1x.com/2022/03/07/bytacT.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;结束之后会生成IP。<br><img src="/url" alt="图片描述">  </p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/03/07/hls-learning-FFT/">https://naughtyrabbit.github.io/2022/03/07/hls-learning-FFT/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hls%E5%AD%A6%E4%B9%A0/">hls学习</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcHkq7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/12/TVM-setup/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">TVM环境搭建</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/06/hls-learning-sobel/"><img class="next-cover" src="https://m1.im5i.com/2022/08/17/UcoXqB.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HLS学习入门（索贝尔算子1）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/03/04/hls-learning-SkinDetection/" title="HLS学习入门（肤色检测）"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHypB.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-04</div><div class="title">HLS学习入门（肤色检测）</div></div></a></div><div><a href="/2022/03/03/hls-learning-imageload/" title="HLS学习入门（图像加载）"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcH2xC.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-03</div><div class="title">HLS学习入门（图像加载）</div></div></a></div><div><a href="/2022/03/05/hls-learning-hough/" title="HLS学习入门（霍夫圆检测）"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPlkp.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-05</div><div class="title">HLS学习入门（霍夫圆检测）</div></div></a></div><div><a href="/2022/03/02/hls-learning-shiftled/" title="HLS学习入门（流水灯）"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPHgz.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-02</div><div class="title">HLS学习入门（流水灯）</div></div></a></div><div><a href="/2022/03/06/hls-learning-sobel/" title="HLS学习入门（索贝尔算子1）"><img class="cover" src="https://m1.im5i.com/2022/08/17/UcoXqB.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-06</div><div class="title">HLS学习入门（索贝尔算子1）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81FFT%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">一、FFT原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8tcl%E8%84%9A%E6%9C%AC%E5%88%9B%E5%BB%BA%E5%B7%A5%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">二、使用tcl脚本创建工程</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

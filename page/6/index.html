@@ -1,7 +1,319 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>不听话的兔子君 - 那破云的光终会洒落，将有人迎向你的身侧</title><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="记录生活，记录成长">
+<meta property="og:type" content="website">
+<meta property="og:title" content="不听话的兔子君">
+<meta property="og:url" content="https://naughtyrabbit.github.io/page/6/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="记录生活，记录成长">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg">
+<meta property="article:author" content="naughtyrabbit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://e.im5i.com/2021/10/12/PEw4Y.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/page/6/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '不听话的兔子君',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-08-19 11:57:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  include ./includes/mixins/post-ui.pug
-  #recent-posts.recent-posts
-    +postUI
-    include includes/pagination.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/11/25/pytorch-learning-basic-index/" title="pytorch学习笔记-基础篇（索引与切片）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UctUeW.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（索引与切片）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/11/25/pytorch-learning-basic-index/" title="pytorch学习笔记-基础篇（索引与切片）">pytorch学习笔记-基础篇（索引与切片）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-25T08:27:22.000Z" title="发表于 2021-11-25 16:27:22">2021-11-25</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，接上一篇文章的tensor基础，索引（index）与切片 
+
+  
+各种索引切片方法介绍import torch
+
+a = torch.rand(4, 3, 28, 28)
+print(a[0].shape)
+print(a[0, 0].shape)
+# 这里返回的是一个标量
+print(a[0, 0, 2, 4])
+
+# 索引最前/后的图片
+# 前两张图片 0,1， 因此这里的输出第一维是 2
+print(a[:2].shape)
+# 同样，这里的输出第一维是 2，第二维是1
+print(a[:2, :1, :, :].shape)
+# 注意，这里的输出第一维是 2, 第二晚是从1开始（包括1）到最末，因此维数是2
+print(a[:2, 1:, :, :].shape)
+# 索引下标
+# [a, b, c]
+# [0, 1, 2] 正序
+# [-3, -2, -1] 倒序
+# 所以下面是从-1开始（包括-1），一共 1 维
+print(a[:2, -1:, :, :].shape)
+
+# select by step
+# step = ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/11/17/pytorch-learning-basic/" title="pytorch学习笔记-基础篇（tensor）">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/UctxpQ.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-基础篇（tensor）"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/11/17/pytorch-learning-basic/" title="pytorch学习笔记-基础篇（tensor）">pytorch学习笔记-基础篇（tensor）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-17T08:05:13.000Z" title="发表于 2021-11-17 16:05:13">2021-11-17</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本篇主要记录一下一些基础的pytorch知识，在前两节的基础上，回过头来温习一下
+
+
+python与pytorch&amp;ensp;&amp;ensp;作为深度学习的GPU加速库，pytorch没有对string类型数据对象的直接支持。&amp;ensp;&amp;ensp;有两种方法可以去表示string（编码方式）  
+
+one-hot  
+Embedding
+
+tensor数据类型介绍&amp;ensp;&amp;ensp;pytorch的数据类型：FloatTensor, IntTensor, ByteTensor,需要注意的是：即使是同一种数据类型，在cpu和gpu（cuda）上并不能直接相互使用。下面是一些代码的具体演示，注意注释部分   
+import torch
+
+# 正态分布随机初始化，方差：1
+a = torch.randn(2, 3)
+# torch提供的类型检测
+print(a.type())
+# python提供的类型检测
+print(type(a))
+# 参数的合法化检验
+print(isinstance(a, torch.FloatTensor))
+# ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/11/16/pytorch-learning-classfication/" title="pytorch学习笔记-简单分类问题">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UqDdUW.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-简单分类问题"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/11/16/pytorch-learning-classfication/" title="pytorch学习笔记-简单分类问题">pytorch学习笔记-简单分类问题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-16T06:47:03.000Z" title="发表于 2021-11-16 14:47:03">2021-11-16</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+本文主要记录分类问题的学习，以手写数字识别为例
+
+
+理论图片表示&amp;ensp;&amp;ensp;以经典的MNIST数据集为例，里面每一张图片都是一个28*28的灰度矩阵,矩阵中的每个值的是灰度，范围是0~1,可以用flatten方法打平之后方便处理。
+                x[28,28] -&gt; x[1,784]
+
+模型构建&amp;ensp;&amp;ensp;这里用三个线性函数的嵌套构造线性模型（第一节中只有单一的y&#x3D;wx+b足矣），绿字说明了各参数的维度（主要原因是满足矩阵计算）    
+loss表示&amp;ensp;&amp;ensp;考虑到输出Y应该是一个[0/1/.../9]的矩阵，这里以H3（维度是[1,d3]）为输出的话，后面d3也应该是一个0~9的数，label的编码这里采用one-hot（独热码？）  
+例：1 =&gt; &#123;0,1,0,0,0,0,0,0,0,0,0&#125;
+    3 =&gt; &#123;0,0,0,1,0,0,0,0,0,0,0&#125;
+    比如 H3 得到是 [0.1, 0.8  ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/11/12/pytorch_learning_grad/" title="pytorch学习笔记-回归问题">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Uctsxy.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习笔记-回归问题"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/11/12/pytorch_learning_grad/" title="pytorch学习笔记-回归问题">pytorch学习笔记-回归问题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-11-12T03:02:17.000Z" title="发表于 2021-11-12 11:02:17">2021-11-12</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/pytorch/">pytorch</a></span></div><div class="content">
+pytorch学习记录，本篇主要是介绍和一个简单回归问题的demo  
+
+
+Pytorch框架简介一、与tensorflow主要区别
+动态图与静态图&amp;ensp;&amp;ensp;Pytorch是动态图，tensorflow是静态图，处理和创建分离，预先定义处理过程，运行过程不能干预，对于调试过程想查看处理过程相对不方便
+Pytorch能做什么GPU加速自动求导 例如：  import torch
+from torch import autograd
+
+x = torch.tensor(1.)
+a = torch.tensor(1., requires_grad=True)
+b = torch.tensor(2., requires_grad=True)
+c = torch.tensor(3., requires_grad=True)
+
+y = a**2 * x + b * x + c
+print(&#39;before:&#39;, a.grad, b.grad, c.grad)
+grads = autograd.grad(y, [a, b, c])
+print(&#39; ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/08/27/AliIot_postTem/" title="基于阿里云的智能温度计">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Uctd3x.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="基于阿里云的智能温度计"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/08/27/AliIot_postTem/" title="基于阿里云的智能温度计">基于阿里云的智能温度计</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-08-27T12:06:46.000Z" title="发表于 2021-08-27 20:06:46">2021-08-27</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E7%89%A9%E8%81%94%E7%BD%91/">物联网</a></span></div><div class="content">
+本文详尽地描述了一个基于阿里云的智能温度计项目，功能是上报温度数据到阿里云的物联网平台，所有的代码都是“物联网零妖”这位大佬的，我改了一部分，此文旨在加以解释。如果觉得我说的不好，可以看他的原视频：https://edu.aliyun.com/course/1492?spm=5176.10731491.0.0.ZXRrm4
+
+
+摘要&amp;ensp;&amp;ensp;本系统利用51系列单片机为中心，通过ESP8266模块连接能上网的路由器，采集温湿度数据并上传阿里云，使用者可以使用手机APP或者在阿里云后台实时监控开发板所在环境温湿度。后续可以在云端对数据作分析并下发属性报文来控制其他设备对环境温度作调整，由于各种限制，本系统并未展开，目前仅可以上报温湿度数据，程序里写了相关的订阅报文，但是并没有实际设备执行。
+第一章 绪论&amp;ensp;&amp;ensp;本系统主要功能是监测温湿度数据并上传阿里云。
+第二章 系统需求分析&amp;ensp;&amp;ensp;本系统主要功能是监测温湿度数据并上传阿里云。细分一下，主要有以下需求：
+
+获取环境温湿度
+连接能上网的路由器
+连接 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/08/22/ComStruc_Encoding/" title="计算机组织与体系结构——补码与模与浮点数的规格化">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHKos.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计算机组织与体系结构——补码与模与浮点数的规格化"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/08/22/ComStruc_Encoding/" title="计算机组织与体系结构——补码与模与浮点数的规格化">计算机组织与体系结构——补码与模与浮点数的规格化</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-08-22T13:00:13.000Z" title="发表于 2021-08-22 21:00:13">2021-08-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E7%BB%87%E4%B8%8E%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">计算机组织与体系结构</a></span></div><div class="content">
+摘要部分
+
+简单介绍一下模与补码的关系，通过探究补码计算的原理加深印象和理解，借此顺便分析一下浮点数的规格化中对尾数的要求（即怎样才算规格化的浮点数）
+模2与模4补码&amp;ensp;&amp;ensp;首先明确一点，通常我们所见到的就是模2，而模4最常见的使用即双符号位，在解题时，一般理解为双符号位即可。&amp;ensp;&amp;ensp;下面简单分析一下模的概念，以时钟为例，时钟是最方便我们理解的模12的一个例子，即在时钟中，1和1(+12)所表示的东西是等价的，事实上和任意加上12n的数都是等价的。&amp;ensp;&amp;ensp;在计算机中，补码的出现很大程度上是为了表示负数，我们来看-36这个数,其绝对值的二进制是100100,假设现在在8位的计算机中表示，即0010 0100,负的相当于拿0减去它，根据我们小学数学的思想，不够减，向高位借1，如下所示：  
+     1 0000 0000
+    -0 0010 0100
+————————————————————
+     0 1101 1100
+
+&amp;ensp;&amp;ensp;而熟悉补码计算方法的 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/27/Reason-AI-xiaojiefanyan/" title="人工智能导论-确定性推理之消解反演">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHwKx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="人工智能导论-确定性推理之消解反演"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/27/Reason-AI-xiaojiefanyan/" title="人工智能导论-确定性推理之消解反演">人工智能导论-确定性推理之消解反演</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-27T00:33:19.000Z" title="发表于 2021-06-27 08:33:19">2021-06-27</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/">人工智能导论</a></span></div><div class="content">
+人工智能导论，举一些消解反演的例子，分析消解反演的步骤。由于公式的表示较为麻烦，这里全部手写，字丑见谅。
+
+
+例题分析&amp;ensp;&amp;ensp;注意答题的时候分四步
+
+定义谓词
+谓词公式
+子句集把谓词公式化成子句集的步骤:   
+消去—&gt;，公式：P—&gt;Q转化为~P∨Q
+利用等价关系把“~”移到紧靠谓词的位置上    
+对变量标准化，使不同量词约束的变元有不同的名字
+消去存在量词      
+化为前束形，提取全称量词，全部移到公式的最左边
+利用等价关系 P∨(Q∧R) ⇔(P∨Q) ∧ (P∨R) 把母式化为合取范式。
+消去全称量词
+对变元更名，使不同子句中的变元不同名     
+消去合取词，得到子句集
+(注意NIL不要写成NULL) 
+
+
+归结
+
+注意：存在后面不能够跟蕴含！用析取！例如：有些男生不爱踢足球，不能用(∃x)(Boy(x)—>~Play(x,football))，要用(∃x) (Boy(x)∧~Play(x,football))。     
+
+&amp;ensp;&amp;ensp;     
+</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/27/know-AI-PreForm/" title="人工智能导论-知识表示之谓词公式">     <img class="post_bg" src="https://m1.im5i.com/2022/08/17/Uco6GG.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="人工智能导论-知识表示之谓词公式"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/27/know-AI-PreForm/" title="人工智能导论-知识表示之谓词公式">人工智能导论-知识表示之谓词公式</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-27T00:33:19.000Z" title="发表于 2021-06-27 08:33:19">2021-06-27</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/">人工智能导论</a></span></div><div class="content">
+人工智能导论，举一些知识表示成谓词公式的例子，由于公式的表示较为麻烦，这里全部手写，字丑见谅，咕~。
+
+
+例题分析&amp;ensp;&amp;ensp;注意答题的时候分两步
+
+定义谓词
+谓词公式
+
+</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2021/06/22/web-linux-ipadd2bin/" title="linux网络编程-地址转换">     <img class="post_bg" src="https://m1.im5i.com/2022/08/18/UcHwKx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux网络编程-地址转换"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/22/web-linux-ipadd2bin/" title="linux网络编程-地址转换">linux网络编程-地址转换</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-22T09:11:19.000Z" title="发表于 2021-06-22 17:11:19">2021-06-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux网络编程-常用IP地址转换
+
+
+代码分析 client.c&amp;ensp;&amp;ensp;程序分析client.c  
+//Example Program source of inet_pton
+#include &lt;arpa/inet.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+int main(int argc, char *argv[])
+&#123;
+    unsigned char buf[sizeof(struct in6_addr)];
+    int domain, s;
+    char str[INET6_ADDRSTRLEN];
+
+    if (argc != 3) 
+    &#123;
+        fprintf(stderr, &quot;Usage: %s &#123;i4|i6|&lt;num&gt;&#125; string\n&quot;, argv[0]);
+        exit(EXIT_ ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2021/06/22/web-linux-socket/" title="linux网络编程-TCP套接字编程典型模型(select多路复用)">     <img class="post_bg" src="https://m1.im5i.com/2022/08/19/UcPRvF.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="linux网络编程-TCP套接字编程典型模型(select多路复用)"></a></div><div class="recent-post-info"><a class="article-title" href="/2021/06/22/web-linux-socket/" title="linux网络编程-TCP套接字编程典型模型(select多路复用)">linux网络编程-TCP套接字编程典型模型(select多路复用)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-06-22T07:11:19.000Z" title="发表于 2021-06-22 15:11:19">2021-06-22</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/linux/">linux</a></span></div><div class="content">
+linux网络编程-TCP套接字通信实验，多路复用
+
+
+代码分析 client.c&amp;ensp;&amp;ensp;程序分析client.c  
+//client.c
+//
+//  TCP 套接字编程典型模型
+//
+//		客户端							服务器端
+//	创建套接字(socket)				创建套接字(socket)
+//									绑定服务器地址和端口(bind)
+//									监听端口(listen)
+//	连接服务器(connect)      ----&gt;	接受客户端连接(accept)
+//	客户端发送请求(send)     ----&gt;	接收客户端请求(recv)
+//	客户端接收响应(recv)     &lt;----	回送响应(send)
+//	关闭套接字(close)        &lt;---&gt;	关闭套接字(close)
+//man 7 socket
+//accept() , bind() , connect() ,  getsockname()  ,  getsockopt()  ,
+//listen()  , recv ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/5/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#content-inner">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/#content-inner">7</a><a class="page-number" href="/page/8/#content-inner">8</a><a class="extend next" rel="next" href="/page/7/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/TVM/"><span class="card-category-list-name">TVM</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/VHDL/"><span class="card-category-list-name">VHDL</span><span class="card-category-list-count">3</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Vitis-AI/"><span class="card-category-list-name">Vitis-AI</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/hls/"><span class="card-category-list-name">hls</span><span class="card-category-list-count">6</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/linux/"><span class="card-category-list-name">linux</span><span class="card-category-list-count">14</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/markdown/"><span class="card-category-list-name">markdown</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/pytorch/"><span class="card-category-list-name">pytorch</span><span class="card-category-list-count">43</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/"><span class="card-category-list-name">人工智能导论</span><span class="card-category-list-count">2</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/FIFO/" style="font-size: 1.1em; color: #999">FIFO</a> <a href="/tags/Linux%E4%BF%A1%E5%8F%B7%E6%9C%BA%E5%88%B6/" style="font-size: 1.1em; color: #999">Linux信号机制</a> <a href="/tags/MQTT%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">MQTT协议</a> <a href="/tags/TVM/" style="font-size: 1.26em; color: #999fa8">TVM</a> <a href="/tags/Vitis-AI/" style="font-size: 1.1em; color: #999">Vitis-AI</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">_exit()函数</a> <a href="/tags/exit-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">exit()函数</a> <a href="/tags/fcntl-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fcntl()函数</a> <a href="/tags/fork-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">fork()函数</a> <a href="/tags/freopen-%E5%87%BD%E6%95%B0/" style="font-size: 1.1em; color: #999">freopen()函数</a> <a href="/tags/hls%E5%AD%A6%E4%B9%A0/" style="font-size: 1.34em; color: #99a3b0">hls学习</a> <a href="/tags/index/" style="font-size: 1.1em; color: #999">index</a> <a href="/tags/inet-pton/" style="font-size: 1.1em; color: #999">inet_pton</a> <a href="/tags/pytorch%E5%AD%A6%E4%B9%A0/" style="font-size: 1.5em; color: #99a9bf">pytorch学习</a> <a href="/tags/select-%E5%87%BD%E6%95%B0/" style="font-size: 1.26em; color: #999fa8">select()函数</a> <a href="/tags/socket/" style="font-size: 1.18em; color: #999ca1">socket</a> <a href="/tags/tcp-ip/" style="font-size: 1.1em; color: #999">tcp/ip</a> <a href="/tags/tensor/" style="font-size: 1.1em; color: #999">tensor</a> <a href="/tags/udp/" style="font-size: 1.1em; color: #999">udp</a> <a href="/tags/yolo/" style="font-size: 1.42em; color: #99a6b7">yolo</a> <a href="/tags/%E4%B8%89%E6%80%81%E9%97%A8/" style="font-size: 1.1em; color: #999">三态门</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%9A%8F%E7%AC%94/" style="font-size: 1.1em; color: #999">个人随笔</a> <a href="/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/" style="font-size: 1.1em; color: #999">交叉熵</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E5%8F%91%E9%80%81%E5%87%BD%E6%95%B0kill/" style="font-size: 1.1em; color: #999">信号发送函数kill()</a> <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/" style="font-size: 1.1em; color: #999">信号量</a> <a href="/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/" style="font-size: 1.1em; color: #999">共享内存</a> <a href="/tags/%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">分类问题</a> <a href="/tags/%E5%9B%9E%E5%BD%92%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">回归问题</a> <a href="/tags/%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/" style="font-size: 1.1em; color: #999">守护进程</a> <a href="/tags/%E5%AE%9E%E6%88%98/" style="font-size: 1.34em; color: #99a3b0">实战</a> <a href="/tags/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" style="font-size: 1.1em; color: #999">实验记录</a> <a href="/tags/%E5%BA%95%E5%B1%82IO/" style="font-size: 1.1em; color: #999">底层IO</a> <a href="/tags/%E6%97%A0%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.1em; color: #999">无名管道</a> <a href="/tags/%E6%9C%89%E5%90%8D%E7%AE%A1%E9%81%93/" style="font-size: 1.18em; color: #999ca1">有名管道</a> <a href="/tags/%E6%A0%87%E5%87%86IO/" style="font-size: 1.1em; color: #999">标准IO</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 1.1em; color: #999">模板</a> <a href="/tags/%E6%B6%88%E8%A7%A3%E5%8F%8D%E6%BC%94/" style="font-size: 1.1em; color: #999">消解反演</a> <a href="/tags/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98/" style="font-size: 1.1em; color: #999">生产者消费者问题</a> <a href="/tags/%E7%9F%A5%E8%AF%86%E8%A1%A8%E7%A4%BA/" style="font-size: 1.1em; color: #999">知识表示</a> <a href="/tags/%E7%A1%AE%E5%AE%9A%E6%80%A7%E6%8E%A8%E7%90%86/" style="font-size: 1.1em; color: #999">确定性推理</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/08/"><span class="card-archive-list-date">八月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/03/"><span class="card-archive-list-date">三月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/02/"><span class="card-archive-list-date">二月 2022</span><span class="card-archive-list-count">5</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">10</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/12/"><span class="card-archive-list-date">十二月 2021</span><span class="card-archive-list-count">24</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/08/"><span class="card-archive-list-date">八月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">16</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">78</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-08-19T03:57:22.447Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

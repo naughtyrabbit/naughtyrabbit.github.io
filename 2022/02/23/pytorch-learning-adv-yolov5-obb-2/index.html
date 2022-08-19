@@ -1,32 +1,329 @@
-extends includes/layout.pug
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>yolov5+csl旋转目标检测代码解析2 | 不听话的兔子君</title><meta name="keywords" content="pytorch学习,yolo"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本篇主要记录学习yolov5+csl旋转目标检测的原理，主要是探究代码中如何得到theta&#x2F;gauss_theta的target。参考知乎 略略略 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;358441134； yangxue https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;111493759">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yolov5+csl旋转目标检测代码解析2">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2022/02/23/pytorch-learning-adv-yolov5-obb-2/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="本篇主要记录学习yolov5+csl旋转目标检测的原理，主要是探究代码中如何得到theta&#x2F;gauss_theta的target。参考知乎 略略略 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;358441134； yangxue https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;111493759">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcHMnX.png">
+<meta property="article:published_time" content="2022-02-23T11:03:11.000Z">
+<meta property="article:modified_time" content="2022-02-24T12:39:12.000Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="pytorch学习">
+<meta property="article:tag" content="yolo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcHMnX.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/02/23/pytorch-learning-adv-yolov5-obb-2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'yolov5+csl旋转目标检测代码解析2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-24 20:39:12'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-    article#article-container.post-content!=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
         
-    if theme.reward.enable
-      !=partial('includes/post/reward', {}, {cache: true})
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">yolov5+csl旋转目标检测代码解析2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-23T11:03:11.000Z" title="发表于 2022-02-23 19:03:11">2022-02-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-02-24T12:39:12.000Z" title="更新于 2022-02-24 20:39:12">2022-02-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pytorch/">pytorch</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="yolov5+csl旋转目标检测代码解析2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>本篇主要记录学习yolov5+csl旋转目标检测的原理，主要是探究代码中如何得到theta&#x2F;gauss_theta的target。参考知乎 略略略 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/358441134%EF%BC%9B">https://zhuanlan.zhihu.com/p/358441134；</a> yangxue <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/111493759">https://zhuanlan.zhihu.com/p/111493759</a></p>
+</blockquote>
+<span id="more"></span>
+<h3 id="一、debug记录"><a href="#一、debug记录" class="headerlink" title="一、debug记录"></a>一、debug记录</h3><p>&amp;ensp;&amp;ensp;经过dataloader之后的数据格式如图，cls已经转化为id。此时仍是原本的表示方法。<br><img src="https://s4.ax1x.com/2022/02/23/bC4ZAU.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;在plot_labels里面会有完整的标签格式转换以及高斯窗的csl方法，但是这个函数并没有返回<br><img src="https://s4.ax1x.com/2022/02/23/bC55zd.png" alt="图片描述"><br><img src="https://s4.ax1x.com/2022/02/23/bC5Jrq.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;即最后一个参数为True时，使用csl，并且采用高斯窗函数，csl部分代码是直接从yangxue大佬那里拿来用的。 </p>
+<pre><code class="python">def poly2rbox(polys, num_cls_thata=180, radius=6.0, use_pi=False, use_gaussian=False):
+    &quot;&quot;&quot;
+    Trans poly format to rbox format.
+    Args:
+        polys (array): (num_gts, [x1 y1 x2 y2 x3 y3 x4 y4]) 
+        num_cls_thata (int): [1], theta class num
+        radius (float32): [1], window radius for Circular Smooth Label
+        use_pi (bool): True θ∈[-pi/2, pi/2) ， False θ∈[0, 180)
 
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
+    Returns:
+        use_gaussian True:
+            rboxes (array): 
+            csl_labels (array): (num_gts, num_cls_thata)
+        elif 
+            rboxes (array): (num_gts, [cx cy l s θ]) 
+    &quot;&quot;&quot;
+</code></pre>
+<p>&amp;ensp;&amp;ensp;数据处理（转换标签格式，生成<strong>theta</strong>参数等操作），在<strong>LoadImagesAndLabels</strong>类中重写了<strong>getitem</strong>方法。<br><img src="https://s4.ax1x.com/2022/02/24/bikXmn.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;可以看到，取数据的格式和<strong>getitem</strong>的返回值一致。<br><img src="https://s4.ax1x.com/2022/02/24/biVusH.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;在该方法中，默认启用了<strong>csl</strong>高斯窗，<strong>clsid</strong>不上传，在得到<strong>bbox</strong>之后合并。<br><img src="https://s4.ax1x.com/2022/02/24/biIGpF.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;下面我把<strong>poly2rbox</strong>单独拎出来分析：  </p>
+<pre><code class="python">import numpy as np
+import torch
 
-    if theme.post_pagination
-      include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
+pi = 3.141592
+import cv2
 
-    if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache: true})
-      
+
+def gaussian_label_cpu(label, num_class, u=0, sig=4.0):
+    &quot;&quot;&quot;
+    转换成CSL Labels：
+        用高斯窗口函数根据角度θ的周期性赋予gt labels同样的周期性，使得损失函数在计算边界处时可以做到“差值很大但loss很小”；
+        并且使得其labels具有环形特征，能够反映各个θ之间的角度距离
+    Args:
+        label (float32):[1], theta class
+        num_theta_class (int): [1], theta class num
+        u (float32):[1], μ in gaussian function
+        sig (float32):[1], σ in gaussian function, which is window radius for Circular Smooth Label
+    Returns:
+        csl_label (array): [num_theta_class], gaussian function smooth label
+    &quot;&quot;&quot;
+    x = np.arange(-num_class/2, num_class/2)
+    y_sig = np.exp(-(x - u) ** 2 / (2 * sig ** 2))
+    index = int(num_class/2 - label)
+    return np.concatenate([y_sig[index:], 
+                           y_sig[:index]], axis=0)
+
+
+def regular_theta(theta, mode=&#39;180&#39;, start=-pi/2):
+    &quot;&quot;&quot;
+    limit theta ∈ [-pi/2, pi/2)
+    &quot;&quot;&quot;
+    assert mode in [&#39;360&#39;, &#39;180&#39;]
+    cycle = 2 * pi if mode == &#39;360&#39; else pi
+
+    theta = theta - start
+    theta = theta % cycle
+    return theta + start
+
+
+def poly2rbox(polys, num_cls_thata=180, radius=6.0, use_pi=False, use_gaussian=False):
+    &quot;&quot;&quot;
+    Trans poly format to rbox format.
+    Args:
+        polys (array): (num_gts, [x1 y1 x2 y2 x3 y3 x4 y4])
+        num_cls_thata (int): [1], theta class num
+        radius (float32): [1], window radius for Circular Smooth Label
+        use_pi (bool): True θ∈[-pi/2, pi/2) ， False θ∈[0, 180)
+
+    Returns:
+        use_gaussian True:
+            rboxes (array):
+            csl_labels (array): (num_gts, num_cls_thata)
+        elif
+            rboxes (array): (num_gts, [cx cy l s θ])
+    &quot;&quot;&quot;
+    assert polys.shape[-1] == 8
+    if use_gaussian:
+        csl_labels = []
+    rboxes = []
+    for poly in polys:
+        poly = np.float32(poly.reshape(4, 2))
+        # poly: [[1. 1.], [2. 0.], [5. 4.], [4. 5.]]
+        # cv2.minAreaRect求出点集下的最小面积矩形
+        (x, y), (w, h), angle = cv2.minAreaRect(poly) # θ ∈ [0， 90]
+        angle = -angle # θ ∈ [-90， 0]
+        theta = angle / 180 * pi # 转为pi制
+
+        # trans opencv format to longedge format θ ∈ [-pi/2， pi/2]
+        if w != max(w, h):
+            w, h = h, w
+            theta += pi/2
+        theta = regular_theta(theta) # limit theta ∈ [-pi/2, pi/2)
+        angle = (theta * 180 / pi) + 90 # θ ∈ [0， 180)
+
+        if not use_pi: # 采用angle弧度制 θ ∈ [0， 180)
+            rboxes.append([x, y, w, h, angle])
+        else: # 采用pi制
+            rboxes.append([x, y, w, h, theta])
+        if use_gaussian:
+            csl_label = gaussian_label_cpu(label=angle, num_class=num_cls_thata, u=0, sig=radius)
+            csl_labels.append(csl_label)
+    if use_gaussian:
+        return np.array(rboxes), np.array(csl_labels)
+    return np.array(rboxes)
+
+
+def main():
+    ploys = torch.tensor([[1, 1, 2, 0, 5, 4, 4, 5],
+                          [5, 1, 6, 2, 6, 2.5, 5, 1.5]])
+    rboxes, csl_labels = poly2rbox(polys=ploys,
+                                   num_cls_thata=180,
+                                   radius=6.0,
+                                   use_pi=True, use_gaussian=True)
+    print(&#39;rboxes: &#39;, rboxes)
+    print(&#39;csl_labels: &#39;, csl_labels)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>&amp;ensp;&amp;ensp;这是<strong>debug</strong>记录，比较奇怪的是<strong>x,y,w,h</strong>的计算似乎<strong>cv2</strong>的<strong>api</strong>有点问题，比如我给的例子，角度计算的没问题，但是很明显一个3,4,5的三角形，结果h&#x3D;5.199999；短边1:1:1.414(根号2)，结果算出来是w&#x3D;1.39。虽然差距不大，本身api的调用确实可能比较复杂（可以实现求点集下最小面积矩形）。当然实际情况是标注的label可能不一定是完美的矩形，用当作矩形的方法似乎也有不妥。但是这对loss的求解和反向传播肯定是有影响的。至此<strong>target</strong>部分的数据，csl的角度怎么得到的都已经清楚，将在下一篇博客里面探究。<strong>pred</strong>是如何得到的。另外，这个<strong>demo</strong>中<strong>csl_labels</strong>:  (2, 180)<br><img src="https://s4.ax1x.com/2022/02/24/bioRv4.png" alt="图片描述">  </p>
+<h3 id="一、api记录"><a href="#一、api记录" class="headerlink" title="一、api记录"></a>一、api记录</h3><h4 id="1-tqdm（进度条美观）"><a href="#1-tqdm（进度条美观）" class="headerlink" title="1.tqdm（进度条美观）"></a>1.tqdm（进度条美观）</h4><pre><code class="python">from tqdm import tqdm
+import time
+
+iterator = tqdm(iterable=range(100),
+                # iterable：tdqm数据参数支持的数据类型是可迭代的对象iterable，
+                # 在Python中默认的可迭代对象有：list、str、tuple、dict、file、range等
+                desc=&#39;test_tqdm&#39;,
+                # str类型，作为进度条说明，在进度条左边
+                total=100,
+                # 预取的迭代次数
+                leave=True,
+                # 循环结束后是否保留进度提示信息，默认保留
+                ncols=100,
+                # 进度条长度，150比较适合
+                mininterval=0.1,
+                # 进度条最小的更新间隔（秒）
+                maxinterval=10.0,
+                # 进度条最大的更新间隔（秒）
+                unit=&#39;it&#39;,
+                # 单位，默认it每秒迭代数
+                bar_format=None,
+                # bar_format=&#39;&#123;l_bar&#125;&#123;bar:10&#125;&#123;r_bar&#125;&#123;bar:-10b&#125;&#39;,
+                # 在进度条右边添加字典类型描述信息
+                position=None,
+                # 指定偏移，这个功能在多个进度条中有用
+                postfix=None
+                # 自定义进度条
+                )
+for i in iterator:
+    time.sleep(0.3)
+    
+</code></pre>
+<p>&amp;ensp;&amp;ensp;结果如下：<br><img src="https://s4.ax1x.com/2022/02/24/bFcdUg.png" alt="图片描述">  </p>
+<h4 id="2-python专有函数"><a href="#2-python专有函数" class="headerlink" title="2.python专有函数"></a>2.python专有函数</h4><p>&amp;ensp;&amp;ensp;没有python的基础，所以有些基础知识也是边实践边学（轻喷&#x2F;-_-\），类似**<strong>init</strong><strong>函数等的python的专有函数，是在创建一个类对象之后一定会调用的方法，类似于构造函数。同时也可被重载（项目中的</strong><strong>get_item</strong>**就是重载了专有函数），下面是一个简单的例子。  </p>
+<pre><code class="python">class Cat:
+    def __init__(self, color):
+        self.color = color
+
+    def eat(self):
+        print(&quot;--eating food--&quot;)
+
+    def printinfo(self):
+        print(self.color)
+
+
+# 实例化Cat对象
+mimi = Cat(&quot;white&quot;)
+# 如果创建实例的时候没有给color，此句会报错
+mimi.printinfo()
+mimi.eat()
+# 重新给类成员赋值
+mimi.color = &quot;black&quot;
+mimi.printinfo()
+</code></pre>
+<p>&amp;ensp;&amp;ensp;输出如下：  </p>
+<pre><code class="python">white
+--eating food--
+black
+</code></pre>
+<p>&amp;ensp;&amp;ensp;与此类似的，两个下划线开头（**__private_method**），声明该方法为私有方法，只能在类的内部调用 ，不能在类的外部调用。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/02/23/pytorch-learning-adv-yolov5-obb-2/">https://naughtyrabbit.github.io/2022/02/23/pytorch-learning-adv-yolov5-obb-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pytorch%E5%AD%A6%E4%B9%A0/">pytorch学习</a><a class="post-meta__tags" href="/tags/yolo/">yolo</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcHMnX.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/25/pytorch-learning-adv-yolov5-obb-3/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/18/UcHtZq.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">yolov5+csl旋转目标检测代码解析3</div></div></a></div><div class="next-post pull-right"><a href="/2022/02/17/pytorch-learning-adv-yolov5-obb/"><img class="next-cover" src="https://m1.im5i.com/2022/08/17/Uco3GA.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">yolov5+csl旋转目标检测代码解析1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/01/19/pytorch-learning-adv-yolov3/" title="yolov3目标检测原理探究"><img class="cover" src="https://m1.im5i.com/2022/08/17/Uctsxy.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-19</div><div class="title">yolov3目标检测原理探究</div></div></a></div><div><a href="/2022/01/15/pytorch-learning-adv-yolov1/" title="yolov1目标检测原理探究"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHgyQ.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-15</div><div class="title">yolov1目标检测原理探究</div></div></a></div><div><a href="/2022/02/02/pytorch-learning-adv-yolov5-2/" title="yolov5目标检测原理探究（2）"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-02</div><div class="title">yolov5目标检测原理探究（2）</div></div></a></div><div><a href="/2022/02/25/pytorch-learning-adv-yolov5-obb-3/" title="yolov5+csl旋转目标检测代码解析3"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHtZq.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-25</div><div class="title">yolov5+csl旋转目标检测代码解析3</div></div></a></div><div><a href="/2022/02/17/pytorch-learning-adv-yolov5-obb/" title="yolov5+csl旋转目标检测代码解析1"><img class="cover" src="https://m1.im5i.com/2022/08/17/Uco3GA.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-17</div><div class="title">yolov5+csl旋转目标检测代码解析1</div></div></a></div><div><a href="/2022/02/26/pytorch-learning-adv-yolov5-obb-4/" title="yolov5+csl旋转目标检测代码解析——总结篇"><img class="cover" src="https://m1.im5i.com/2022/08/17/UcoKNY.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-26</div><div class="title">yolov5+csl旋转目标检测代码解析——总结篇</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">46</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81debug%E8%AE%B0%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">一、debug记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81api%E8%AE%B0%E5%BD%95"><span class="toc-number">2.</span> <span class="toc-text">一、api记录</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-tqdm%EF%BC%88%E8%BF%9B%E5%BA%A6%E6%9D%A1%E7%BE%8E%E8%A7%82%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">1.tqdm（进度条美观）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-python%E4%B8%93%E6%9C%89%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">2.python专有函数</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/17/hello-world/" title="Hello World"><img src="https://m1.im5i.com/2022/08/19/UcP1DH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/17/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-17T08:48:25.618Z" title="发表于 2022-08-17 16:48:25">2022-08-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/19/UcPZ00.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHjGf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/14/TVM-CperModExa-tf/" title="TVM编译模型（tf的例子解读）">TVM编译模型（tf的例子解读）</a><time datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM环境搭建"/></a><div class="content"><a class="title" href="/2022/03/12/TVM-setup/" title="TVM环境搭建">TVM环境搭建</a><time datetime="2022-03-12T14:31:17.000Z" title="发表于 2022-03-12 22:31:17">2022-03-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
