@@ -6,7 +6,7 @@
   <link href="https://naughtyrabbit.github.io/atom.xml" rel="self"/>
   
   <link href="https://naughtyrabbit.github.io/"/>
-  <updated>2022-08-17T08:48:25.618Z</updated>
+  <updated>2022-08-20T03:14:29.814Z</updated>
   <id>https://naughtyrabbit.github.io/</id>
   
   <author>
@@ -17,22 +17,27 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="https://naughtyrabbit.github.io/2022/08/17/hello-world/"/>
-    <id>https://naughtyrabbit.github.io/2022/08/17/hello-world/</id>
-    <published>2022-08-17T08:48:25.618Z</published>
-    <updated>2022-08-17T08:48:25.618Z</updated>
+    <title>FPGA_部分可重构技术_0介绍</title>
+    <link href="https://naughtyrabbit.github.io/2022/08/19/FPGA_PR_0/"/>
+    <id>https://naughtyrabbit.github.io/2022/08/19/FPGA_PR_0/</id>
+    <published>2022-08-19T05:27:04.000Z</published>
+    <updated>2022-08-20T03:14:29.814Z</updated>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="bash">$ hexo new &quot;My New Post&quot;</code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for</summary>
-      
+    <content type="html"><![CDATA[<blockquote><p>本篇主要是FPGA中部分可重构技术学习笔记，第0篇。内容主要参考赛灵思官方文档ug909.ug947等，部分翻译可能存在问题，还请指正。这一部分主要为Partial Reconfiguration（PR）的介绍    </p></blockquote><span id="more"></span><p>&amp;ensp;&amp;ensp;在减少尺寸、重量、功率和成本的同时，部分可重构技术使得一些新的FPGA设计成为可能。  </p><h3 id="一、专业名词"><a href="#一、专业名词" class="headerlink" title="一、专业名词"></a>一、专业名词</h3><ol><li>自底向上综合（Bottom-Up Synthesis）<br>&amp;ensp;&amp;ensp;在Vivado中，自底向上综合指的是脱离上下文的综合（<strong>out-of-context synthesis</strong>）.OOC综合为每个OOC模块生成一个单独的网表(或DCP)，并需要进行部分重构，以确保没有在模块边界上进行优化。在OOC综合中，顶层（或静态）逻辑与每个OOC模块的黑盒模块定义一起合成。</li><li>配置（Configuration）<br>&amp;ensp;&amp;ensp;配置是一个完整的设计，对于每个可重构分区都有一个可重构模块。在部分重新配置FPGA项目中可能有许多配置。每个配置都会生成一个完整的BIT文件，以及为每个可重构的模块(RM)生成一个部分的BIT文件。</li><li>配置帧（Configuration Frame）<br>&amp;ensp;&amp;ensp;配置帧是FPGA配置内存空间中最小的可寻址段。可重构的框架是由这些最低级别元素的离散数构建的。在Xilinx设备中，基本可重构帧是一个元素(CLB，RAM，DSP)宽由一个时钟区域高。这些帧中的资源数量因设备系列而异。</li><li>内部配置访问端口（Internal Configuration Access Port）<br>&amp;ensp;&amp;ensp;内部配置访问端口（ICAP）本质上是SelectMAP接口的内部版本</li><li>媒体配置访问端口（Media Configuration Access Port）<br>&amp;ensp;&amp;ensp;MCAP是从每个 UltraScale设备的一个特定的PCIe®块到ICAP的专用链路。在配置Xilinx PCIe IP时，可以启用此入口点。</li><li>部分可重构（Partial Reconfiguration）<br>&amp;ensp;&amp;ensp;部分重构是通过下载部分比特流来修改操作FPGA设计中的逻辑子集</li><li>分区（Partition）<br>&amp;ensp;&amp;ensp;分区是设计的一个逻辑部分，用户在层次边界上定义，以考虑设计重用。分区要么作为新的实现，要么从以前的实现中保留。保留的分区不仅维护相同的功能，而且还维护相同的实现</li><li>分区定义（Partition Definition）<br>&amp;ensp;&amp;ensp;这是一个仅在项目流中使用的术语。分区定义定义了一组与模块实例（或可重构分区）关联的可重构模块。PD应用于模块的所有实例，并且不能与模块实例的子集相关联。</li><li>分区引脚（Partition Pin）<br>&amp;ensp;&amp;ensp;分区引脚是静态逻辑和可重构逻辑之间的逻辑和物理连接。工具会自动创建、放置和管理分区引脚。</li><li>处理器配置访问端口（Processor Configuration Access Port）<br>&amp;ensp;&amp;ensp;处理器配置访问端口(PCAP)类似于内部配置访问端口(ICAP)，是用于配置Zynq-7000 AP SoC设备的主端口。</li><li>可编程部件（Programmable Unit）<br>&amp;ensp;&amp;ensp;在UltraScale结构中，这是重新配置所需的最小资源。PU的大小因资源类型而异。因为相邻的站点在UltraScale体系结构中共享一个路由资源（或互连贴图），所以PU是根据成对来定义的。</li><li>可重构帧（Reconfigurable Frame）<br>&amp;ensp;&amp;ensp;可重构帧（在本指南中除“配置帧”之外的所有参考文献中）表示FPGA中最小的可重构区域。可重构帧的比特流大小取决于帧中所包含的逻辑类型。</li><li>可重构逻辑（Reconfigurable Logic）<br>&amp;ensp;&amp;ensp;可重构逻辑是作为可重构模块的一部分的任何逻辑元素。当加载部分BIT文件时，会修改这些逻辑元素。可以重新配置逻辑组件的许多类型，如LUTs、flip-flops、块RAM和DSP块。</li><li>可重构模块（Reconfigurable Module）<br>&amp;ensp;&amp;ensp;可重构模块(RM)是在可重构分区中实现的网络列表或HDL描述。对于一个可重构的分区，存在多个RMs。</li><li>可重构分区（Reconfigurable Partition）<br>&amp;ensp;&amp;ensp;可重构分区(RP)是实例上设置的属性，它将实例定义为可重构。可重构分区是在其中实现不同的可重构模块的层次结构级别。Tcl命令，如opt_design,<br>place_design和route_design检测实例上的HD.RECONFIGURABLE 属性，并正确地处理它。</li><li>静态逻辑（Static Logic）<br>&amp;ensp;&amp;ensp;静态逻辑是不属于RP的任何逻辑元素。逻辑元素永远不会部分重新配置，并且在重新配置rp时始终处于活动状态。静态逻辑也被称为顶级逻辑。</li><li>静态设计（Static Design）<br>&amp;ensp;&amp;ensp;静态设计是设计中在部分重新配置过程中不会改变的部分。静态设计包括顶层模块和所有未定义为可重构模块的模块。静态设计采用静态逻辑和静态路由来构建</li></ol><h3 id="二、设计注意事项"><a href="#二、设计注意事项" class="headerlink" title="二、设计注意事项"></a>二、设计注意事项</h3><ol><li>设计指南<ul><li>需要平面规划来定义每个元素类型的可重新配置区域。</li><li>自下而上&#x2F;OOC 综合（创建多个网表&#x2F;DCP 文件）和可重配置模块网表文件的管理是用户的责任。</li><li>已经建立了一套独特的设计规则检查 (DRC)，以帮助确保成功完成设计。</li><li>PR 设计必须考虑部分重配置的启动以及部分 BIT 文件的交付，无论是在 FPGA 内还是作为系统设计的一部分。</li><li>Vivado 设计套件包括对部分重配置控制器 IP 的支持。这种可定制的 IP 可管理任何 Xilinx 器件中部分重配置的核心任务。内核从硬件或软件接收触发器，管理握手和解耦任务，从内存位置获取部分比特流，并将它们传递给 ICAP。</li><li>可重配置分区必须包含所有引脚的超集，供为分区实现的各种可重配置模块使用。如果 RM 使用来自另一个 RM 的不同输入或输出，则生成的 RM 输入或输出可能不会连接到 RM 内部。这些工具通过在 RM 中为所有未使用的输入和输出插入一个 LUT1 缓冲区来处理此问题。输出 LUT1 绑定到一个常数值，常数的值可以由未使用的输出引脚上的 HD.PARTPIN_TIEOFF 属性控制。</li><li>对于用户复位信号，确定 RM 内部的逻辑是电平敏感还是边沿敏感。如果复位电路是边沿敏感的（因为它可能在某些 IP，如 FIFO 中），则在重新配置完成之前不应应用 RM 复位。</li></ul></li><li>设计标准  <ul><li>对于 UltraScale 和 UltraScale+ 器件，可重新配置的组件类型列表更为广泛：<br><img src="https://m1.im5i.com/2022/08/20/UqDWRK.png" alt="U+系列支持PR组件"></li><li>可重新配置模块必须进行初始化，以确保重新配置后的可预测启动条件。对于 7 系列以外的所有设备，PR 完成后会自动应用 GSR。对于 7 系列设备，在满足 Pblock 要求后，可以使用 RESET_AFTER_RECONFIG Pblock 属性打开 GSR。</li><li>强烈建议使用去耦逻辑，以便在部分重配置操作期间将可重配置区域与设计的静态部分断开。</li><li>实现工具禁止跨 PR 边界进行优化。 PR 设计中的 WNS 路径通常是跨越 RP 边界的高扇出控制&#x2F;复位信号。避免高扇出信号穿过 RP 边界，因为驱动器无法复制。为了使工具具有最大的优化&#x2F;复制灵活性，请考虑以下几点：<ul><li>对于 RP 的输入，使穿过 RP 边界的信号成为单个扇出网络，并在扇出之前将信号寄存在 RM 内。这可以根据需要在 RM 内复制（或放在全局资源上）。</li><li>对于输出，再次使穿过 PR 边界的信号成为单个扇出网络。在扇出之前将信号注册为静态以进行复制&#x2F;优化。</li></ul></li><li>对于具有多个 RP 的设计，赛灵思建议不要在两个 RP 之间建立直接连接。这包括通过异步静态逻辑（未在静态中注册）的连接。如果两个 RP 之间存在直接连接，则必须在静态时序分析中验证所有可能的配置，以确保跨这些接口满足时序要求。这可以针对完全由单个用户拥有和维护的封闭系统完成，但对于由多个用户开发不同 RM 的设计可能无法验证。在静态中添加同步端点可确保在任何配置上始终满足时序，只要实现 RM 的配置满足时序。<blockquote><p>&amp;ensp;&amp;ensp;部分重配置是赛灵思器件中的一项强大功能，了解芯片和软件的功能对于该技术的成功至关重要。虽然在开发过程中必须承认和考虑权衡，但总体结果是更灵活地实现您的 FPGA 设计。</p></blockquote></li></ul></li></ol>]]></content>
     
     
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本篇主要是FPGA中部分可重构技术学习笔记，第0篇。内容主要参考赛灵思官方文档ug909.ug947等，部分翻译可能存在问题，还请指正。这一部分主要为Partial Reconfiguration（PR）的介绍    &lt;/p&gt;
+&lt;/blockquote&gt;</summary>
     
+    
+    
+    <category term="部分可重构" scheme="https://naughtyrabbit.github.io/categories/%E9%83%A8%E5%88%86%E5%8F%AF%E9%87%8D%E6%9E%84/"/>
+    
+    
+    <category term="FPGA" scheme="https://naughtyrabbit.github.io/tags/FPGA/"/>
+    
+    <category term="部分可重构" scheme="https://naughtyrabbit.github.io/tags/%E9%83%A8%E5%88%86%E5%8F%AF%E9%87%8D%E6%9E%84/"/>
     
   </entry>
   
