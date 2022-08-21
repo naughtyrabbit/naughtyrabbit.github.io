@@ -5,13 +5,13 @@
 <meta property="og:site_name" content="不听话的兔子君">
 <meta property="og:description" content="本篇主要记录一下TVM编译一个使用tf框架模型的例子，FPGA开发板：zcu102">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcHjGf.png">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcH7qH.png">
 <meta property="article:published_time" content="2022-03-14T14:15:19.000Z">
 <meta property="article:modified_time" content="2022-03-21T04:16:30.000Z">
 <meta property="article:author" content="naughtyrabbit">
 <meta property="article:tag" content="TVM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcHjGf.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/03/14/TVM-CperModExa-tf/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcH7qH.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/03/14/TVM-CperModExa-tf/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
   localSearch: undefined,
@@ -142,19 +142,27 @@
       }
     })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
 </head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">TVM编译模型（tf的例子解读）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-03-14T14:15:19.000Z" title="发表于 2022-03-14 22:15:19">2022-03-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-21T04:16:30.000Z" title="更新于 2022-03-21 12:16:30">2022-03-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/TVM/">TVM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="TVM编译模型（tf的例子解读）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
-<p>本篇主要记录一下TVM编译一个使用tf框架模型的例子，FPGA开发板：zcu102  </p>
+<p>本篇主要记录一下TVM编译一个使用tf框架模型的例子，FPGA开发板：zcu102</p>
 </blockquote>
 <span id="more"></span>
-<h3 id="一、流程记录"><a href="#一、流程记录" class="headerlink" title="一、流程记录"></a>一、流程记录</h3><p>&amp;ensp;&amp;ensp;需要注意的是，显然（我就不知道） <a target="_blank" rel="noopener" href="https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html">https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html</a>   TVM官方这里给的流程，不是完整脚本，只是一个介绍，完整Py脚本可以在编译模型的相关网页最下面下载得到。<br><img src="https://s1.ax1x.com/2022/03/14/bXxDqU.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;过程跟着 <a target="_blank" rel="noopener" href="https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/docs/compiling_a_model.md">https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/docs/compiling_a_model.md</a>  这个走。  </p>
+<h3 id="一、流程记录">一、流程记录</h3>
+<p>  需要注意的是，显然（我就不知道） <a target="_blank" rel="noopener" href="https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html">https://tvm.apache.org/docs/how_to/deploy/vitis_ai.html</a>   TVM官方这里给的流程，不是完整脚本，只是一个介绍，完整Py脚本可以在编译模型的相关网页最下面下载得到。<br>
+<img src="https://s1.ax1x.com/2022/03/14/bXxDqU.png" alt="图片描述"><br>
+  过程跟着 <a target="_blank" rel="noopener" href="https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/docs/compiling_a_model.md">https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/docs/compiling_a_model.md</a>  这个走。</p>
 <ol>
-<li>运行容器镜像：.&#x2F;docker_run.sh tvm.ci_vai_1x  </li>
-<li>进入tf虚拟环境  </li>
+<li>运行容器镜像：./docker_run.sh tvm.ci_vai_1x</li>
+<li>进入tf虚拟环境</li>
 <li>进入example文件夹</li>
-<li>编译生成对应目标的文件 python3 compile_mxnet_resnet_18.py “DPUCZDX8G-zcu102”<br>最后一个参数指<strong>DPU target ID</strong> 参照： <a target="_blank" rel="noopener" href="https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/README.md#dpu-targets">https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/README.md#dpu-targets</a><br>然后就生成一个如图的 .so 文件，在FPGA上调用。<br><img src="https://s1.ax1x.com/2022/03/14/bXvMBF.png" alt="图片描述"></li>
+<li>编译生成对应目标的文件 python3 compile_mxnet_resnet_18.py “DPUCZDX8G-zcu102”<br>
+最后一个参数指<strong>DPU target ID</strong> 参照： <a target="_blank" rel="noopener" href="https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/README.md#dpu-targets">https://github.com/Xilinx/Vitis-AI/blob/1.4/external/tvm/README.md#dpu-targets</a><br>
+然后就生成一个如图的 .so 文件，在FPGA上调用。<br>
+<img src="https://s1.ax1x.com/2022/03/14/bXvMBF.png" alt="图片描述"></li>
 </ol>
-<h3 id="二、编译脚本解析"><a href="#二、编译脚本解析" class="headerlink" title="二、编译脚本解析"></a>二、编译脚本解析</h3><p>&amp;ensp;&amp;ensp;显然，自己的网络部署不能用同样的脚本，因此对官方的编译脚本作分析，以实现客制化部署自己的网络。下面是具体的分析（代码段部分是完整的compile_mxnet_resnet_18.py，注释部分是自加的），也是本文重点。  </p>
-<h4 id="1-imports"><a href="#1-imports" class="headerlink" title="1. imports"></a>1. imports</h4><p>&amp;ensp;&amp;ensp;需要注意的是，脚本中导入<strong>pyxir</strong>等模块并未直接使用（在该脚本代码中体现），但是相关模块的导入以及<strong>DPU</strong>目标的声明仍是不可或缺的，否则在执行时会出错。  </p>
-<pre><code class="python">import os
+<h3 id="二、编译脚本解析">二、编译脚本解析</h3>
+<p>  显然，自己的网络部署不能用同样的脚本，因此对官方的编译脚本作分析，以实现客制化部署自己的网络。下面是具体的分析（代码段部分是完整的compile_mxnet_resnet_18.py，注释部分是自加的），也是本文重点。</p>
+<h4 id="1-imports">1. imports</h4>
+<p>  需要注意的是，脚本中导入<strong>pyxir</strong>等模块并未直接使用（在该脚本代码中体现），但是相关模块的导入以及<strong>DPU</strong>目标的声明仍是不可或缺的，否则在执行时会出错。</p>
+<pre><code class="language-python">import os
 import sys
 import numpy as np
 import cv2
@@ -182,11 +190,12 @@ from tvm.contrib.target import vitis_ai
 from tvm.relay.build_module import bind_params_by_name
 from tvm.relay.op.contrib.vitis_ai import partition_for_vitis_ai
 </code></pre>
-<h4 id="2-添加路径"><a href="#2-添加路径" class="headerlink" title="2. 添加路径"></a>2. 添加路径</h4><p>&amp;ensp;&amp;ensp;在安装TVM的过程中，会把tvm-vai的路径写入环境变量（容器内），在此处获取到。相关文件比如&#x2F;opt&#x2F;tvm-vai相关文件都是容器内的，不在宿主环境。</p>
-<pre><code class="python">FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
+<h4 id="2-添加路径">2. 添加路径</h4>
+<p>  在安装TVM的过程中，会把tvm-vai的路径写入环境变量（容器内），在此处获取到。相关文件比如/opt/tvm-vai相关文件都是容器内的，不在宿主环境。</p>
+<pre><code class="language-python">FILE_DIR   = os.path.dirname(os.path.abspath(__file__))
 # 使用 os.getenv() 函数获取环境变量
-TVM_VAI_HOME   = os.getenv(&#39;TVM_VAI_HOME&#39;)
-QUANT_DIR = os.path.join(TVM_VAI_HOME, &#39;CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/&#39;)
+TVM_VAI_HOME   = os.getenv('TVM_VAI_HOME')
+QUANT_DIR = os.path.join(TVM_VAI_HOME, 'CK-TOOLS/dataset-imagenet-ilsvrc2012-val-min/')
 
 if not os.path.exists(QUANT_DIR):
     raise ValueError(&quot;Could not find directory &quot;
@@ -197,8 +206,9 @@ if not os.path.exists(QUANT_DIR):
                      &quot; $ python3 -m ck install package:imagenet-2012-val-min\n&quot;
                      &quot; $ cp -r $HOME/CK-TOOLS $TVM_VAI_HOME&quot;)
 </code></pre>
-<p><img src="https://s1.ax1x.com/2022/03/16/qSMzK1.png" alt="图片描述">   </p>
-<h4 id="3-下载模型"><a href="#3-下载模型" class="headerlink" title="3. 下载模型"></a>3. 下载模型</h4><pre><code class="python">######################################################################
+<p><img src="https://s1.ax1x.com/2022/03/16/qSMzK1.png" alt="图片描述"></p>
+<h4 id="3-下载模型">3. 下载模型</h4>
+<pre><code class="language-python">######################################################################
 # Download Resnet18 model from Gluon Model Zoo
 # ---------------------------------------------
 # In this section, we download a pretrained imagenet model and classify an image.
@@ -210,19 +220,19 @@ from PIL import Image
 #from matplotlib import pyplot as plt
 # 在线下载模型，存储至block
 # mxnet下api可参考：https://mxnet.apache.org/versions/1.7.0/api/python/docs/api/gluon/model_zoo/index.html#mxnet.gluon.model_zoo.vision.get_model
-block = get_model(&#39;resnet18_v1&#39;, pretrained=True)
+block = get_model('resnet18_v1', pretrained=True)
 # 这个网址是一张猫的图片，不科学上网可能会获取超时，可以改成下面的
-# img_url = &#39;https://github.com/dmlc/mxnet.js/blob/master/data/cat.png?raw=true&#39;
-img_url = &#39;https://s1.ax1x.com/2022/03/15/bvB7Ct.png&#39;
-img_name = &#39;cat.png&#39;
-synset_url = &#39;&#39;.join([&#39;https://gist.githubusercontent.com/zhreshold/&#39;,
-                      &#39;4d0b62f3d01426887599d4f7ede23ee5/raw/&#39;,
-                      &#39;596b27d23537e5a1b5751d2b0481ef172f58b539/&#39;,
-                      &#39;imagenet1000_clsid_to_human.txt&#39;])
-synset_name = &#39;imagenet1000_clsid_to_human.txt&#39;
+# img_url = 'https://github.com/dmlc/mxnet.js/blob/master/data/cat.png?raw=true'
+img_url = 'https://s1.ax1x.com/2022/03/15/bvB7Ct.png'
+img_name = 'cat.png'
+synset_url = ''.join(['https://gist.githubusercontent.com/zhreshold/',
+                      '4d0b62f3d01426887599d4f7ede23ee5/raw/',
+                      '596b27d23537e5a1b5751d2b0481ef172f58b539/',
+                      'imagenet1000_clsid_to_human.txt'])
+synset_name = 'imagenet1000_clsid_to_human.txt'
 # 注意这个download_testdata函数默认是不重写的，会一直使用最初的图片
-img_path = download_testdata(img_url, &#39;cat.png&#39;, module=&#39;data&#39;)
-synset_path = download_testdata(synset_url, synset_name, module=&#39;data&#39;)
+img_path = download_testdata(img_url, 'cat.png', module='data')
+synset_path = download_testdata(synset_url, synset_name, module='data')
 with open(synset_path) as f:
     synset = eval(f.read())
 
@@ -233,14 +243,20 @@ def transform_image(image):
     image = image[np.newaxis, :]
     return image
 </code></pre>
-<p>&amp;ensp;&amp;ensp;下载下来的模型参数保存至如图位置，赋值给block<br><img src="https://s1.ax1x.com/2022/03/16/qSwTNd.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;下载下来的图片以及txt保存至如图位置<br><img src="https://s1.ax1x.com/2022/03/16/qSBcy6.png" alt="图片描述"><br>&amp;ensp;&amp;ensp;内容如下<br><img src="https://s1.ax1x.com/2022/03/16/qSD23n.png" alt="图片描述">  </p>
-<h4 id="4-模型设置"><a href="#4-模型设置" class="headerlink" title="4. 模型设置"></a>4. 模型设置</h4><pre><code class="python">###############################################################################
+<p>  下载下来的模型参数保存至如图位置，赋值给block<br>
+<img src="https://s1.ax1x.com/2022/03/16/qSwTNd.png" alt="图片描述"><br>
+  下载下来的图片以及txt保存至如图位置<br>
+<img src="https://s1.ax1x.com/2022/03/16/qSBcy6.png" alt="图片描述"><br>
+  内容如下<br>
+<img src="https://s1.ax1x.com/2022/03/16/qSD23n.png" alt="图片描述"></p>
+<h4 id="4-模型设置">4. 模型设置</h4>
+<pre><code class="language-python">###############################################################################
 # MODEL SETTINGS
 #
 # Parameter settings for compiling a model using tvm-vai flow
 # quant_dir      : path to images for quantization
 # dpu_target         : hardware accelerator to run the compiled model
-#                      options: &#39;DPUCADF8H&#39;,  &#39;DPUCZDX8G-zcu104&#39;, &#39;DPUCZDX8G-zcu102&#39;
+#                      options: 'DPUCADF8H',  'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 # tvm_target     :
 # lib_kwargs     : 
 
@@ -248,10 +264,10 @@ def transform_image(image):
 
 # 检查 python3 compile_mxnet_resnet_18.py &quot;DPUCZDX8G-zcu102&quot; 这句命令是否带参数
 if len(sys.argv) &lt; 2:
-    raise ValueError(&quot;No DPU target specified. Please run with &#39;python3 compile_mxnet_resnet_18.py `DPU_TARGET`&#39;&quot;\
-                     &quot; DPU_TARGET options: &#39;DPUCADF8H&#39;, &#39;DPUCAHX8H-u50lv&#39;, &#39;DPUCAHX8H-u50lv_dwc&#39;, &#39;DPUCAHX8H-u55c_dwc&#39;, &#39;DPUCZDX8G-zcu104&#39;, &#39;DPUCZDX8G-zcu102&#39;&quot;)
+    raise ValueError(&quot;No DPU target specified. Please run with 'python3 compile_mxnet_resnet_18.py `DPU_TARGET`'&quot;\
+                     &quot; DPU_TARGET options: 'DPUCADF8H', 'DPUCAHX8H-u50lv', 'DPUCAHX8H-u50lv_dwc', 'DPUCAHX8H-u55c_dwc', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'&quot;)
 
-input_name  = &#39;data&#39;
+input_name  = 'data'
 # 原图(cat)shape是256*256
 # imagenet的图片是96x96
 # input_shape是模型输入的shape
@@ -259,10 +275,11 @@ input_name  = &#39;data&#39;
 input_shape = (1,3,224,224)
 shape_dict  = &#123;input_name:input_shape&#125;
 dpu_target  = str(sys.argv[1])
-tvm_target  = &#39;llvm&#39;
+tvm_target  = 'llvm'
 lib_kwargs  = &#123;&#125;
 </code></pre>
-<h4 id="5-输入预处理"><a href="#5-输入预处理" class="headerlink" title="5. 输入预处理"></a>5. 输入预处理</h4><pre><code class="python">###############################################################################
+<h4 id="5-输入预处理">5. 输入预处理</h4>
+<pre><code class="language-python">###############################################################################
 # INPUTS FUNC
 #
 # Define and inputs function which takes in an iterator value and returns a
@@ -277,16 +294,17 @@ def inputs_func(img_files: List[str]):
     inputs = []
     for img_path in img_files:
         img = Image.open(img_path)
-        img = img.convert(&#39;RGB&#39;)
+        img = img.convert('RGB')
         img = img.resize(input_shape[2:])
        
         inputs.append(transform_image(img))
     return inputs
 </code></pre>
-<h4 id="6-Partition-and-build-the-Model"><a href="#6-Partition-and-build-the-Model" class="headerlink" title="6. Partition and build the Model"></a>6. Partition and build the Model</h4><pre><code class="python">###############################################################################
+<h4 id="6-Partition-and-build-the-Model">6. Partition and build the Model</h4>
+<pre><code class="language-python">###############################################################################
 # PARTITION &amp; BUILD
 # 
-# Use TVM Module pass to annotate and partition Relay graph for Vitis-AI acceleration. Targets can be &#39;DPUCADF8H&#39;, &#39;DPUCZDX8G-zcu104&#39;, &#39;DPUCZDX8G-zcu102&#39;
+# Use TVM Module pass to annotate and partition Relay graph for Vitis-AI acceleration. Targets can be 'DPUCADF8H', 'DPUCZDX8G-zcu104', 'DPUCZDX8G-zcu102'
 # Afterwards build graph using standard TVM flow.
 ##############################################################################
 
@@ -296,18 +314,23 @@ mod, params = relay.frontend.from_mxnet(block, shape_dict)
 # invalid pointer
 mod = partition_for_vitis_ai(mod, params, dpu=dpu_target)
 
-export_rt_mod_file = os.path.join(os.getcwd(), &#39;vitis_ai.rtmod&#39;)
+export_rt_mod_file = os.path.join(os.getcwd(), 'vitis_ai.rtmod')
 build_options = &#123;
-    &#39;dpu&#39;: dpu_target,
-    &#39;export_runtime_module&#39;: export_rt_mod_file
+    'dpu': dpu_target,
+    'export_runtime_module': export_rt_mod_file
 &#125;
 # The partitioned model is passed to the TVM compiler to generate the runtime libraries for the TVM Runtime.
 # 为目标编译运行时库
-with tvm.transform.PassContext(opt_level=3, config=&#123;&#39;relay.ext.vitis_ai.options&#39;: build_options&#125;):   
-    lib = relay.build(mod, tvm_target, params=params)
+with tvm.transform.PassContext(opt_level=3, config=&#123;'relay.ext.vitis_ai.options': build_options&#125;):   
+	lib = relay.build(mod, tvm_target, params=params)
 </code></pre>
-<h4 id="7-对模型量化"><a href="#7-对模型量化" class="headerlink" title="7. 对模型量化"></a>7. 对模型量化</h4><p>&amp;ensp;&amp;ensp;<del>这一部分，不是很理解，所产生的<strong>quant_images</strong>在这一部分最后一步输入给了InferenceSession,但是对InferenceSession在下一部分的导出中没有起到作用，然后在最后的最后，把这个InferenceSession给删了。但是尝试将这一段以及最后一句del InferenceSession注释之后能产生.so文件（大小和之前不同），但是上板子运行调用报错。</del><br>&amp;ensp;&amp;ensp;这一部分第一句InferenceSession &#x3D; graph_runtime.GraphModule(lib<a href="tvm.cpu()">“default”</a>)，即是加载模型到InferenceSession.然后最后一步InferenceSession.run()，即是对模型进行量化。这里<strong>lib</strong>也是由上一步最后一句由relay.build产生。<br>&amp;ensp;&amp;ensp;下载下面是待量化的图片的位置<br><img src="https://s1.ax1x.com/2022/03/17/q9R6XQ.png" alt="图片描述"><br><img src="https://s1.ax1x.com/2022/03/17/q9RBff.png" alt="图片描述"> </p>
-<pre><code class="python">############################################################
+<h4 id="7-对模型量化">7. 对模型量化</h4>
+<p>  <s>这一部分，不是很理解，所产生的<strong>quant_images</strong>在这一部分最后一步输入给了InferenceSession,但是对InferenceSession在下一部分的导出中没有起到作用，然后在最后的最后，把这个InferenceSession给删了。但是尝试将这一段以及最后一句del InferenceSession注释之后能产生.so文件（大小和之前不同），但是上板子运行调用报错。</s><br>
+  这一部分第一句InferenceSession = graph_runtime.GraphModule(lib<a href="tvm.cpu()">&quot;default&quot;</a>)，即是加载模型到InferenceSession.然后最后一步InferenceSession.run()，即是对模型进行量化。这里<strong>lib</strong>也是由上一步最后一句由relay.build产生。<br>
+  下载下面是待量化的图片的位置<br>
+<img src="https://s1.ax1x.com/2022/03/17/q9R6XQ.png" alt="图片描述"><br>
+<img src="https://s1.ax1x.com/2022/03/17/q9RBff.png" alt="图片描述"></p>
+<pre><code class="language-python">############################################################
 ## Quantization using first N inputs
 ## 
 ## Usually, to be able to accelerate inference of Neural 
@@ -315,7 +338,7 @@ with tvm.transform.PassContext(opt_level=3, config=&#123;&#39;relay.ext.vitis_ai
 ## need to quantized upfront. In the TVM Vitis AI 
 ## flow we make use of On-The-Fly (OTF) Quantization 
 ## to remove this additional preprocessing step. In this flow,
-## one doesn&#39;t need to quantize his/her model upfront but can 
+## one doesn't need to quantize his/her model upfront but can 
 ## make use of the typical inference execution calls 
 ## (InferenceSession.run) to quantize the model on-the-fly 
 ## using the first N inputs. This will set up and calibrate
@@ -330,18 +353,18 @@ print(&quot;Create InferenceSession for OTF Quantization&quot;)
 # 详见：https://github.com/apache/tvm/blob/main/python/tvm/contrib/graph_executor.py line:114
 InferenceSession = graph_runtime.GraphModule(lib[&quot;default&quot;](tvm.cpu()))
 
-px_quant_size = int(os.environ[&#39;PX_QUANT_SIZE&#39;]) \
-    if &#39;PX_QUANT_SIZE&#39; in os.environ else 128
+px_quant_size = int(os.environ['PX_QUANT_SIZE']) \
+    if 'PX_QUANT_SIZE' in os.environ else 128
 
 print(&quot;Start OTF Quantization on first &#123;&#125; images&quot;.format(px_quant_size))
 
 # 这里只取了前128张图片，根据上面注释的说法，相当于 first N inputs
 # 之后的输入也会自动加速
 quant_files = [os.path.join(QUANT_DIR, f) for f in os.listdir(QUANT_DIR)
-             if f.endswith((&#39;JPEG&#39;, &#39;jpg&#39;, &#39;png&#39;))][:px_quant_size]
+             if f.endswith(('JPEG', 'jpg', 'png'))][:px_quant_size]
 #
 quant_images = inputs_func(quant_files)
-print(&#39;Loaded &#123;&#125; inputs successfully.&#39;.format(len(quant_images)))
+print('Loaded &#123;&#125; inputs successfully.'.format(len(quant_images)))
 
 for i in range(px_quant_size):
     InferenceSession.set_input(input_name, quant_images[i]) 
@@ -351,16 +374,16 @@ for i in range(px_quant_size):
 
 print(&quot;Finished OTF Quantization&quot;)
 </code></pre>
-<p>&amp;ensp;&amp;ensp;下图是整个<strong>inputs_func</strong>函数的功能（以第一张图片为例），注意此部分代码块不是原脚本中顺序，为了方便理解</p>
-<pre><code class="python"># 获取原始图片
+<p>  下图是整个<strong>inputs_func</strong>函数的功能（以第一张图片为例），注意此部分代码块不是原脚本中顺序，为了方便理解</p>
+<pre><code class="language-python"># 获取原始图片
 quant_images = inputs_func(quant_files) ====&gt;进入inputs_func():
 
 def inputs_func(img_files: List[str]):
     inputs = []
     for img_path in img_files:
-        # 以第一个图片为例 size(500, 375);title(0, 0, 500, 375);model = &#39;RGB&#39;
+        # 以第一个图片为例 size(500, 375);title(0, 0, 500, 375);model = 'RGB'
         img = Image.open(img_path)
-        img = img.convert(&#39;RGB&#39;)
+        img = img.convert('RGB')
         # &lt;PIL.Image.Image image mode=RGB size=224x224 at 0x1FEF70F0D68&gt;
         img = img.resize(input_shape[2:])
        
@@ -379,35 +402,36 @@ def transform_image(image):
     image = image[np.newaxis, :]
     return image
 </code></pre>
-<h4 id="8-导出库"><a href="#8-导出库" class="headerlink" title="8. 导出库"></a>8. 导出库</h4><p>&amp;ensp;&amp;ensp;对于DPUZDX8G目标板需要根据aarch64进行rebuild</p>
-<pre><code class="python">#########################################################
+<h4 id="8-导出库">8. 导出库</h4>
+<p>  对于DPUZDX8G目标板需要根据aarch64进行rebuild</p>
+<pre><code class="language-python">#########################################################
 # Export compiled model for execution #
 #########################################################
 
-if dpu_target.startswith(&#39;DPUCZDX8G&#39;):
+if dpu_target.startswith('DPUCZDX8G'):
     # Export runtime module
     temp = utils.tempdir()
     lib.export_library(temp.relpath(&quot;tvm_lib.so&quot;))
 
     # Build and export lib for aarch64 target
-    tvm_target = tvm.target.arm_cpu(&#39;ultra96&#39;)
+    tvm_target = tvm.target.arm_cpu('ultra96')
     lib_kwargs = &#123;
-        &#39;fcompile&#39;: contrib.cc.create_shared,
-        &#39;cc&#39;: &quot;/usr/aarch64-linux-gnu/bin/ld&quot;
+        'fcompile': contrib.cc.create_shared,
+        'cc': &quot;/usr/aarch64-linux-gnu/bin/ld&quot;
     &#125;
 
     build_options = &#123;
-        &#39;load_runtime_module&#39;: export_rt_mod_file
+        'load_runtime_module': export_rt_mod_file
     &#125;
-    with tvm.transform.PassContext(opt_level=3, config=&#123;&#39;relay.ext.vitis_ai.options&#39;: build_options&#125;):
+    with tvm.transform.PassContext(opt_level=3, config=&#123;'relay.ext.vitis_ai.options': build_options&#125;):
         lib_dpuczdx8g = relay.build(mod, tvm_target, params=params)
 
-    lib_dpuczdx8g.export_library(&#39;tvm_dpu_cpu.so&#39;, **lib_kwargs)
+    lib_dpuczdx8g.export_library('tvm_dpu_cpu.so', **lib_kwargs)
 
 else:
-    lib.export_library(&#39;tvm_dpu_cpu.so&#39;)
+    lib.export_library('tvm_dpu_cpu.so')
 
 print(&quot;Finished storing compiled model as tvm_dpu_cpu.so&quot;)
 del InferenceSession
 </code></pre>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/03/14/TVM-CperModExa-tf/">https://naughtyrabbit.github.io/2022/03/14/TVM-CperModExa-tf/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TVM/">TVM</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcHjGf.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/18/TVM-Cperyolov3-tf/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/17/UcoMsA.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">TVM编译模型（yolov3_tf的例子解读）</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/12/TVM-setup/"><img class="next-cover" src="https://m1.im5i.com/2022/08/19/UcPuaT.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TVM环境搭建</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img class="cover" src="https://m1.im5i.com/2022/08/17/UcoMsA.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-18</div><div class="title">TVM编译模型（yolov3_tf的例子解读）</div></div></a></div><div><a href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPuaT.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-12</div><div class="title">TVM环境搭建</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%B5%81%E7%A8%8B%E8%AE%B0%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">一、流程记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%BC%96%E8%AF%91%E8%84%9A%E6%9C%AC%E8%A7%A3%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">二、编译脚本解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-imports"><span class="toc-number">2.1.</span> <span class="toc-text">1. imports</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%B7%BB%E5%8A%A0%E8%B7%AF%E5%BE%84"><span class="toc-number">2.2.</span> <span class="toc-text">2. 添加路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%8B%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.3.</span> <span class="toc-text">3. 下载模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%A8%A1%E5%9E%8B%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.4.</span> <span class="toc-text">4. 模型设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E8%BE%93%E5%85%A5%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">2.5.</span> <span class="toc-text">5. 输入预处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-Partition-and-build-the-Model"><span class="toc-number">2.6.</span> <span class="toc-text">6. Partition and build the Model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%AF%B9%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96"><span class="toc-number">2.7.</span> <span class="toc-text">7. 对模型量化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E5%AF%BC%E5%87%BA%E5%BA%93"><span class="toc-number">2.8.</span> <span class="toc-text">8. 导出库</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHsmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/18/UcHwKx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UcoCys.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/UcovSH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/17/UcoMsA.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/03/14/TVM-CperModExa-tf/">https://naughtyrabbit.github.io/2022/03/14/TVM-CperModExa-tf/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TVM/">TVM</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcH7qH.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/18/TVM-Cperyolov3-tf/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/18/UcH3bX.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">TVM编译模型（yolov3_tf的例子解读）</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/12/TVM-setup/"><img class="next-cover" src="https://m1.im5i.com/2022/08/19/UcPz0y.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TVM环境搭建</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcH3bX.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-18</div><div class="title">TVM编译模型（yolov3_tf的例子解读）</div></div></a></div><div><a href="/2022/03/12/TVM-setup/" title="TVM环境搭建"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPz0y.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-03-12</div><div class="title">TVM环境搭建</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%B5%81%E7%A8%8B%E8%AE%B0%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">一、流程记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%BC%96%E8%AF%91%E8%84%9A%E6%9C%AC%E8%A7%A3%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">二、编译脚本解析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-imports"><span class="toc-number">2.1.</span> <span class="toc-text">1. imports</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%B7%BB%E5%8A%A0%E8%B7%AF%E5%BE%84"><span class="toc-number">2.2.</span> <span class="toc-text">2. 添加路径</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%8B%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.3.</span> <span class="toc-text">3. 下载模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%A8%A1%E5%9E%8B%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.4.</span> <span class="toc-text">4. 模型设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E8%BE%93%E5%85%A5%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">2.5.</span> <span class="toc-text">5. 输入预处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-Partition-and-build-the-Model"><span class="toc-number">2.6.</span> <span class="toc-text">6. Partition and build the Model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%AF%B9%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96"><span class="toc-number">2.7.</span> <span class="toc-text">7. 对模型量化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E5%AF%BC%E5%87%BA%E5%BA%93"><span class="toc-number">2.8.</span> <span class="toc-text">8. 导出库</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHsmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/19/UcP22h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/Uco6GG.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcH3bX.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

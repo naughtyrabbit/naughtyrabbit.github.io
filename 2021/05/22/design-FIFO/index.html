@@ -5,13 +5,13 @@
 <meta property="og:site_name" content="不听话的兔子君">
 <meta property="og:description" content="摘要：同步FIFO设计，包括所有代码，分析，以及仿真结果">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcHjGf.png">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/19/UcPhzB.jpg">
 <meta property="article:published_time" content="2021-05-22T11:29:37.000Z">
 <meta property="article:modified_time" content="2021-05-26T10:32:38.000Z">
 <meta property="article:author" content="naughtyrabbit">
 <meta property="article:tag" content="FIFO">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcHjGf.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2021/05/22/design-FIFO/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/19/UcPhzB.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2021/05/22/design-FIFO/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
   localSearch: undefined,
@@ -145,180 +145,196 @@
 <p>摘要：同步FIFO设计，包括所有代码，分析，以及仿真结果</p>
 </blockquote>
 <span id="more"></span>
-<h3 id="FIFO介绍"><a href="#FIFO介绍" class="headerlink" title="FIFO介绍"></a>FIFO介绍</h3><p>&amp;ensp;&amp;ensp;要求：存入数据按顺序排放，存储器全满时给出信号并拒绝继续存入，全空时也给出信号并拒绝读出；读出时按先进先出原则；存储数据一旦读出就从存储器中消失。    </p>
-<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>&amp;ensp;&amp;ensp;先进先出（ First In First Out，FIFO）与普通存储器的区别是没有外部读写地址线，其数据地址由内部读写指针自动加减1完成。  </p>
-<p>&amp;ensp;&amp;ensp;FIFO通常利用双口RAM和读写地址产生模块来实现其功能。<br><img src="https://s.im5i.com/2021/05/22/Sql8h.png" alt="FIFO信号图">    </p>
-<h4 id="读写指针"><a href="#读写指针" class="headerlink" title="读写指针"></a>读写指针</h4><p>&amp;ensp;&amp;ensp;FIFO存储器是一个环形结构，读地址计数器和写地址计数器分别代表下一次读数据操作时的读指针和下一次写数据操作时的写指针。<br>这种环形结构的FIFO的特点是：数据满时，FIFO内的数据个数为总存储单元个数减1，即必须至少有一个数据为空，这是因为，如果在环形结构的FIFO没有留有一个空数据，则无法区分FIFO是空还是满这两种状态。当FIFO复位后，读地址计数器和写地址计数器复位，此时FIFO为空。<br><img src="https://s.im5i.com/2021/05/22/Sqy6X.png" alt="FIFO信号图"><br>&amp;ensp;&amp;ensp;当<code>wr_ptr=rd_ptr</code>时，FIFO数据为空；<br>&amp;ensp;&amp;ensp;当<code>wr_ptr-rd_ptr=M-l</code>或<code>rd_ptr-wr_ptr=l</code>时，FIFO数据为满；<br>&amp;ensp;&amp;ensp;当<code>wr_ptr&gt;=rd_ptr</code>时，<code>wr_ptr-rd_ptr</code>为FIFO内数据个数；<br>&amp;ensp;&amp;ensp;当<code>wr_ptr&lt;=rd_ptr</code>时，<code>M-(rd_ptr-wr_ptr)</code>为FIFO内数据个数。  </p>
-<h3 id="模块实现"><a href="#模块实现" class="headerlink" title="模块实现"></a>模块实现</h3><h4 id="双端口RAM"><a href="#双端口RAM" class="headerlink" title="双端口RAM"></a>双端口RAM</h4><p>端口定义</p>
-<pre><code class="VHDL">entity dualram is
-    generic(widthi : positive	:=8;
-            depth : positive	:=8);
-    port(-----port a is only for writing
-         clka	: in STD_LOGIC;
-         wr		: in STD_LOGIC;    --写信号有效
-         addra	: in STD_LOGIC_VECTOR(depth-1 downto 0);--写指针
-         datain	: in STD_LOGIC_VECTOR(widthi-1 downto 0);
-         -----port b is only for reading
-         clkb	: in STD_LOGIC;
-         rd		: in STD_LOGIC;    --读信号有效
-         addrb	: in STD_LOGIC_VECTOR(depth-1 downto 0);--读指针
-         dataout	: out STD_LOGIC_VECTOR(widthi-1 downto 0)
-         );
+<h3 id="FIFO介绍">FIFO介绍</h3>
+<p>  要求：存入数据按顺序排放，存储器全满时给出信号并拒绝继续存入，全空时也给出信号并拒绝读出；读出时按先进先出原则；存储数据一旦读出就从存储器中消失。</p>
+<h4 id="特点">特点</h4>
+<p>  先进先出（ First In First Out，FIFO）与普通存储器的区别是没有外部读写地址线，其数据地址由内部读写指针自动加减1完成。</p>
+<p>  FIFO通常利用双口RAM和读写地址产生模块来实现其功能。<br>
+<img src="https://s.im5i.com/2021/05/22/Sql8h.png" alt="FIFO信号图"></p>
+<h4 id="读写指针">读写指针</h4>
+<p>  FIFO存储器是一个环形结构，读地址计数器和写地址计数器分别代表下一次读数据操作时的读指针和下一次写数据操作时的写指针。<br>
+这种环形结构的FIFO的特点是：数据满时，FIFO内的数据个数为总存储单元个数减1，即必须至少有一个数据为空，这是因为，如果在环形结构的FIFO没有留有一个空数据，则无法区分FIFO是空还是满这两种状态。当FIFO复位后，读地址计数器和写地址计数器复位，此时FIFO为空。<br>
+<img src="https://s.im5i.com/2021/05/22/Sqy6X.png" alt="FIFO信号图"><br>
+  当<code>wr_ptr=rd_ptr</code>时，FIFO数据为空；<br>
+  当<code>wr_ptr-rd_ptr=M-l</code>或<code>rd_ptr-wr_ptr=l</code>时，FIFO数据为满；<br>
+  当<code>wr_ptr&gt;=rd_ptr</code>时，<code>wr_ptr-rd_ptr</code>为FIFO内数据个数；<br>
+  当<code>wr_ptr&lt;=rd_ptr</code>时，<code>M-(rd_ptr-wr_ptr)</code>为FIFO内数据个数。</p>
+<h3 id="模块实现">模块实现</h3>
+<h4 id="双端口RAM">双端口RAM</h4>
+<p>端口定义</p>
+<pre><code class="language-VHDL">entity dualram is
+	generic(widthi : positive	:=8;
+			depth : positive	:=8);
+	port(-----port a is only for writing
+		 clka	: in STD_LOGIC;
+		 wr		: in STD_LOGIC;    --写信号有效
+		 addra	: in STD_LOGIC_VECTOR(depth-1 downto 0);--写指针
+		 datain	: in STD_LOGIC_VECTOR(widthi-1 downto 0);
+		 -----port b is only for reading
+		 clkb	: in STD_LOGIC;
+		 rd		: in STD_LOGIC;    --读信号有效
+		 addrb	: in STD_LOGIC_VECTOR(depth-1 downto 0);--读指针
+		 dataout	: out STD_LOGIC_VECTOR(widthi-1 downto 0)
+		 );
 end dualram;
 </code></pre>
-<p>结构体实现  </p>
-<pre><code class="VHDL">architecture Behavioral of dualram is
-    type ram is array(2 **3 downto 0) of STD_LOGIC_VECTOR(widthi-1 downto 0);
-    signal dualram:ram;
+<p>结构体实现</p>
+<pre><code class="language-VHDL">architecture Behavioral of dualram is
+	type ram is array(2 **3 downto 0) of STD_LOGIC_VECTOR(widthi-1 downto 0);
+	signal dualram:ram;
 begin
-    process(clka)  --写进程
-    begin
-        if clka&#39;event and clka = &#39;1&#39; then
-            if wr=&#39;1&#39; then
-                dualram(conv_integer(addra))&lt;=datain;
-            end if;
-        end if;
-    end process;
-    
-    process(clkb)  --读进程
-    begin
-        if clkb&#39;event and clkb = &#39;1&#39; then
-            if rd=&#39;1&#39; then
-                dataout&lt;=dualram(conv_integer(addrb));
-            end if;
-        end if;
-    end process;
+	process(clka)  --写进程
+	begin
+		if clka'event and clka = '1' then
+			if wr='1' then
+				dualram(conv_integer(addra))&lt;=datain;
+			end if;
+		end if;
+	end process;
+	
+	process(clkb)  --读进程
+	begin
+		if clkb'event and clkb = '1' then
+			if rd='1' then
+				dataout&lt;=dualram(conv_integer(addrb));
+			end if;
+		end if;
+	end process;
 end Behavioral;
 </code></pre>
-<h4 id="写地址计数器"><a href="#写地址计数器" class="headerlink" title="写地址计数器"></a>写地址计数器</h4><p>端口定义</p>
-<pre><code class="VHDL">entity write_pointer is
-    generic(
-            depth : positive	:=8);
-    port(clk	: in STD_LOGIC;
-         rst	: in STD_LOGIC;
-         wr		: in STD_LOGIC;
-         full	: in STD_LOGIC;
-         wr_pt	: out STD_LOGIC_VECTOR(depth-1 downto 0)
-         );
+<h4 id="写地址计数器">写地址计数器</h4>
+<p>端口定义</p>
+<pre><code class="language-VHDL">entity write_pointer is
+	generic(
+			depth : positive	:=8);
+	port(clk	: in STD_LOGIC;
+		 rst	: in STD_LOGIC;
+		 wr		: in STD_LOGIC;
+		 full	: in STD_LOGIC;
+		 wr_pt	: out STD_LOGIC_VECTOR(depth-1 downto 0)
+		 );
 end write_pointer;
 </code></pre>
-<p>结构体实现  </p>
-<pre><code class="VHDL">architecture Behavioral of write_pointer is
-    signal wr_pt_t:STD_LOGIC_VECTOR(depth-1 downto 0);--writer pointer counter
+<p>结构体实现</p>
+<pre><code class="language-VHDL">architecture Behavioral of write_pointer is
+	signal wr_pt_t:STD_LOGIC_VECTOR(depth-1 downto 0);--writer pointer counter
 begin
-    process(clk,rst)
-    begin
-        if rst=&#39;1&#39; then 
-            wr_pt_t&lt;=(others=&gt;&#39;0&#39;);
-        elsif clk&#39;event and clk = &#39;1&#39; then
-            if wr=&#39;1&#39; and full=&#39;0&#39; then
-                wr_pt_t&lt;=wr_pt_t+1;
-            end if;
-        end if;
-    end process;
+	process(clk,rst)
+	begin
+		if rst='1' then 
+			wr_pt_t&lt;=(others=&gt;'0');
+		elsif clk'event and clk = '1' then
+			if wr='1' and full='0' then
+				wr_pt_t&lt;=wr_pt_t+1;
+			end if;
+		end if;
+	end process;
 wr_pt&lt;=wr_pt_t;
 end Behavioral;
 </code></pre>
-<h4 id="读地址计数器"><a href="#读地址计数器" class="headerlink" title="读地址计数器"></a>读地址计数器</h4><p>端口定义</p>
-<pre><code class="VHDL">entity read_pointer is
-    generic(
-            depth : positive	:=8);
-    port(clk	: in STD_LOGIC;
-         rst	: in STD_LOGIC;
-         rq		: in STD_LOGIC;
-         empty		: in STD_LOGIC;
-         rd_pt	: out STD_LOGIC_VECTOR(depth-1 downto 0)
-         );
+<h4 id="读地址计数器">读地址计数器</h4>
+<p>端口定义</p>
+<pre><code class="language-VHDL">entity read_pointer is
+	generic(
+			depth : positive	:=8);
+	port(clk	: in STD_LOGIC;
+		 rst	: in STD_LOGIC;
+		 rq		: in STD_LOGIC;
+		 empty		: in STD_LOGIC;
+		 rd_pt	: out STD_LOGIC_VECTOR(depth-1 downto 0)
+		 );
 end read_pointer;
 </code></pre>
-<p>结构体实现  </p>
-<pre><code class="VHDL">architecture Behavioral of read_pointer is
+<p>结构体实现</p>
+<pre><code class="language-VHDL">architecture Behavioral of read_pointer is
 signal rd_pt_t:STD_LOGIC_VECTOR(depth-1 downto 0);--read_pointer counter
 begin
-    process(clk,rst)
-    begin
-        if rst=&#39;1&#39; then 
-            rd_pt_t&lt;=(others=&gt;&#39;0&#39;);
-        elsif clk&#39;event and clk = &#39;1&#39; then
-            if rq=&#39;1&#39; and empty=&#39;0&#39;then
-                rd_pt_t&lt;=rd_pt_t+1;
-            end if;
-        end if;
-    end process;
+	process(clk,rst)
+	begin
+		if rst='1' then 
+			rd_pt_t&lt;=(others=&gt;'0');
+		elsif clk'event and clk = '1' then
+			if rq='1' and empty='0'then
+				rd_pt_t&lt;=rd_pt_t+1;
+			end if;
+		end if;
+	end process;
 rd_pt&lt;=rd_pt_t;
 
 end Behavioral;
 </code></pre>
-<h4 id="空满状态产生器"><a href="#空满状态产生器" class="headerlink" title="空满状态产生器"></a>空满状态产生器</h4><p>端口定义</p>
-<pre><code class="VHDL">entity judge_status is
-    generic(
-            depth : positive	:=8);
-    port(clk	: in STD_LOGIC;
-         rst	: in STD_LOGIC;
-         wr_pt	: in STD_LOGIC_VECTOR(depth-1 downto 0);
-         rd_pt	: in STD_LOGIC_VECTOR(depth-1 downto 0);
-         empty	: out STD_LOGIC;
-         full	: out STD_LOGIC
-         );
+<h4 id="空满状态产生器">空满状态产生器</h4>
+<p>端口定义</p>
+<pre><code class="language-VHDL">entity judge_status is
+	generic(
+			depth : positive	:=8);
+	port(clk	: in STD_LOGIC;
+		 rst	: in STD_LOGIC;
+		 wr_pt	: in STD_LOGIC_VECTOR(depth-1 downto 0);
+		 rd_pt	: in STD_LOGIC_VECTOR(depth-1 downto 0);
+		 empty	: out STD_LOGIC;
+		 full	: out STD_LOGIC
+		 );
 end judge_status;
 </code></pre>
-<p>结构体实现  </p>
-<pre><code class="VHDL">architecture Behavioral of judge_status is
+<p>结构体实现</p>
+<pre><code class="language-VHDL">architecture Behavioral of judge_status is
 
 begin
-    process(clk,rst)--空状态产生
-    begin
-        if rst=&#39;1&#39; then 
-            empty&lt;=&#39;1&#39;;
-        elsif clk&#39;event and clk = &#39;1&#39; then
-            if wr_pt=rd_pt then
-                empty&lt;=&#39;1&#39;;
-            else
-                empty&lt;=&#39;0&#39;;
-            end if;
-        end if;
-    end process;
-    
-    process(clk,rst)--满状态产生
-    begin
-        if rst=&#39;1&#39; then 
-            full&lt;=&#39;1&#39;;
-        elsif clk&#39;event and clk = &#39;1&#39; then
-            if wr_pt&gt;rd_pt then
-                if (rd_pt+depth)=wr_pt then
-                    full&lt;=&#39;1&#39;;
-                else
-                    full&lt;=&#39;0&#39;;
-                end if;
-            else
-                if (wr_pt+1)=rd_pt then
-                    full&lt;=&#39;1&#39;;
-                else
-                    full&lt;=&#39;0&#39;;
-                end if;
-            end if;
-        end if;
-    end process;
+	process(clk,rst)--空状态产生
+	begin
+		if rst='1' then 
+			empty&lt;='1';
+		elsif clk'event and clk = '1' then
+			if wr_pt=rd_pt then
+				empty&lt;='1';
+			else
+				empty&lt;='0';
+			end if;
+		end if;
+	end process;
+	
+	process(clk,rst)--满状态产生
+	begin
+		if rst='1' then 
+			full&lt;='1';
+		elsif clk'event and clk = '1' then
+			if wr_pt&gt;rd_pt then
+				if (rd_pt+depth)=wr_pt then
+					full&lt;='1';
+				else
+					full&lt;='0';
+				end if;
+			else
+				if (wr_pt+1)=rd_pt then
+					full&lt;='1';
+				else
+					full&lt;='0';
+				end if;
+			end if;
+		end if;
+	end process;
 end Behavioral;
 </code></pre>
-<h4 id="顶层模块（连线）"><a href="#顶层模块（连线）" class="headerlink" title="顶层模块（连线）"></a>顶层模块（连线）</h4><p>端口定义</p>
-<pre><code class="VHDL">entity fifo_all is
-    generic(widthi : positive	:=8;
-            depth : positive	:=8);
-    port(-----port a is only for writing
-         clk	: in STD_LOGIC;
-         rst	: in STD_LOGIC;
-         wr		: in STD_LOGIC;
-         rd		: in STD_LOGIC;
-         datain	: in STD_LOGIC_VECTOR(widthi-1 downto 0);
-         dataout: out STD_LOGIC_VECTOR(widthi-1 downto 0);
-         empty_out	: out STD_LOGIC;
-         full_out	: out STD_LOGIC
-         );
+<h4 id="顶层模块（连线）">顶层模块（连线）</h4>
+<p>端口定义</p>
+<pre><code class="language-VHDL">entity fifo_all is
+	generic(widthi : positive	:=8;
+			depth : positive	:=8);
+	port(-----port a is only for writing
+		 clk	: in STD_LOGIC;
+		 rst	: in STD_LOGIC;
+		 wr		: in STD_LOGIC;
+		 rd		: in STD_LOGIC;
+		 datain	: in STD_LOGIC_VECTOR(widthi-1 downto 0);
+		 dataout: out STD_LOGIC_VECTOR(widthi-1 downto 0);
+		 empty_out	: out STD_LOGIC;
+		 full_out	: out STD_LOGIC
+		 );
 end fifo_all;
 </code></pre>
 <p>内部实现</p>
-<pre><code class="VHDL">signal full,empty : std_logic;
+<pre><code class="language-VHDL">signal full,empty : std_logic;
 signal rd_pt	: STD_LOGIC_VECTOR(depth-1 downto 0);
 signal wr_pt	: STD_LOGIC_VECTOR(depth-1 downto 0);
 begin
@@ -330,5 +346,8 @@ write_pointer0:write_pointer port map(clk,rst,wr,full,wr_pt);
 empty_out&lt;=empty;
 full_out&lt;=full;   
 </code></pre>
-<h3 id="仿真结果"><a href="#仿真结果" class="headerlink" title="仿真结果"></a>仿真结果</h3><p>&amp;ensp;&amp;ensp;可以看到，写进去的数据被依次读取除来了；<br><img src="https://s.im5i.com/2021/05/22/Sq6Hf.png" alt="FIFO信号图"><br>&amp;ensp;&amp;ensp;而以上代码有错误，错误在空间写满后如果<code>wr</code>信号如果有效，会覆盖上次写的数据，而事实上此次写不应该有效。修改方法是在双端口<code>rom</code>里引入<code>empty</code>,<code>full</code>信号判断作为是否写和读的条件判断。</p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2021/05/22/design-FIFO/">https://naughtyrabbit.github.io/2021/05/22/design-FIFO/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/FIFO/">FIFO</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcHjGf.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/05/27/tristates/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/19/UqDDQo.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">三态门与双向数据总线</div></div></a></div><div class="next-post pull-right"><a href="/2021/05/22/poem-2021-5-22/"><img class="next-cover" src="https://m1.im5i.com/2022/08/17/UcoMsA.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">兔言兔语——1</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#FIFO%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">FIFO介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-number">1.1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E6%8C%87%E9%92%88"><span class="toc-number">1.2.</span> <span class="toc-text">读写指针</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">模块实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E7%AB%AF%E5%8F%A3RAM"><span class="toc-number">2.1.</span> <span class="toc-text">双端口RAM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%99%E5%9C%B0%E5%9D%80%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="toc-number">2.2.</span> <span class="toc-text">写地址计数器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%9C%B0%E5%9D%80%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="toc-number">2.3.</span> <span class="toc-text">读地址计数器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A9%BA%E6%BB%A1%E7%8A%B6%E6%80%81%E4%BA%A7%E7%94%9F%E5%99%A8"><span class="toc-number">2.4.</span> <span class="toc-text">空满状态产生器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B6%E5%B1%82%E6%A8%A1%E5%9D%97%EF%BC%88%E8%BF%9E%E7%BA%BF%EF%BC%89"><span class="toc-number">2.5.</span> <span class="toc-text">顶层模块（连线）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">仿真结果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHsmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/18/UcHwKx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UcoCys.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/UcovSH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/17/UcoMsA.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+<h3 id="仿真结果-2">仿真结果</h3>
+<p>  可以看到，写进去的数据被依次读取除来了；<br>
+<img src="https://s.im5i.com/2021/05/22/Sq6Hf.png" alt="FIFO信号图"><br>
+  而以上代码有错误，错误在空间写满后如果<code>wr</code>信号如果有效，会覆盖上次写的数据，而事实上此次写不应该有效。修改方法是在双端口<code>rom</code>里引入<code>empty</code>,<code>full</code>信号判断作为是否写和读的条件判断。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2021/05/22/design-FIFO/">https://naughtyrabbit.github.io/2021/05/22/design-FIFO/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/FIFO/">FIFO</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/19/UcPhzB.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/05/27/tristates/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/17/UctxpQ.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">三态门与双向数据总线</div></div></a></div><div class="next-post pull-right"><a href="/2021/05/22/poem-2021-5-22/"><img class="next-cover" src="https://m1.im5i.com/2022/08/19/UcP8OW.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">兔言兔语——1</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#FIFO%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">FIFO介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-number">1.1.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E6%8C%87%E9%92%88"><span class="toc-number">1.2.</span> <span class="toc-text">读写指针</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">模块实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E7%AB%AF%E5%8F%A3RAM"><span class="toc-number">2.1.</span> <span class="toc-text">双端口RAM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%99%E5%9C%B0%E5%9D%80%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="toc-number">2.2.</span> <span class="toc-text">写地址计数器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%BB%E5%9C%B0%E5%9D%80%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="toc-number">2.3.</span> <span class="toc-text">读地址计数器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A9%BA%E6%BB%A1%E7%8A%B6%E6%80%81%E4%BA%A7%E7%94%9F%E5%99%A8"><span class="toc-number">2.4.</span> <span class="toc-text">空满状态产生器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B6%E5%B1%82%E6%A8%A1%E5%9D%97%EF%BC%88%E8%BF%9E%E7%BA%BF%EF%BC%89"><span class="toc-number">2.5.</span> <span class="toc-text">顶层模块（连线）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C-2"><span class="toc-number">3.</span> <span class="toc-text">仿真结果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHsmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/19/UcP22h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/Uco6GG.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcH3bX.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -5,7 +5,7 @@
 <meta property="og:site_name" content="不听话的兔子君">
 <meta property="og:description" content="linux网络编程-TCP套接字通信实验，多路复用">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://m1.im5i.com/2022/08/17/UcoJS7.jpg">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcHX83.jpg">
 <meta property="article:published_time" content="2021-06-22T07:11:19.000Z">
 <meta property="article:modified_time" content="2021-06-22T09:34:50.000Z">
 <meta property="article:author" content="naughtyrabbit">
@@ -13,7 +13,7 @@
 <meta property="article:tag" content="socket">
 <meta property="article:tag" content="tcp&#x2F;ip">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://m1.im5i.com/2022/08/17/UcoJS7.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2021/06/22/web-linux-socket/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcHX83.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2021/06/22/web-linux-socket/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
   localSearch: undefined,
@@ -147,8 +147,9 @@
 <p>linux网络编程-TCP套接字通信实验，多路复用</p>
 </blockquote>
 <span id="more"></span>
-<h3 id="代码分析-client-c"><a href="#代码分析-client-c" class="headerlink" title="代码分析 client.c"></a>代码分析 client.c</h3><p>&amp;ensp;&amp;ensp;程序分析client.c  </p>
-<pre><code class="c">//client.c
+<h3 id="代码分析-client-c-2">代码分析 client.c</h3>
+<p>  程序分析client.c</p>
+<pre><code class="language-c">//client.c
 //
 //  TCP 套接字编程典型模型
 //
@@ -310,105 +311,106 @@
 
 int main(int argc, char *argv[])
 &#123;
-    struct sockaddr_in *sin_addrptr;
-    struct sockaddr serv_sa;
-    struct addrinfo *serv_aiptr, hints, *res_aiptr ;
-    int sockfd, res;
-    char buf[BUF_SIZE];
-    char serv_name[80];
+	struct sockaddr_in *sin_addrptr;
+	struct sockaddr serv_sa;
+	struct addrinfo *serv_aiptr, hints, *res_aiptr ;
+	int sockfd, res;
+	char buf[BUF_SIZE];
+	char serv_name[80];
 
-    memset(serv_name, 0, sizeof(serv_name));
-    memset(buf, 0, sizeof(buf));
-    strcpy(serv_name, &quot;127.0.0.1&quot;);
-    strcpy(buf, &quot;你好服务器!&quot;);
+	memset(serv_name, 0, sizeof(serv_name));
+	memset(buf, 0, sizeof(buf));
+	strcpy(serv_name, &quot;127.0.0.1&quot;);
+	strcpy(buf, &quot;你好服务器!&quot;);
 
-    if (argc &gt; 1)
-    &#123;
-        memset(serv_name, 0, sizeof(serv_name));
-        strcpy(serv_name, argv[1]);
-    &#125;
-    if (argc &gt; 2)
-    &#123;
-        memset(buf, 0, sizeof(buf));
-        strcpy(buf, argv[2]);
-    &#125;
+	if (argc &gt; 1)
+	&#123;
+		memset(serv_name, 0, sizeof(serv_name));
+		strcpy(serv_name, argv[1]);
+	&#125;
+	if (argc &gt; 2)
+	&#123;
+		memset(buf, 0, sizeof(buf));
+		strcpy(buf, argv[2]);
+	&#125;
 
-    //服务器地址解析函数getaddrinfo
-    //int getaddrinfo(const char *node, const char *service,           
-    //                const struct addrinfo *hints,
-    //                struct addrinfo **res);
-    //
-    memset(&amp;hints, 0, sizeof(hints));
-    hints.ai_flags = AI_PASSIVE;
-    hints.ai_family = AF_INET;
-    
-    if((res = getaddrinfo(serv_name, NULL, &amp;hints, &amp;res_aiptr)) !=0)
-    &#123;
-        fprintf(stderr, &quot;Error getaddrinfo %s\n&quot;,gai_strerror(res));
-        exit(-1);
-    &#125;
-    for(serv_aiptr = res_aiptr;serv_aiptr != NULL; serv_aiptr++)
-    &#123;
-        if(serv_aiptr-&gt;ai_family == AF_INET)
-        &#123;
-            serv_sa = *(serv_aiptr-&gt;ai_addr);
-            sin_addrptr = (struct sockaddr_in *) &amp;serv_sa;
-            break;
-        &#125;
-    &#125;
-    if (serv_aiptr == NULL)
-    &#123;
-        freeaddrinfo(res_aiptr);
-        printf(&quot;不能发现服务器&quot;);
-        exit(-1);
-    &#125;
-    freeaddrinfo(res_aiptr);
+	//服务器地址解析函数getaddrinfo
+	//int getaddrinfo(const char *node, const char *service,           
+	//                const struct addrinfo *hints,
+	//                struct addrinfo **res);
+	//
+	memset(&amp;hints, 0, sizeof(hints));
+	hints.ai_flags = AI_PASSIVE;
+	hints.ai_family = AF_INET;
+	
+	if((res = getaddrinfo(serv_name, NULL, &amp;hints, &amp;res_aiptr)) !=0)
+	&#123;
+		fprintf(stderr, &quot;Error getaddrinfo %s\n&quot;,gai_strerror(res));
+		exit(-1);
+	&#125;
+	for(serv_aiptr = res_aiptr;serv_aiptr != NULL; serv_aiptr++)
+	&#123;
+		if(serv_aiptr-&gt;ai_family == AF_INET)
+		&#123;
+			serv_sa = *(serv_aiptr-&gt;ai_addr);
+			sin_addrptr = (struct sockaddr_in *) &amp;serv_sa;
+			break;
+		&#125;
+	&#125;
+	if (serv_aiptr == NULL)
+	&#123;
+		freeaddrinfo(res_aiptr);
+		printf(&quot;不能发现服务器&quot;);
+		exit(-1);
+	&#125;
+	freeaddrinfo(res_aiptr);
 
-    //建立socket连接
-    //int socket(int domain, int type, int protocol);
-    //以默认协议，在INET域建立数据流套接字
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    &#123;
-        perror(&quot;Error socket&quot;);
-        exit(-1);
-    &#125;
-    printf(&quot;套接字 ID = %d\n&quot;, sockfd);
-    
-    //设置服务器sockaddr_in 结构体相关参数
-    sin_addrptr-&gt;sin_port = htons(PORT);
+	//建立socket连接
+	//int socket(int domain, int type, int protocol);
+	//以默认协议，在INET域建立数据流套接字
+	if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	&#123;
+		perror(&quot;Error socket&quot;);
+		exit(-1);
+	&#125;
+	printf(&quot;套接字 ID = %d\n&quot;, sockfd);
+	
+	//设置服务器sockaddr_in 结构体相关参数
+	sin_addrptr-&gt;sin_port = htons(PORT);
 
-    //调用 connect 函数主动发起对服务器端的连接
-    //int connect(int socket, const struct sockaddr *address,
-    //            socklen_t address_len);
-    if((connect(sockfd, &amp;serv_sa, sizeof(serv_sa))) == -1)
-    &#123;
-        perror(&quot;Error connect&quot;);
-        exit(-1);
-    &#125;
-    
-    //发送消息到服务器端
-    //ssize_t  send(int  socket,  const  void *buffer, size_t length, int
-    if ((send(sockfd, buf, strlen(buf), 0)) == -1)
-    &#123;
-        perror(&quot;Error send&quot;);
-        exit(-1);
-    &#125;
+	//调用 connect 函数主动发起对服务器端的连接
+	//int connect(int socket, const struct sockaddr *address,
+	//            socklen_t address_len);
+	if((connect(sockfd, &amp;serv_sa, sizeof(serv_sa))) == -1)
+	&#123;
+		perror(&quot;Error connect&quot;);
+		exit(-1);
+	&#125;
+	
+	//发送消息到服务器端
+	//ssize_t  send(int  socket,  const  void *buffer, size_t length, int
+	if ((send(sockfd, buf, strlen(buf), 0)) == -1)
+	&#123;
+		perror(&quot;Error send&quot;);
+		exit(-1);
+	&#125;
 
-    //接收服务器端发送的消息
-    //ssize_t recv(int sockfd, void *buf, size_t len, int flags);
-    memset(buf, 0, sizeof(buf));
-    if ((res = recv(sockfd, buf, sizeof(buf), 0)) == -1)
-    &#123;
-        perror(&quot;Error recv&quot;);
-        exit(-1);
-    &#125;
-    printf(&quot;接收到服务器信息:%s(%d个字节)\n&quot;, buf, res);
-    close(sockfd);
-    exit(0);
+	//接收服务器端发送的消息
+	//ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+	memset(buf, 0, sizeof(buf));
+	if ((res = recv(sockfd, buf, sizeof(buf), 0)) == -1)
+	&#123;
+		perror(&quot;Error recv&quot;);
+		exit(-1);
+	&#125;
+	printf(&quot;接收到服务器信息:%s(%d个字节)\n&quot;, buf, res);
+	close(sockfd);
+	exit(0);
 &#125;
 </code></pre>
-<h3 id="代码分析-server-c"><a href="#代码分析-server-c" class="headerlink" title="代码分析 server.c"></a>代码分析 server.c</h3><p>&amp;ensp;&amp;ensp;程序分析server.c  </p>
-<pre><code class="c">//server.c
+<h3 id="代码分析-server-c">代码分析 server.c</h3>
+<p>  程序分析server.c</p>
+<pre><code class="language-c">//server.c
 //使用select函数进行多路复用，允许多个客户端同事请求服务器
 //
 //  TCP 套接字编程典型模型
@@ -574,153 +576,155 @@ int main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 &#123;
-    struct sockaddr_in serv_addr, clie_addr;
-    int sin_size, res;
-    int sockfd, cliefd, fd;
-    fd_set inset, tmp_inset;
-    char buf[BUF_SIZE];
-    //char str[INET_ADDRSTRLEN];
-    struct timeval tv;
-    int maxfd;
+	struct sockaddr_in serv_addr, clie_addr;
+	int sin_size, res;
+	int sockfd, cliefd, fd;
+	fd_set inset, tmp_inset;
+	char buf[BUF_SIZE];
+	//char str[INET_ADDRSTRLEN];
+	struct timeval tv;
+	int maxfd;
 
-    if (argc &gt; 1)
-    &#123;
-        tv.tv_sec = atoi(argv[1]);
-    &#125;
-    else
-    &#123;
-        tv.tv_sec = 60;
-    &#125;
+	if (argc &gt; 1)
+	&#123;
+		tv.tv_sec = atoi(argv[1]);
+	&#125;
+	else
+	&#123;
+		tv.tv_sec = 60;
+	&#125;
 
-    //建立socket连接
-    //int socket(int domain, int type, int protocol);
-    //以默认协议，在INET域建立数据流套接字
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    &#123;
-        perror(&quot;Error scoket&quot;);
-        exit(-1);
-    &#125;
-    printf(&quot;套接字 ID = %d&quot;, sockfd);
+	//建立socket连接
+	//int socket(int domain, int type, int protocol);
+	//以默认协议，在INET域建立数据流套接字
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+	&#123;
+		perror(&quot;Error scoket&quot;);
+		exit(-1);
+	&#125;
+	printf(&quot;套接字 ID = %d&quot;, sockfd);
 
-    //设置sockaddr_in结构中的相关参数
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
-    serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    bzero(&amp;(serv_addr.sin_zero), 8);
+	//设置sockaddr_in结构中的相关参数
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(PORT);
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	bzero(&amp;(serv_addr.sin_zero), 8);
 
-    int i = 1;	//允许重复使用本地地址与套接字进行绑定
-    //int setsockopt(int socket, int level, int option_name,
-    //               const void *option_value, socklen_t option_len);
-    if ((setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;i, sizeof(i))) == -1)
-    &#123;
-        perror(&quot;Error setsockopt&quot;);
-        exit(-1);
-    &#125;
+	int i = 1;	//允许重复使用本地地址与套接字进行绑定
+	//int setsockopt(int socket, int level, int option_name,
+	//               const void *option_value, socklen_t option_len);
+	if ((setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &amp;i, sizeof(i))) == -1)
+	&#123;
+		perror(&quot;Error setsockopt&quot;);
+		exit(-1);
+	&#125;
 
-    //绑定端口及服务器地址 bind函数
-    //int bind(int socket, const struct sockaddr *address,
-    //        socklen_t address_len);
-            if((bind(sockfd, (struct sockaddr *)&amp;serv_addr,\
-                        sizeof(struct sockaddr))) == -1)
-        &#123;
-            perror(&quot;Error bind&quot;);
-            exit(-1);
-        &#125;
-        printf(&quot;绑定成功！\n&quot;);
+	//绑定端口及服务器地址 bind函数
+	//int bind(int socket, const struct sockaddr *address,
+	//        socklen_t address_len);
+			if((bind(sockfd, (struct sockaddr *)&amp;serv_addr,\
+						sizeof(struct sockaddr))) == -1)
+		&#123;
+			perror(&quot;Error bind&quot;);
+			exit(-1);
+		&#125;
+		printf(&quot;绑定成功！\n&quot;);
 
-        //用 listen函数创建未处理请求队列
-        //int listen(int socket, int backlog);
-        if((listen(sockfd, MAX_QUE_NU)) == -1)
-        &#123;
-            perror(&quot;Error listen&quot;);
-            exit(-1);
-        &#125;
-        printf(&quot;监听端口中......\n&quot;);
-        //初始化select函数监听的文件集合
-        maxfd = sockfd;
-        FD_ZERO(&amp;inset);
-        FD_SET(sockfd, &amp;inset);
-        while(1)
-        &#123;
-            tmp_inset = inset;
-            //调用select函数
-            //int select(int nfds, fd_set *readfds, fd_set *writefds,
-            //          fd_set *exceptfds, struct timeval *timeout);
-            res = select(maxfd + 1, &amp;tmp_inset, NULL, NULL, &amp;tv);
-            if (res == -1)		
-            &#123;
-                perror(&quot;Error select&quot;);
-                exit(-1);
-            &#125;
-            else if (res == 0)	//	超时
-            &#123;
-                break;
-            &#125;
-            
-            //轮询select事件
-            for (fd = 0; fd &lt; maxfd + 1; fd++)
-            &#123;
-                if(FD_ISSET(fd, &amp;tmp_inset))
-                &#123;
-                    if (fd == sockfd)
-                    &#123;
-                        //调用accept函数接受客户端的连接
-                        //int accept(int socket, struct sockaddr *restrict address,
-                        //          socklen_t *restrict address_len);
-                        sin_size = sizeof(struct sockaddr);
-                        if((cliefd = accept(sockfd, (struct sockaddr *)&amp;clie_addr,\
-                                        (socklen_t *)&amp;sin_size)) == -1)
-                        &#123;
-                            perror(&quot;Error accept&quot;);
-                            exit(-1);
-                        &#125;
-                        
-                        //接受连接请求，并将客户端sockfd加入select检测列表
-                        
-                        maxfd = cliefd &gt; maxfd ? cliefd : maxfd;
+		//用 listen函数创建未处理请求队列
+		//int listen(int socket, int backlog);
+		if((listen(sockfd, MAX_QUE_NU)) == -1)
+		&#123;
+			perror(&quot;Error listen&quot;);
+			exit(-1);
+		&#125;
+		printf(&quot;监听端口中......\n&quot;);
+		//初始化select函数监听的文件集合
+		maxfd = sockfd;
+		FD_ZERO(&amp;inset);
+		FD_SET(sockfd, &amp;inset);
+		while(1)
+		&#123;
+			tmp_inset = inset;
+			//调用select函数
+			//int select(int nfds, fd_set *readfds, fd_set *writefds,
+			//          fd_set *exceptfds, struct timeval *timeout);
+			res = select(maxfd + 1, &amp;tmp_inset, NULL, NULL, &amp;tv);
+			if (res == -1)		
+			&#123;
+				perror(&quot;Error select&quot;);
+				exit(-1);
+			&#125;
+			else if (res == 0)	//	超时
+			&#123;
+				break;
+			&#125;
+			
+			//轮询select事件
+			for (fd = 0; fd &lt; maxfd + 1; fd++)
+			&#123;
+				if(FD_ISSET(fd, &amp;tmp_inset))
+				&#123;
+					if (fd == sockfd)
+					&#123;
+						//调用accept函数接受客户端的连接
+						//int accept(int socket, struct sockaddr *restrict address,
+						//          socklen_t *restrict address_len);
+						sin_size = sizeof(struct sockaddr);
+						if((cliefd = accept(sockfd, (struct sockaddr *)&amp;clie_addr,\
+										(socklen_t *)&amp;sin_size)) == -1)
+						&#123;
+							perror(&quot;Error accept&quot;);
+							exit(-1);
+						&#125;
+						
+						//接受连接请求，并将客户端sockfd加入select检测列表
+						
+						maxfd = cliefd &gt; maxfd ? cliefd : maxfd;
 
-                        FD_SET(cliefd, &amp;inset);
-                        printf(&quot;来自%d(socket)的新的连接\n&quot;, cliefd);
-                    &#125;
-                    else
-                    &#123;
+						FD_SET(cliefd, &amp;inset);
+						printf(&quot;来自%d(socket)的新的连接\n&quot;, cliefd);
+					&#125;
+					else
+					&#123;
 
-                        //inet_ntop(AF_INET, &amp;clie_addr.sin_addr, str, INET_ADDRSTRLEN);
-                        //调用recv 接受客户端请求
-                        //ssize_t recv(int sockfd, void *buf, size_t len, int flags);
-                        memset(buf, 0, sizeof(buf));
-                        if((res = recv(fd, buf, sizeof(buf), 0)) &lt; 1)
-                        &#123;
-                            //perror(&quot;Error recv&quot;);
-                            //exit(-1);
-                            close(fd);
-                            FD_CLR(fd, &amp;inset);
-                            printf(&quot;客户端%d(socket)已退出\n&quot;, fd);
-                        &#125;
-                        else
-                        &#123;
-                            printf(&quot;接收到来自(%d(socket))的消息:%s(%d个字节)\n&quot;, fd, buf, res);
-                            
-                            //调用 send 函数回复一条消息
-                            //ssize_t  send(int  socket,  const  void *buffer, size_t length,
-                            //				int flags);
-                            //
-                            memset(buf, 0, sizeof(buf));
-                            sprintf(buf, &quot;%d(socket)欢迎登录!&quot;, fd);
+						//inet_ntop(AF_INET, &amp;clie_addr.sin_addr, str, INET_ADDRSTRLEN);
+						//调用recv 接受客户端请求
+						//ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+						memset(buf, 0, sizeof(buf));
+						if((res = recv(fd, buf, sizeof(buf), 0)) &lt; 1)
+						&#123;
+							//perror(&quot;Error recv&quot;);
+							//exit(-1);
+							close(fd);
+							FD_CLR(fd, &amp;inset);
+							printf(&quot;客户端%d(socket)已退出\n&quot;, fd);
+						&#125;
+						else
+						&#123;
+							printf(&quot;接收到来自(%d(socket))的消息:%s(%d个字节)\n&quot;, fd, buf, res);
+							
+							//调用 send 函数回复一条消息
+							//ssize_t  send(int  socket,  const  void *buffer, size_t length,
+							//				int flags);
+							//
+							memset(buf, 0, sizeof(buf));
+							sprintf(buf, &quot;%d(socket)欢迎登录!&quot;, fd);
 
-                            if((res = send(fd, buf, strlen(buf), 0)) == -1)
-                            &#123;
-                                perror(&quot;Error send&quot;);
-                                exit(-1);
-                            &#125;
-                        &#125;	//end if res=recv
-                    &#125;	// end if fd
-                &#125;	//end if FD_ISSET
-            &#125;	// end for fd
-        &#125; // end while
-        close(sockfd);
-        exit(0);
+							if((res = send(fd, buf, strlen(buf), 0)) == -1)
+							&#123;
+								perror(&quot;Error send&quot;);
+								exit(-1);
+							&#125;
+						&#125;	//end if res=recv
+					&#125;	// end if fd
+				&#125;	//end if FD_ISSET
+			&#125;	// end for fd
+		&#125; // end while
+		close(sockfd);
+		exit(0);
 &#125;
 </code></pre>
-<h3 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h3><p>&amp;ensp;&amp;ensp;客户端可以带参也可以缺省，用默认值。<br><img src="https://s.im5i.com/2021/06/22/a4P5S.png" alt="执行结果">     </p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2021/06/22/web-linux-socket/">https://naughtyrabbit.github.io/2021/06/22/web-linux-socket/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/select-%E5%87%BD%E6%95%B0/">select()函数</a><a class="post-meta__tags" href="/tags/socket/">socket</a><a class="post-meta__tags" href="/tags/tcp-ip/">tcp/ip</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/17/UcoJS7.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/22/web-linux-ipadd2bin/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/18/UcHX83.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">linux网络编程-地址转换</div></div></a></div><div class="next-post pull-right"><a href="/2021/06/22/web-linux-udp/"><img class="next-cover" src="https://m1.im5i.com/2022/08/18/UcHkq7.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">linux网络编程-UDP套接字编程典型模型</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/06/21/fileio-linux-select/" title="linux文件读写编程-select()函数"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPMfA.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-21</div><div class="title">linux文件读写编程-select()函数</div></div></a></div><div><a href="/2021/06/22/procom-linux-pipecom/" title="linux进程间通信编程-管道通信"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHQxo.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-22</div><div class="title">linux进程间通信编程-管道通信</div></div></a></div><div><a href="/2021/06/22/web-linux-udp/" title="linux网络编程-UDP套接字编程典型模型"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHkq7.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-22</div><div class="title">linux网络编程-UDP套接字编程典型模型</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-client-c"><span class="toc-number">1.</span> <span class="toc-text">代码分析 client.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-server-c"><span class="toc-number">2.</span> <span class="toc-text">代码分析 server.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">执行结果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHsmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/18/UcHwKx.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UcoCys.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/UcovSH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/17/UcoMsA.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+<h3 id="执行结果-12">执行结果</h3>
+<p>  客户端可以带参也可以缺省，用默认值。<br>
+<img src="https://s.im5i.com/2021/06/22/a4P5S.png" alt="执行结果"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2021/06/22/web-linux-socket/">https://naughtyrabbit.github.io/2021/06/22/web-linux-socket/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/select-%E5%87%BD%E6%95%B0/">select()函数</a><a class="post-meta__tags" href="/tags/socket/">socket</a><a class="post-meta__tags" href="/tags/tcp-ip/">tcp/ip</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcHX83.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/06/22/web-linux-ipadd2bin/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/17/UcoXqB.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">linux网络编程-地址转换</div></div></a></div><div class="next-post pull-right"><a href="/2021/06/22/web-linux-udp/"><img class="next-cover" src="https://m1.im5i.com/2022/08/19/UcPuaT.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">linux网络编程-UDP套接字编程典型模型</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/06/21/fileio-linux-select/" title="linux文件读写编程-select()函数"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPSYf.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-21</div><div class="title">linux文件读写编程-select()函数</div></div></a></div><div><a href="/2021/06/22/procom-linux-pipecom/" title="linux进程间通信编程-管道通信"><img class="cover" src="https://m1.im5i.com/2022/08/17/Uctd3x.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-22</div><div class="title">linux进程间通信编程-管道通信</div></div></a></div><div><a href="/2021/06/22/web-linux-udp/" title="linux网络编程-UDP套接字编程典型模型"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPuaT.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-22</div><div class="title">linux网络编程-UDP套接字编程典型模型</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-client-c-2"><span class="toc-number">1.</span> <span class="toc-text">代码分析 client.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-server-c"><span class="toc-number">2.</span> <span class="toc-text">代码分析 server.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C-12"><span class="toc-number">3.</span> <span class="toc-text">执行结果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHsmq.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/19/UcP22h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/Uco6GG.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcH3bX.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
