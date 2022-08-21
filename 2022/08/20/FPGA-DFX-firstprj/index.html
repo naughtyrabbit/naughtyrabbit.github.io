@@ -5,21 +5,21 @@
 <meta property="og:site_name" content="不听话的兔子君">
 <meta property="og:description" content="UltraScale 基本 DFX 流程。目前动态可重构(Partial Reconfiguration) 已经更名为DFX(Dynamic Function eXchange, 动态功能切换)，方便软件工程师也能更容易理解这个Feature.​">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://m1.im5i.com/2022/08/17/Ucoynv.jpg">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/18/UcHNHQ.jpg">
 <meta property="article:published_time" content="2022-08-20T08:53:50.000Z">
-<meta property="article:modified_time" content="2022-08-21T09:53:59.195Z">
+<meta property="article:modified_time" content="2022-08-21T12:49:22.115Z">
 <meta property="article:author" content="naughtyrabbit">
 <meta property="article:tag" content="FPGA">
 <meta property="article:tag" content="DFX">
 <meta property="article:tag" content="部分可重构">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://m1.im5i.com/2022/08/17/Ucoynv.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/18/UcHNHQ.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
   localSearch: undefined,
   translate: undefined,
   noticeOutdate: undefined,
-  highlight: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
   copy: {
     success: '复制成功',
     error: '复制错误',
@@ -60,7 +60,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2022-08-21 17:53:59'
+  postUpdate: '2022-08-21 20:49:22'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -143,7 +143,7 @@
         }
       }
     })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
-</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">FPGA_动态功能切换_UltraScale 基本 DFX 流程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-08-21T09:53:59.195Z" title="更新于 2022-08-21 17:53:59">2022-08-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DFX/">DFX</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">81</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">FPGA_动态功能切换_UltraScale 基本 DFX 流程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-08-21T12:49:22.115Z" title="更新于 2022-08-21 20:49:22">2022-08-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DFX/">DFX</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
 <p>UltraScale 基本 DFX 流程。目前动态可重构(Partial Reconfiguration) 已经更名为DFX(Dynamic Function eXchange, 动态功能切换)，方便软件工程师也能更容易理解这个Feature.​</p>
 </blockquote>
 <span id="more"></span>
@@ -155,82 +155,81 @@
 <h4 id="1-主脚本：">1. 主脚本：</h4>
 <p>  在 \led_shift_count_us 中，在文本编辑器中打开 run_dfx.tcl。这是您定义设计参数、设计源和设计结构的主脚本。这是编译完整的 Dynamic Function eXchange 设计时必须修改的唯一文件。在位于 Tcl_HD 子目录的 README.txt 中查找有关 run_dfx.tcl、advanced_settings.tcl 和底层脚本的更多详细信息。文件具体如下：<br>
 <strong>run_dfx.tcl</strong></p>
-<pre><code class="language-tcl">###############################################################
-###  Minimum settings required to run DFX flow:
-###  1. Specify flow steps
-###  2. Define target board
-###  3. Identify source directories
-###  4. Define static module
-###  5. Define RPs, and their RM variants
-###############################################################
-####flow control (1 = run step , 0 = skip step)
-set run.topSynth       1 ;#synthesize static
-set run.rmSynth        1 ;#synthesize RM variants
-set run.dfxImpl        0 ;#implement each static + RM configuration
-set run.prVerify       0 ;#verify RMs are compatible with static
-set run.writeBitstream 0 ;#generate full and partial bitstreams
+<pre class="line-numbers language-tcl" data-language="tcl"><code class="language-tcl"><span class="token comment">###############################################################</span>
+<span class="token comment">###  Minimum settings required to run DFX flow:</span>
+<span class="token comment">###  1. Specify flow steps</span>
+<span class="token comment">###  2. Define target board</span>
+<span class="token comment">###  3. Identify source directories</span>
+<span class="token comment">###  4. Define static module</span>
+<span class="token comment">###  5. Define RPs, and their RM variants</span>
+<span class="token comment">###############################################################</span>
+<span class="token comment">####flow control (1 = run step , 0 = skip step)</span>
+<span class="token keyword">set</span> <span class="token variable">run</span>.topSynth       1 ;<span class="token comment">#synthesize static</span>
+<span class="token keyword">set</span> <span class="token variable">run</span>.rmSynth        1 ;<span class="token comment">#synthesize RM variants</span>
+<span class="token keyword">set</span> <span class="token variable">run</span>.dfxImpl        0 ;<span class="token comment">#implement each static + RM configuration</span>
+<span class="token keyword">set</span> <span class="token variable">run</span>.prVerify       0 ;<span class="token comment">#verify RMs are compatible with static</span>
+<span class="token keyword">set</span> <span class="token variable">run</span>.writeBitstream 0 ;<span class="token comment">#generate full and partial bitstreams</span>
 
-###############################################################
-### Define target demo board
-### Valid values are kcu105, vcu108, kcu116 and vcu118
-### Select one only
-###############################################################
-set xboard        &quot;kcu105&quot;
+<span class="token comment">###############################################################</span>
+<span class="token comment">### Define target demo board</span>
+<span class="token comment">### Valid values are kcu105, vcu108, kcu116 and vcu118</span>
+<span class="token comment">### Select one only</span>
+<span class="token comment">###############################################################</span>
+<span class="token keyword">set</span> <span class="token variable">xboard</span>        <span class="token string">"kcu105"</span>
 
-###############################################################
-###  Run Settings
-###############################################################
-####Input Directories
-set srcDir     &quot;./Sources&quot;
-set rtlDir     &quot;$srcDir/hdl&quot;
-set prjDir     &quot;$srcDir/prj&quot;
-set xdcDir     &quot;$srcDir/xdc&quot;
-set coreDir    &quot;$srcDir/cores&quot;
-set netlistDir &quot;$srcDir/netlist&quot;
+<span class="token comment">###############################################################</span>
+<span class="token comment">###  Run Settings</span>
+<span class="token comment">###############################################################</span>
+<span class="token comment">####Input Directories</span>
+<span class="token keyword">set</span> <span class="token variable">srcDir</span>     <span class="token string">"./Sources"</span>
+<span class="token keyword">set</span> <span class="token variable">rtlDir</span>     <span class="token string">"$srcDir/hdl"</span>
+<span class="token keyword">set</span> <span class="token variable">prjDir</span>     <span class="token string">"$srcDir/prj"</span>
+<span class="token keyword">set</span> <span class="token variable">xdcDir</span>     <span class="token string">"$srcDir/xdc"</span>
+<span class="token keyword">set</span> <span class="token variable">coreDir</span>    <span class="token string">"$srcDir/cores"</span>
+<span class="token keyword">set</span> <span class="token variable">netlistDir</span> <span class="token string">"$srcDir/netlist"</span>
 
-####Output Directories
-set synthDir  &quot;./Synth&quot;
-set implDir   &quot;./Implement&quot;
-set dcpDir    &quot;./Checkpoint&quot;
-set bitDir    &quot;./Bitstreams&quot;
+<span class="token comment">####Output Directories</span>
+<span class="token keyword">set</span> <span class="token variable">synthDir</span>  <span class="token string">"./Synth"</span>
+<span class="token keyword">set</span> <span class="token variable">implDir</span>   <span class="token string">"./Implement"</span>
+<span class="token keyword">set</span> <span class="token variable">dcpDir</span>    <span class="token string">"./Checkpoint"</span>
+<span class="token keyword">set</span> <span class="token variable">bitDir</span>    <span class="token string">"./Bitstreams"</span>
 
-###############################################################
-### Static Module Definition
-###############################################################
-set top &quot;top&quot;
+<span class="token comment">###############################################################</span>
+<span class="token comment">### Static Module Definition</span>
+<span class="token comment">###############################################################</span>
+<span class="token keyword">set</span> <span class="token variable">top</span> <span class="token string">"top"</span>
 
-###############################################################
-### RP &amp; RM Definitions (Repeat for each RP)
-### 1. Define Reconfigurable Partition (RP) name
-### 2. Associate Reconfigurable Modules (RMs) to the RP
-###############################################################
-set rp1 &quot;shift&quot;
-set rm_variants($rp1) &quot;shift_right shift_left&quot;
-set rp2 &quot;count&quot;
-set rm_variants($rp2) &quot;count_up count_down&quot;
+<span class="token comment">###############################################################</span>
+<span class="token comment">### RP &amp; RM Definitions (Repeat for each RP)</span>
+<span class="token comment">### 1. Define Reconfigurable Partition (RP) name</span>
+<span class="token comment">### 2. Associate Reconfigurable Modules (RMs) to the RP</span>
+<span class="token comment">###############################################################</span>
+<span class="token keyword">set</span> <span class="token variable">rp1</span> <span class="token string">"shift"</span>
+<span class="token keyword">set</span> <span class="token variable">rm_variants</span><span class="token punctuation">(</span>$<span class="token variable">rp1</span><span class="token punctuation">)</span> <span class="token string">"shift_right shift_left"</span>
+<span class="token keyword">set</span> <span class="token variable">rp2</span> <span class="token string">"count"</span>
+<span class="token keyword">set</span> <span class="token variable">rm_variants</span><span class="token punctuation">(</span>$<span class="token variable">rp2</span><span class="token punctuation">)</span> <span class="token string">"count_up count_down"</span>
 
-########################################################################
-### RM Configurations (Valid combinations of RM variants)
-### 1. Define initial configuration: rm_config(initial)
-### 2. Define additional configurations: rm_config(xyz)
-########################################################################
-set module1_variant1 &quot;shift_right&quot;
-set module2_variant1 &quot;count_up&quot;
-set rm_config(initial)   &quot;$rp1 $module1_variant1 $rp2 $module2_variant1&quot;
-set module1_variant2 &quot;shift_left&quot;
-set module2_variant2 &quot;count_down&quot;
-set rm_config(reconfig1) &quot;$rp1 $module1_variant2 $rp2 $module2_variant2&quot;
+<span class="token comment">########################################################################</span>
+<span class="token comment">### RM Configurations (Valid combinations of RM variants)</span>
+<span class="token comment">### 1. Define initial configuration: rm_config(initial)</span>
+<span class="token comment">### 2. Define additional configurations: rm_config(xyz)</span>
+<span class="token comment">########################################################################</span>
+<span class="token keyword">set</span> <span class="token variable">module1_variant1</span> <span class="token string">"shift_right"</span>
+<span class="token keyword">set</span> <span class="token variable">module2_variant1</span> <span class="token string">"count_up"</span>
+<span class="token keyword">set</span> <span class="token variable">rm_config</span><span class="token punctuation">(</span>initial<span class="token punctuation">)</span>   <span class="token string">"$rp1 $module1_variant1 $rp2 $module2_variant1"</span>
+<span class="token keyword">set</span> <span class="token variable">module1_variant2</span> <span class="token string">"shift_left"</span>
+<span class="token keyword">set</span> <span class="token variable">module2_variant2</span> <span class="token string">"count_down"</span>
+<span class="token keyword">set</span> <span class="token variable">rm_config</span><span class="token punctuation">(</span>reconfig1<span class="token punctuation">)</span> <span class="token string">"$rp1 $module1_variant2 $rp2 $module2_variant2"</span>
 
-########################################################################
-### Task / flow portion
-########################################################################
-# Build the designs
-source ./advanced_settings.tcl
-source $tclDir/run.tcl
+<span class="token comment">########################################################################</span>
+<span class="token comment">### Task / flow portion</span>
+<span class="token comment">########################################################################</span>
+<span class="token comment"># Build the designs</span>
+<span class="token keyword">source</span> .<span class="token operator">/</span>advanced_settings.tcl
+<span class="token keyword">source</span> $<span class="token variable">tclDir</span><span class="token operator">/</span>run.tcl
 
-#exit ;#uncomment if running in batch mode
-
-</code></pre>
+<span class="token comment">#exit ;#uncomment if running in batch mode</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  请注意此run_dfx.tcl 中的以下详细信息：</p>
 <ul>
 <li>在Define target demo board 下，您可以选择此设计支持的众多演示板之一。</li>
@@ -277,8 +276,7 @@ source $tclDir/run.tcl
 </li>
 <li>
 <p>输入以下命令运行 run_dfx.tcl 脚本：</p>
-<pre><code>source run_dfx.tcl -notrace   
-</code></pre>
+<pre class="line-numbers language-none"><code class="language-none">source run_dfx.tcl -notrace   <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>完成所有五次 Vivado 综合后，Vivado Tcl shell 保持打开状态。您可以在 Synth 子目录中的每个命名文件夹下找到每个模块的日志和报告文件，以及最终检查点。</p>
 <blockquote>
 <p>提示：在 \led_shift_count_us 中，创建了多个日志文件：<br>
@@ -304,15 +302,14 @@ source $tclDir/run.tcl
 </li>
 <li>
 <p>设置有助于将本文档中的命令复制到 Tcl 控制台的变量。选择您针对此教程的器件和电路板，然后在 Vivado 中应用它们：</p>
-<pre><code>set part &quot;xcku040-ffva1156-2-e&quot;  
+ <pre class="line-numbers language-none"><code class="language-none">set part &quot;xcku040-ffva1156-2-e&quot;  
 set board &quot;kcu105&quot;  
 set part &quot;xcvu095-ffva2104-2-e&quot;  
 set board &quot;vcu108&quot;  
 set part &quot;xcku5p-ffvb676-2-e&quot;  
 set board &quot;kcu116&quot;  
 set part &quot;xcvu9p-flga2104-2l-e&quot;  
-set board &quot;vcu118&quot;  
-</code></pre>
+set board &quot;vcu118&quot;  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li>
 <p>通过在 Tcl 控制台中发出以下命令创建内存中设计： create_project -in_memory -part $part</p>
@@ -322,24 +319,21 @@ set board &quot;vcu118&quot;
 </li>
 <li>
 <p>加载通过发出以下命令设置顶层设计约束:</p>
-<pre><code>add_files ./Sources/xdc/top_io_$board.xdc   
-set_property USED_IN &#123;implementation&#125; [get_files ./Sources/xdc/top_io_ $board.xdc]
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">add_files .&#x2F;Sources&#x2F;xdc&#x2F;top_io_$board.xdc   
+set_property USED_IN &#123;implementation&#125; [get_files .&#x2F;Sources&#x2F;xdc&#x2F;top_io_ $board.xdc]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>  选择 top_io_$board 版本的可用的 xdc 文件加载管脚位置和时钟约束，但不包括布局规划信息。 top_$board 版本包括引脚位置、时钟和布局规划约束。</p>
 </li>
 <li>
 <p>通过发出以下命令为 shift 和 count 函数加载前两个综合检查点：</p>
-<pre><code>add_files ./Synth/shift_right/shift_synth.dcp   
-set_property SCOPED_TO_CELLS &#123;inst_shift&#125; [get_files ./Synth/shift_right/shift_synth.dcp]   
-add_files ./Synth /count_up/count_synth.dcp   
-set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files ./Synth/count_up/count_synth.dcp]  
-</code></pre>
+<pre class="line-numbers language-none"><code class="language-none">add_files .&#x2F;Synth&#x2F;shift_right&#x2F;shift_synth.dcp   
+set_property SCOPED_TO_CELLS &#123;inst_shift&#125; [get_files .&#x2F;Synth&#x2F;shift_right&#x2F;shift_synth.dcp]   
+add_files .&#x2F;Synth &#x2F;count_up&#x2F;count_synth.dcp   
+set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files .&#x2F;Synth&#x2F;count_up&#x2F;count_synth.dcp]  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  SCOPED_TO_CELLS 属性确保对目标单元进行正确分配。如需了解更多信息，请参阅 Vivado Design Suite 用户指南：使用约束 (UG903) 中的此链接。</p>
 </li>
 <li>
 <p>使用 link_design 命令将整个设计链接在一起：</p>
-<pre><code>link_design -mode default -reconfig_partitions &#123;inst_shift inst_count&#125; -part $part -top top 
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">link_design -mode default -reconfig_partitions &#123;inst_shift inst_count&#125; -part $part -top top <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>  此时加载了完整的配置，包括静态和可重新配置的逻辑。请注意，当您在非项目模式下工作时，Flow Navigator 窗格不存在。</p>
 <blockquote>
 <p>提示：通过选择布局 → 布局规划将 IDE 置于布局规划模式。确保“设备”窗口可见。</p>
@@ -347,8 +341,7 @@ set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files ./Synth/count_up/
 </li>
 <li>
 <p>保存此初始配置的组装设计状态：</p>
-<pre><code>write_checkpoint ./Checkpoint/top_link_right_up.dcp
-</code></pre>
+<pre class="line-numbers language-none"><code class="language-none">write_checkpoint .&#x2F;Checkpoint&#x2F;top_link_right_up.dcp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
 <p> 配置完成后界面如下：<br>
@@ -376,16 +369,13 @@ set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files ./Synth/count_up/
 </li>
 <li>
 <p>保存这些 Pblock 和相关属性：</p>
-<pre><code>write_xdc ./Sources/xdc/top_all.xdc
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">write_xdc .&#x2F;Sources&#x2F;xdc&#x2F;top_all.xdc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这会导出设计中的所有当前约束，包括之前从 top_io_$board.xdc 导入的约束。这些约束可以在它们自己的 XDC 文件中管理或在运行脚本中管理（通常使用 HD.RECONFIGURABLE 完成）。<br>
 或者，可以单独提取和管理 Pblock 约束本身。 Tcl proc 可用于帮助执行此任务。</p>
 <p>a. 首先获取在 Tcl 实用程序文件之一中找到的 proc：</p>
-<pre><code>source ./Tcl_HD/hd_utils.tcl
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">source .&#x2F;Tcl_HD&#x2F;hd_utils.tcl<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>b. 然后使用 export_pblocks proc 写出此约束信息：</p>
-<pre><code>export_pblocks -file ./Sources/xdc/pblocks.xdc
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">export_pblocks -file .&#x2F;Sources&#x2F;xdc&#x2F;pblocks.xdc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>  这将为设计中的两个 Pblock 写入 Pblock 约束信息。如果需要，使用 pblocks 选项仅选择一个。</p>
 </li>
 </ol>
@@ -395,18 +385,16 @@ set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files ./Synth/count_up/
 <ol>
 <li>通过发出以下命令来优化、布局和布线设计：</li>
 </ol>
-<pre><code>opt_design
+   <pre class="line-numbers language-none"><code class="language-none">opt_design
 place_design
-route_design
-</code></pre>
+route_design<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>在 place_design 和 route_design 之后，在 Device 视图中检查设计的状态（参见下图）。在 place_design 之后需要注意的一件事是引入了分区引脚。这些是静态和可重新配置逻辑之间的物理接口点。它们是互连块中的锚点，可重配置模块的每个 I/O 都必须通过这些锚点进行路由。它们在放置的设计视图中显示为白框。对于 pblock_shift，它们出现在该 Pblock 的顶部，因为到静态的连接就在设备该区域的 Pblock 之外。对于 Pblock_count，它们出现在用户定义的区域之外，因为 SNAPPING_MODE 垂直收集了更多要添加到 Reconfigurable Partition 的帧。<br>
 <img src="https://m1.im5i.com/2022/08/21/UqU5py.png" alt="优化和布局布线之后"></p>
 <ol start="2">
 <li>要在 GUI 中轻松找到这些分区引脚：<br>
 a. 在 Netlist 窗格中选择 Reconfigurable Module（例如，inst_shift）<br>
 b. 在Cell Properties窗格中选择Cell Pins选项卡。</li>
-<li>选择任何引脚以突出显示它，或使用 Ctrl+A 全选。后者的 Tcl 等效项是：<pre><code>select_objects [get_pins inst_shift/*]
-</code></pre>
+<li>选择任何引脚以突出显示它，或使用 Ctrl+A 全选。后者的 Tcl 等效项是：  <pre class="line-numbers language-none"><code class="language-none">select_objects [get_pins inst_shift&#x2F;*]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
 <pre><code>![分区引脚](https://m1.im5i.com/2022/08/21/UqUGbh.png)
@@ -419,16 +407,14 @@ b. 在Cell Properties窗格中选择Cell Pins选项卡。</li>
 <ol>
 <li>
 <p>通过发出以下命令保存完整的设计检查点并创建报告文件：</p>
-<pre><code>write_checkpoint -force ImplementConfig_shift_right_count_up_implement/top_route_design.dcp
-report_utilization -file Implement/Config_shift_right_count_up_implement/top_utilization.rpt
-report_timing_summary -file Implement/Config_shift_right_count_up_implement/top_timing_summary.rpt
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">write_checkpoint -force ImplementConfig_shift_right_count_up_implement&#x2F;top_route_design.dcp
+report_utilization -file Implement&#x2F;Config_shift_right_count_up_implement&#x2F;top_utilization.rpt
+report_timing_summary -file Implement&#x2F;Config_shift_right_count_up_implement&#x2F;top_timing_summary.rpt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 </li>
 <li>
 <p>[可选] 通过发出以下两个命令为每个可重新配置模块保存检查点：</p>
-<pre><code>write_checkpoint -force -cell inst_shift Checkpoint/shift_right_route_design.dcp
-write_checkpoint -force -cell inst_count Checkpoint/count_up_route_design.dcp
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">write_checkpoint -force -cell inst_shift Checkpoint&#x2F;shift_right_route_design.dcp
+write_checkpoint -force -cell inst_count Checkpoint&#x2F;count_up_route_design.dcp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <blockquote>
 <p>提示：运行 run_dfx.tcl 以批处理模式处理整个设计时，会在流程的每个步骤中创建设计检查点、日志文件和报告文件。</p>
 </blockquote>
@@ -436,9 +422,8 @@ write_checkpoint -force -cell inst_count Checkpoint/count_up_route_design.dcp
 </li>
 <li>
 <p>通过发出以下命令清除 Reconfigurable Module 逻辑：</p>
-<pre><code>update_design -cell inst_shift -black_box
-update_design -cell inst_count -black_box
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">update_design -cell inst_shift -black_box
+update_design -cell inst_count -black_box<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>发出这些命令会导致许多设计更改，如下图所示：<br>
 • 全布线网络（绿色）的数量减少。<br>
 • inst_shift 和inst_count 现在在网表视图中显示为空。<br>
@@ -450,41 +435,87 @@ update_design -cell inst_count -black_box
 <ol>
 <li>
 <p>发出以下命令以锁定所有布局和布线：</p>
-<pre><code>lock_design -level routing
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">lock_design -level routing<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>因为在 lock_design 命令中没有识别出单元，所以内存中的整个设计（当前包括带有黑盒的静态设计）都会受到影响。所有布线网络现在都显示为锁定，如图 第7节图 中的虚线所示。所有放置的组件都从蓝色变为橙色，表明它们也被锁定。</p>
 </li>
 <li>
 <p>发出以下命令以写出（write out）剩余的仅静态检查点：</p>
-<pre><code>write_checkpoint -force Checkpoint/static_route_design.dcp
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">write_checkpoint -force Checkpoint&#x2F;static_route_design.dcp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>此仅静态检查点用于将来的配置。</p>
 </li>
 <li>
 <p>在继续下一个配置之前关闭此设计：</p>
-<pre><code>close_project
-</code></pre>
+ <pre class="line-numbers language-none"><code class="language-none">close_project<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
 <h3 id="七、实施第二个配置">七、实施第二个配置</h3>
 <p>  现在静态设计结果已建立并锁定，您可以将其用作实现更多可重构模块的上下文。</p>
 <h4 id="设计实现-2">设计实现</h4>
 <ol>
-<li>通过在 Tcl 控制台中发出以下命令来创建新的内存设计：<pre><code>create_project -in_memory -part $part
-</code></pre>
+<li>
+<p>通过在 Tcl 控制台中发出以下命令来创建新的内存设计：</p>
+ <pre class="line-numbers language-none"><code class="language-none">create_project -in_memory -part $part<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
-<li>通过发出以下命令加载静态设计：<pre><code>add_files ./Checkpoint/static_route_design.dcp
-</code></pre>
+<li>
+<p>通过发出以下命令加载静态设计：</p>
+ <pre class="line-numbers language-none"><code class="language-none">add_files .&#x2F;Checkpoint&#x2F;static_route_design.dcp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
-<li>通过发出以下命令为移位和计数函数加载后两个综合检查点：<pre><code>add_file ./Synth/shift_left/shift_synth.dcp
-set_property SCOPED_TO_CELLS &#123;inst_shift&#125; [get_files ./Synth/shift_left/shift_synth.dcp]
-add_file ./Synth/count_down/count_synth.dcp
-set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files ./Synth/count_down/count_synth.dcp]
-</code></pre>
+<li>
+<p>通过发出以下命令为移位和计数函数加载后两个综合检查点：</p>
+ <pre class="line-numbers language-none"><code class="language-none">add_file .&#x2F;Synth&#x2F;shift_left&#x2F;shift_synth.dcp
+set_property SCOPED_TO_CELLS &#123;inst_shift&#125; [get_files .&#x2F;Synth&#x2F;shift_left&#x2F;shift_synth.dcp]
+add_file .&#x2F;Synth&#x2F;count_down&#x2F;count_synth.dcp
+set_property SCOPED_TO_CELLS &#123;inst_count&#125; [get_files .&#x2F;Synth&#x2F;count_down&#x2F;count_synth.dcp]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
-<li>使用 link_design 命令将整个设计链接在一起：<pre><code>link_design -mode default -reconfig_partitions &#123;inst_shift inst_count&#125; -part $part -top top
-</code></pre>
-此时，已加载完整配置。然而，这一次，静态设计被路由和锁定，可重构逻辑仍然只是一个网表。此处的布局和布线仅适用于 RM 逻辑。</li>
+<li>
+<p>使用 link_design 命令将整个设计链接在一起：</p>
+ <pre class="line-numbers language-none"><code class="language-none">link_design -mode default -reconfig_partitions &#123;inst_shift inst_count&#125; -part $part -top top<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>此时，已加载完整配置。然而，这一次，静态设计被路由和锁定，可重构逻辑仍然只是一个网表。此处的布局和布线仅适用于 RM 逻辑。</p>
+</li>
+<li>
+<p>通过发出以下命令，在静态上下文中优化、放置和路由新的 RM：</p>
+ <pre class="line-numbers language-none"><code class="language-none">opt_design
+place_design
+route_design<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p> 该设计再次完全实现，现在使用新的可重构模块变体。布线是虚线（锁定）和实线（新）布线段的混合，如下所示。</p>
+</li>
 </ol>
-<p>参考：ug947-2022.1</p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/">https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/FPGA/">FPGA</a><a class="post-meta__tags" href="/tags/DFX/">DFX</a><a class="post-meta__tags" href="/tags/%E9%83%A8%E5%88%86%E5%8F%AF%E9%87%8D%E6%9E%84/">部分可重构</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/17/Ucoynv.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/08/20/FPGA-PR-1app/"><img class="next-cover" src="https://m1.im5i.com/2022/08/19/UcP22h.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">FPGA_PR_1app</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img class="cover" src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-19</div><div class="title">FPGA_部分可重构技术_0介绍</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%A7%A3%E5%8E%8B%E4%BE%8B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">一、解压例程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A3%80%E6%9F%A5%E8%84%9A%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">二、检查脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BB%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">1. 主脚本：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AD%90%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">2. 子脚本：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%BB%BC%E5%90%88%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">三、综合设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BB%84%E8%A3%85%E5%92%8C%E5%AE%9E%E7%8E%B0%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">四、组装和实现设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%BB%BA%E7%AB%8B%E8%AE%BE%E8%AE%A1%E5%B9%B3%E9%9D%A2%E5%9B%BE"><span class="toc-number">5.</span> <span class="toc-text">五、建立设计平面图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%AE%9E%E7%8E%B0%E7%AC%AC%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">六、实现第一个配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0"><span class="toc-number">6.1.</span> <span class="toc-text">设计实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E7%BB%93%E6%9E%9C"><span class="toc-number">6.2.</span> <span class="toc-text">保存结果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E9%A1%B9%E7%9B%AE"><span class="toc-number">6.3.</span> <span class="toc-text">关闭项目</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%AE%9E%E6%96%BD%E7%AC%AC%E4%BA%8C%E4%B8%AA%E9%85%8D%E7%BD%AE"><span class="toc-number">7.</span> <span class="toc-text">七、实施第二个配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">7.1.</span> <span class="toc-text">设计实现</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/17/Ucoynv.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/19/UcP22h.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/UctDTo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/Uco6GG.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）"><img src="https://m1.im5i.com/2022/08/18/UcH3bX.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TVM编译模型（yolov3_tf的例子解读）"/></a><div class="content"><a class="title" href="/2022/03/18/TVM-Cperyolov3-tf/" title="TVM编译模型（yolov3_tf的例子解读）">TVM编译模型（yolov3_tf的例子解读）</a><time datetime="2022-03-18T14:58:20.000Z" title="发表于 2022-03-18 22:58:20">2022-03-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+<h4 id="保存结果-2">保存结果</h4>
+<ol>
+<li>
+<p>通过发出以下命令保存完整的设计检查点和报告文件：</p>
+ <pre class="line-numbers language-none"><code class="language-none">write_checkpoint -force Implement&#x2F;Config_shift_left_count_down_import&#x2F;top_route_design.dcp
+report_utilization -file Implement&#x2F;Config_shift_left_count_down_import&#x2F;top_utilization.rpt
+report_timing_summary -file Implement&#x2F;Config_shift_left_count_down_import&#x2F;top_timing_summary.rpt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>[可选] 通过发出以下两个命令为每个可重新配置模块保存检查点：</p>
+ <pre class="line-numbers language-none"><code class="language-none">write_checkpoint -force -cell inst_shift Checkpoint&#x2F;shift_left_route_design.dcp
+write_checkpoint -force -cell inst_count Checkpoint&#x2F;count_down_route_design.dcp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p> 至此，您已经实现了静态设计和所有 Reconfigurable Module 变体。对于每个可重构分区具有两个以上可重构模块的设计，将重复此过程。</p>
+</li>
+</ol>
+<h3 id="八、使用高亮显示脚本检查结果">八、使用高亮显示脚本检查结果</h3>
+<p> 在 IDE 中打开路由配置后，运行一些可视化脚本以突出显示拼贴和网络。这些脚本标识为 Dynamic Function eXchange 分配的资源并自动生成。</p>
+<ol>
+<li>
+<p>在 Tcl 控制台中，从 \led_shift_count_us 目录发出以下命令：</p>
+ <pre class="line-numbers language-none"><code class="language-none">source hd_visual&#x2F;pblock_inst_shift_Routing_AllTiles.tcl
+highlight_objects -color green [get_selected_objects]  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>单击设备视图中的某处以取消选择框架（或输入 unselect_objects），然后发出以下命令：</p>
+ <pre class="line-numbers language-none"><code class="language-none">source hd_visual&#x2F;pblock_inst_shift_Placement_AllTiles.tcl
+source hd_visual&#x2F;pblock_inst_count_Placement_AllTiles.tcl
+highlight_objects -color blue [get_selected_objects]  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p> 分区框架在设备视图中突出显示，如下图所示。</p>
+<p> 这些突出显示的图块代表用于每个 RM 的布局（蓝色）和布线（绿色）的配置框架。绿色瓦片被发送到比特流生成以创建部分比特流（用于 inst_shift）。 SNAPPING_MODE 功能调整了 pblock_shift 的四个边缘中的三个，以说明与可编程单元边界的对齐。这种捕捉行为解释了为什么静态逻辑似乎已放置在可重新配置的分区内，如前面的步骤所示。实际上，有效边界是比用户定义的 Pblock 边界指示的 CLB 行高 1 行，因此这个静态逻辑放置正确。这个有效边界也可以在创建过程中 Pblock 的阴影中看到，如步骤 5：构建设计平面图所示。</p>
+<blockquote>
+<p>注意：包括与 Pblock 宽度匹配的 RCLK 行。这些可重配置分区中的全局时钟驱动逻辑连接到贯穿这些行的主干，并在动态功能交换期间启用或禁用。</p>
+</blockquote>
+<p> 其他“平铺”脚本是这些脚本的变体。如果您没有创建与时钟区域边界垂直对齐的 Pblock，FrameTiles 脚本将突出显示显式 Pblock 块，而 AllTiles 脚本将这些块扩展到完全可重新配置的帧高度。请注意，这些会在未选择的帧类型（例如全局时钟）存在的地方留下间隙。<br>
+ GlitchTiles 脚本是框架站点的子集，避免了专用的硅资源；其他脚本比这个提供更多信息。<br>
+参考：ug947-2022.1</p>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/">https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/FPGA/">FPGA</a><a class="post-meta__tags" href="/tags/DFX/">DFX</a><a class="post-meta__tags" href="/tags/%E9%83%A8%E5%88%86%E5%8F%AF%E9%87%8D%E6%9E%84/">部分可重构</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/18/UcHNHQ.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/21/poem-2022-8-21/"><img class="prev-cover" src="https://m1.im5i.com/2022/08/17/UcoJS7.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">兔言兔语——1</div></div></a></div><div class="next-post pull-right"><a href="/2022/08/20/FPGA-PR-1app/"><img class="next-cover" src="https://m1.im5i.com/2022/08/18/UcHurh.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">FPGA_PR_1app</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img class="cover" src="https://m1.im5i.com/2022/08/17/Uco1ua.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-19</div><div class="title">FPGA_部分可重构技术_0介绍</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">81</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%A7%A3%E5%8E%8B%E4%BE%8B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">一、解压例程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A3%80%E6%9F%A5%E8%84%9A%E6%9C%AC"><span class="toc-number">2.</span> <span class="toc-text">二、检查脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E4%B8%BB%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">1. 主脚本：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%AD%90%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="toc-number">2.2.</span> <span class="toc-text">2. 子脚本：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%BB%BC%E5%90%88%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">三、综合设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BB%84%E8%A3%85%E5%92%8C%E5%AE%9E%E7%8E%B0%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">四、组装和实现设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%BB%BA%E7%AB%8B%E8%AE%BE%E8%AE%A1%E5%B9%B3%E9%9D%A2%E5%9B%BE"><span class="toc-number">5.</span> <span class="toc-text">五、建立设计平面图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%AE%9E%E7%8E%B0%E7%AC%AC%E4%B8%80%E4%B8%AA%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">六、实现第一个配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0"><span class="toc-number">6.1.</span> <span class="toc-text">设计实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E7%BB%93%E6%9E%9C"><span class="toc-number">6.2.</span> <span class="toc-text">保存结果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E9%A1%B9%E7%9B%AE"><span class="toc-number">6.3.</span> <span class="toc-text">关闭项目</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%AE%9E%E6%96%BD%E7%AC%AC%E4%BA%8C%E4%B8%AA%E9%85%8D%E7%BD%AE"><span class="toc-number">7.</span> <span class="toc-text">七、实施第二个配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">7.1.</span> <span class="toc-text">设计实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%9D%E5%AD%98%E7%BB%93%E6%9E%9C-2"><span class="toc-number">7.2.</span> <span class="toc-text">保存结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E4%BD%BF%E7%94%A8%E9%AB%98%E4%BA%AE%E6%98%BE%E7%A4%BA%E8%84%9A%E6%9C%AC%E6%A3%80%E6%9F%A5%E7%BB%93%E6%9E%9C"><span class="toc-number">8.</span> <span class="toc-text">八、使用高亮显示脚本检查结果</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/poem-2022-8-21/" title="兔言兔语——1"><img src="https://m1.im5i.com/2022/08/17/UcoJS7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="兔言兔语——1"/></a><div class="content"><a class="title" href="/2022/08/21/poem-2022-8-21/" title="兔言兔语——1">兔言兔语——1</a><time datetime="2022-08-21T14:21:03.000Z" title="发表于 2022-08-21 22:21:03">2022-08-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHNHQ.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/18/UcHurh.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img src="https://m1.im5i.com/2022/08/17/Uco1ua.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_部分可重构技术_0介绍"/></a><div class="content"><a class="title" href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍">FPGA_部分可重构技术_0介绍</a><time datetime="2022-08-19T05:27:04.000Z" title="发表于 2022-08-19 13:27:04">2022-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读"><img src="https://m1.im5i.com/2022/08/17/UcoKNY.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vitis-AI 编译使用minist解读"/></a><div class="content"><a class="title" href="/2022/03/23/vitisai-minist/" title="Vitis-AI 编译使用minist解读">Vitis-AI 编译使用minist解读</a><time datetime="2022-03-23T04:27:13.000Z" title="发表于 2022-03-23 12:27:13">2022-03-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
