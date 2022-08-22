@@ -6,7 +6,7 @@
   <link href="https://naughtyrabbit.github.io/atom.xml" rel="self"/>
   
   <link href="https://naughtyrabbit.github.io/"/>
-  <updated>2022-08-21T15:05:39.318Z</updated>
+  <updated>2022-08-22T14:50:56.713Z</updated>
   <id>https://naughtyrabbit.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>私人日记-1</title>
+    <link href="https://naughtyrabbit.github.io/2022/08/22/private-blog-1/"/>
+    <id>https://naughtyrabbit.github.io/2022/08/22/private-blog-1/</id>
+    <published>2022-08-22T14:26:24.000Z</published>
+    <updated>2022-08-22T14:50:56.713Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>仅供自己观看，请自重</p></blockquote><span id="more"></span><h3 id="一、苍蓝彼端的四重奏">一、苍蓝彼端的四重奏</h3><p>  久违的感动呢，虽然本身对体育竞速类项目没什么兴趣，即使这样也被作品感动着，日向和葵说他又开始飞了，他回来的时候，如鲠在喉呢。和石头门的凶真不断轮回救真由里和G弦上的魔王里最后主角在监狱里一个一个送走身边人的时候一样呢。</p><p><font face="楷体" color="SteelBlue"><center>  <p><strong>看看这天空吧</strong><br><strong>一直坚持看着吧</strong><br><strong>那里有着答案</strong></p></center></font></p>  <p><img src="https://m1.im5i.com/2022/08/22/UqdEh7.png" alt="好康的壁纸"><br><img src="https://m1.im5i.com/2022/08/22/UqdMJp.png" alt="好康的壁纸"><br><img src="https://m1.im5i.com/2022/08/22/Uqdj4v.png" alt="好康的壁纸"><br><img src="https://m1.im5i.com/2022/08/22/UqdZ0G.png" alt="好康的壁纸"></p>]]></content>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;仅供自己观看，请自重&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="私人日记" scheme="https://naughtyrabbit.github.io/categories/%E7%A7%81%E4%BA%BA%E6%97%A5%E8%AE%B0/"/>
+    
+    
+    <category term="私人日记" scheme="https://naughtyrabbit.github.io/tags/%E7%A7%81%E4%BA%BA%E6%97%A5%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>兔言兔语——2</title>
@@ -453,31 +476,6 @@
     
     <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;本篇主要记录学习yolov5的原理，包括一些代码细节以及代码的复现。参考薛定谔的AI。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    <category term="pytorch" scheme="https://naughtyrabbit.github.io/categories/pytorch/"/>
-    
-    
-    <category term="pytorch学习" scheme="https://naughtyrabbit.github.io/tags/pytorch%E5%AD%A6%E4%B9%A0/"/>
-    
-    <category term="yolo" scheme="https://naughtyrabbit.github.io/tags/yolo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>yolov5目标检测原理探究（1）</title>
-    <link href="https://naughtyrabbit.github.io/2022/01/26/pytorch-learning-adv-yolov5/"/>
-    <id>https://naughtyrabbit.github.io/2022/01/26/pytorch-learning-adv-yolov5/</id>
-    <published>2022-01-26T05:56:57.000Z</published>
-    <updated>2022-03-23T04:31:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>本篇主要记录学习yolov5w的原理，包括一些代码细节以及代码的复现。参考薛定谔的AI。</p></blockquote><span id="more"></span><h3 id="一、数据增强">一、数据增强</h3><p>  源码中位置：train.py-&gt;create_dataloader-&gt;LoadImagesAndLabels;<br>  参数配置：data/hyps/hyp.scratch.yaml</p><pre><code>rectangular：同个batch里做rectangle宽高等比变换，加快训练hsv h：0.015#image HSV-Hue augmentation（fraction），色调hsv_s：0.7#image HSV-Saturation augmentation（fraction），饱和度hsv_v：0.4#image HSV-Value augmentation（fraction），曝光度degrees：0.0#image rotation（+/-deg），旋转translate：0.1#image translation（+/-fraction），平移scale：0.5#image scale（+/-gain），缩放shear：0.0#image shear（+/-deg），错切/非垂直投影perspective：0.0#image perspective（+/-fraction），range 0-0.001，透视变换flipud：0.0#image flip up-down（probability），上下翻转fliplr：0.5#image flip left-right（probability），左右翻转mosaic：1.0#image mosaic（probability），4图拼接mixup：0.0#image mixup（probability），图像互相融合copy_paste：0.0#segment copy-paste（probability），分割填补最后box坐标变换，segment坐标变换</code></pre><p><img src="https://s4.ax1x.com/2022/01/26/7LxxU0.png" alt="图片描述"></p><h4 id="1-rectangular">1. rectangular</h4><p>  同个batch里做rectangle宽高等比变换，加快训练。使得每个batch的宽高一致，不同batch的宽高可以不一致，减少同一batch的图片中的“黑边”，同时这种客制化可以使得比如原来需要reshape到640x640的图片现在仅用reshape到540x450。这样输入的图片的尺寸减小，数据量大起来的话会减少非常可观的计算量。<br>  源码位置：utils/datasets.py Rectangular Training</p><h4 id="2-旋转、偏移、错切等">2. 旋转、偏移、错切等</h4><p>  这几个操作都是把原图乘上一个变换矩阵，不同在于矩阵中参数设置。<br><img src="https://s4.ax1x.com/2022/01/26/7Opi7R.png" alt="图片描述"><br>  需要注意的是，所有的数据增强的操作对图片的操作都要在之后对相应标签也做操作。这部分源码参考：utils/augmentations.py</p><h3 id="二、backbone网络细节">二、backbone网络细节</h3><p>  可参考源码中models/xxx.yaml文件。<br><img src="https://s4.ax1x.com/2022/01/27/7Xz2z8.png" alt="图片描述"><br><img src="https://s4.ax1x.com/2022/01/27/7jSxc8.png" alt="图片描述"></p><h4 id="1-Conv层">1.Conv层</h4><p><img src="https://s4.ax1x.com/2022/01/27/7jFOhj.png" alt="图片描述"></p><h4 id="2-C3层">2.C3层</h4><p>  相比于BottleneckCSP的4个卷积少了一个，所以称为c3<br><img src="https://s4.ax1x.com/2022/01/27/7j60je.png" alt="图片描述"></p><h4 id="3-SPPF层">3.SPPF层</h4><p><img src="https://s4.ax1x.com/2022/01/27/7jc18f.png" alt="图片描述"></p><h3 id="三、backbone网络源码解析">三、backbone网络源码解析</h3><p><img src="https://s4.ax1x.com/2022/01/30/H90ktI.png" alt="图片描述"></p><h3 id="四、边框预测细节">四、边框预测细节</h3><p><img src="https://s4.ax1x.com/2022/02/02/HAsQoV.png" alt="图片描述"><br>  在yolov3/2中，对正样本的处理是一个grid最多产生一个正样本，或者说如果某个区域存在一个目标，那么只有该区域中心点所落在的grid是正样本。这么做的坏处了正负样本的比例失衡，影响训练过程。yolov5把那个grid上下左右的grid都采样使用，因此范围用(0,1)无法表示。</p>]]></content>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇主要记录学习yolov5w的原理，包括一些代码细节以及代码的复现。参考薛定谔的AI。&lt;/p&gt;
 &lt;/blockquote&gt;</summary>
     
     
