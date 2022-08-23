@@ -1,0 +1,407 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FPGA_动态功能切换_DFX RTL工程流程 | 不听话的兔子君</title><meta name="keywords" content="FPGA,DFX,部分可重构"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="接上一篇UltraScale DFX流程，本篇为RTL project流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FPGA_动态功能切换_DFX RTL工程流程">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2022/08/23/FPGA-DFX-RTLprj/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="接上一篇UltraScale DFX流程，本篇为RTL project流程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/19/UqDDQo.jpg">
+<meta property="article:published_time" content="2022-08-23T01:37:15.000Z">
+<meta property="article:modified_time" content="2022-08-23T13:59:48.180Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="FPGA">
+<meta property="article:tag" content="DFX">
+<meta property="article:tag" content="部分可重构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/19/UqDDQo.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/08/23/FPGA-DFX-RTLprj/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FPGA_动态功能切换_DFX RTL工程流程',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-08-23 21:59:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">50</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">FPGA_动态功能切换_DFX RTL工程流程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-08-23T01:37:15.000Z" title="发表于 2022-08-23 09:37:15">2022-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-08-23T13:59:48.180Z" title="更新于 2022-08-23 21:59:48">2022-08-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DFX/">DFX</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="FPGA_动态功能切换_DFX RTL工程流程"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>接上一篇UltraScale DFX流程，本篇为RTL project流程</p>
+</blockquote>
+<span id="more"></span>  
+<p> 需要注意的是例程面向</p>
+<ul>
+<li>KCU116 (Kintex® UltraScale+™)</li>
+<li>VCU118 (Virtex® UltraScale+™)</li>
+<li>KCU105 (Kintex UltraScale)</li>
+<li>VCU108 (Virtex UltraScale)</li>
+<li>KC705 (Kintex-7)</li>
+<li>VC707 (Virtex-7)</li>
+<li>VC709 (Virtex-7)<br>
+这几块开发板，跑完之后看看能不能改到手上的板子。</li>
+</ul>
+<h3 id="一、解压例程">一、解压例程</h3>
+<p> 根据ug947文档提示在赛灵思官网下载例程压缩包，解压定位到 <strong>\dfx_project</strong> 文件夹。</p>
+<h3 id="二、加载初始源设计">二、加载初始源设计</h3>
+<p> 任何 DFX 设计流程（基于项目或其他）的第一个唯一步骤是定义将被标记为可重新配置的设计部分。这是通过项目模式下分层源视图中的上下文菜单完成的。这些步骤将通过在简单设计中定义分区来完成初始项目创建。</p>
+<ol>
+<li>
+<p>从档案中提取设计。 dfx_project 数据目录在本教程中称为 &lt;Extract_Dir&gt;。</p>
+</li>
+<li>
+<p>打开 Vivado® IDE 并选择 Create Project，然后单击 Next。</p>
+</li>
+<li>
+<p>选择 &lt;Extract_Dir&gt; 作为项目位置。将项目名称保留为 project_1，并选中创建项目子目录选项。点击下一步。</p>
+</li>
+<li>
+<p>选择 RTL 项目并确保此时不指定源复选框未选中，然后单击下一步。</p>
+</li>
+<li>
+<p>单击 Add Directories 按钮并选择要添加到设计中的这些 Sources 目录：</p>
+<ul>
+<li>&lt;Extract_Dir&gt;\Sources\hdl\top</li>
+<li>&lt;Extract_Dir&gt;\Sources\hdl\shift_right</li>
+</ul>
+</li>
+<li>
+<p>单击下一步进入添加约束页面，然后选择这些文件：</p>
+<ul>
+<li>&lt;Extract_Dir&gt;\Sources\xdc\top_io_&lt;board&gt;.xdc</li>
+<li>&lt;Extract_Dir&gt;\Sources\xdc\pblocks_&lt;board&gt;.xdc</li>
+</ul>
+<p> 请注意，这些约束文件是完整的设计约束，仅限于顶层设计。如果您想执行自己的布局规划，只需选择 top_io xdc，省略 Pblocks XDC。综合后停止流程以创建您自己的平面图。</p>
+</li>
+<li>
+<p>单击下一步选择部件。在 Default Part 页面中，单击 Boards 并选择与您选择的约束文件匹配的目标板。然后单击下一步，然后单击完成以完成项目创建。 Sources 窗口显示设计的标准分层视图。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdaDo.png" alt="好康的壁纸"><br>
+此时，打开了一个标准项目。没有针对 Dynamic Function eXchange 做任何事情。</p>
+</li>
+<li>
+<p>选择工具 → 启用动态函数交换。<br>
+ 这为 DFX 设计流程准备了项目。一旦设置，就无法撤消，因此请在选择此选项之前存档您的项目。<br>
+<img src="https://m1.im5i.com/2022/08/20/UqD3iM.png" alt="好康的壁纸"><br>
+在随后出现的对话框中，单击转换以将此项目转换为 DFX 项目。<br>
+<img src="https://m1.im5i.com/2022/08/20/UqD4c3.png" alt="好康的壁纸"><br>
+完成后左侧会出现DFX向导，但是还没有创建分区定义，暂时无法使用。</p>
+</li>
+<li>
+<p>右键单击​​“shift”实例之一并选择“创建分区定义”选项。</p>
+<p> 此操作会将两个 shift 实例定义为设计中的可重新配置分区。由于每个实例都来自相同的 RTL 源，因此它们在逻辑上是相同的。将运行上下文外综合以使该模块与顶部分离，并且一个综合后检查点将用于两个 shift 实例。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdlkW.png" alt="创建分区定义"></p>
+<blockquote>
+<p>提示：如果设计中有同一模块的多个实例化，但并非所有实例都需要重新配置，则必须手动修改模块以使其成为唯一的。然后，您可以将所需的实例单独标记为可重新配置的分区。</p>
+</blockquote>
+</li>
+<li>
+<p>在出现的对话框中，为 Partition Definition 和 Reconfigurable Module 命名。分区定义是所有可重新配置模块都将插入其中的工作区的一般参考，因此请给它一个适当的名称，例如 shifter。 Reconfigurable Module 引用这个特定的 RTL 实例，因此给它一个引用其功能的名称，例如 shift_right，然后单击 OK。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqdyax.png" alt="创建分区定义"></p>
+<p> Sources 窗口现在略有变化，两个 shift 实例现在都显示为黄色菱形，表示它们是 Partitions。您还将在此窗口中看到一个分区定义选项卡，其中显示了设计中所有分区定义（此时为一个）的列表和内容。此外，还创建了一个脱离上下文的模块运行，用于合成 shift_right 模块。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqd6AQ.png" alt="创建分区定义"></p>
+<p> 此时，可能会添加更多 Reconfigurable Module 源。这是通过动态函数交换向导完成的。</p>
+<blockquote>
+<p>重要！定义分区后，必须通过 DFX 向导添加所有其他 RM，并且还必须通过此向导完成对 RM 源、配置和运行的任何管理。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="三、使用动态函数切换（DFX）向导完成设计">三、使用动态函数切换（DFX）向导完成设计</h3>
+<ol>
+<li>
+<p>通过在工具菜单下或Flow Navigator中选择此选项来启动Dynamic Function eXchange Wizard。</p>
+</li>
+<li>
+<p>单击 Next 进入 Edit Reconfigurable Modules 页面。在这里您可以看到 shift_right RM 已经存在，并且在窗口左侧的 RM 上方有添加、删除和编辑按钮。单击蓝色 + 图标以添加新的 RM。</p>
+</li>
+<li>
+<p>单击添加目录按钮选择 shift_left 文件夹：</p>
+ <pre class="line-numbers language-none"><code class="language-none">&lt;Extract_Dir&gt;\Sources\hdl\shift_left<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p> 或者使用 Add Files 按钮选择驻留在此目录中的 shift_left.v 文件。如果需要模块级约束，将在此处添加它们。请注意，它们需要限定在此分区的层次结构级别。<br>
+ 将 Reconfigurable Module 字段填写为 shift_left。将 Partition Definition 设置为 shifter，将 Top Module 字段留空，并且 Sources are already综合复选框未选中。单击确定以创建新模块。<br>
+ 现在有两个可重构模块可用于移位器可重构分区。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdoVX.png" alt="创建分区定义"><br>
+ 在下一页上，定义了配置。配置是由静态设计和每个 RP 一个 RM 组成的完整设计图像。您可以创建任何所需的配置集，也可以让向导为您选择它们​​。</p>
+</li>
+<li>
+<p>让向导通过选择自动创建配置链接来创建配置。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdtQf.png" alt="创建分区定义"><br>
+ 选择此选项后，已创建最小的两个配置集。每个 shift 实例在第一个配置中被赋予 shift_right，在第二个配置中被赋予 shift_left。请注意，配置名称是可编辑的——在下面的示例中，名称已更新为 config_right 和 config_left 以反映每个模块中包含的可重新配置模块。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqd1UM.png" alt="创建分区定义"><br>
+ 使用这两个可重配置模块可以创建其他配置，但是创建此版本设计所需的所有部分比特流只需要两个，因为任何 RP 的最大 RM 数量是两个。</p>
+</li>
+<li>
+<p>单击下一步进入编辑配置运行页面。<br>
+ 与配置本身一样，用于实现每个配置的运行可以自动或手动创建。父子关系将定义运行如何交互——父运行实现静态设计和该配置中的所有 RM，然后子运行重用锁定的静态设计，同时在已建立的上下文中实现该配置中的 RM。</p>
+</li>
+<li>
+<p>单击<strong>automatically create configuration run</strong>链接以使用最少的运行集填充配置运行页面。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdBk3.png" alt="父子配置运行"><br>
+ 这将创建两个运行，由​​一个父配置 (config_right) 和一个子配置 (config_left) 组成。可以在此向导中创建任意数量的独立或相关运行，并可选择为其中任何一个使用不同的策略或约束集。现在，将此设置保留为此处设置的两次运行。请注意，运行的名称不可编辑。</p>
+</li>
+<li>
+<p>单击 Next 以查看 Summary 页面，然后单击 Finish 完成设计设置并退出向导。</p>
+<blockquote>
+<p>重要！在您单击完成退出 DFX 向导之前，不会创建或修改任何内容。在最后一次单击之前，所有操作都会排队，因此可以根据需要前进和后退，而无需实施更改，直到您准备好为止。</p>
+</blockquote>
+<p> 回到 Vivado® IDE，您将看到 Design Runs 窗口已更新。为 shift_left RM 添加了第二个上下文外综合运行，并在父 (impl_1) 下创建了子实现运行 (child_0_impl_1)。您现在已准备好处理设计。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqdua7.png" alt="父子配置运行"></p>
+</li>
+</ol>
+<h3 id="四、综合和实现当前设计">四、综合和实现当前设计</h3>
+<p> 在 Vivado® IDE 中打开上述设计后，检查 Design Runs 窗口。顶层设计综合运行 (synth_1) 和父实现运行 (impl_1) 标记为“active”。 Flow Navigator 操作适用于这些活动运行及其子运行，因此单击 Run Synthesis 或 Run Implementation 将仅通过这些运行以及完成它们所需的 OOC 综合运行来拉动设计。您可以选择特定的父或子实现运行，右键单击并选择启动运行以拉动该最终目标的整个流程。</p>
+<ol>
+<li>
+<p>在 Flow Navigator 中，单击 Run Synthesis → Open Synthesized Design。</p>
+<blockquote>
+<p>注意！！！！<br>
+我在这一步综合出错，无法继续，报错信息已提交赛灵思中文论坛：<a target="_blank" rel="noopener" href="https://support.xilinx.com/s/question/0D54U00005WboT1SAJ/%E5%9C%A8%E8%B7%91ug947%E6%96%87%E6%A1%A3dfx-rtl-project-flow%E4%BE%8B%E7%A8%8B%E6%97%B6%E7%AC%AC%E5%9B%9B%E6%AD%A5%E7%BB%BC%E5%90%88%E6%8A%A5%E9%94%99%E6%8A%A5%E9%94%99%E4%BF%A1%E6%81%AF%E5%A6%82detail%E4%B8%AD%E5%9B%BE%E6%96%87%E6%A1%A3%E7%89%88%E6%9C%AC%E4%B8%BA20221%E7%9B%AE%E6%A0%87%E7%89%88%E9%80%89%E6%8B%A9%E4%B8%BAkcu105?language=en_US%E3%80%82">https://support.xilinx.com/s/question/0D54U00005WboT1SAJ/在跑ug947文档dfx-rtl-project-flow例程时第四步综合报错报错信息如detail中图文档版本为20221目标版选择为kcu105?language=en_US。</a><br>
+改用2020版本文件后正常综合，然后我又重新下载2022版本例程文件，并且​用一样的流程到综合这里，仍然报相同的错误，因此本文接下来均以2020版例程文件为基础。</p>
+</blockquote>
+<p> 该动作将综合所有OOC模块，然后综合顶层设计。<br>
+ 这与任何带有 OOC 模块（IP 或其他）的设计没有什么不同。<br>
+ 在打开的综合后设计中，请注意已经定义了两个 Pblock。这些在 pblocks_&lt;board&gt;.xdc 中提供，并映射到顶部的两个shift实例。如果设计源中不存在任何 Pblock，则可以在流程中的这一步创建它们。这可以通过右键单击设计层次结构中的 inst_shift 实例来选择 Floorplanning → Draw Pblock 来完成。每个实例都需要自己独特的 Pblock(在上一篇文章中UltraScale flow中有创建pblock这一步骤)。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqd3Ip.png" alt="父子配置运行"></p>
+</li>
+<li>
+<p>在平面图中选择两个 Pblock 之一并注意其属性。列出的最后两个属性是 RESET_AFTER_RECONFIG（仅限 7 系列）和 SNAPPING_MODE，这是 DFX 特有的两个属性。请注意，这两个选项都已在 Pblocks xdc 中启用。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdAEv.png" alt="DFX特有属性"></p>
+</li>
+<li>
+<p>通过选择 Reports → Report DRC 运行 DFX 特定的设计规则检查。为了节省时间，您可以取消选择除 Dynamic Function eXchange 之外的所有复选框。<br>
+ DRC 检查将报告提供的源和约束没有错误。可能会为某些设备提供咨询消息，并提供有关如何提高给定 Pblock 质量的建议。对于这个简单的设计，这些可以忽略不计。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdI7G.png" alt="DRC报告"><br>
+ 如果您创建了自己的平面图并且报告了 DRC，请在继续之前解决问题。请注意，这两个模块都需要 BRAM 资源，并记住 SNAPPING_MODE 将解决与水平或垂直对齐相关的任何错误。</p>
+<blockquote>
+<p>提示：尽早并经常运行 DFX 设计规则检查。</p>
+</blockquote>
+</li>
+<li>
+<p>在 Flow Navigator 中，选择 Run Implementation 以在所有配置上运行布局布线。<br>
+ 此操作首先为 impl_1 运行实现，然后为 child_0_impl_1 运行。在幕后，Vivado 负责处理所有细节。除了在满足所有 DFX 要求的情况下为两次运行运行布局和布线之外，它还执行了一些特定于 DFX 的任务。 impl_1 完成后，Vivado 自动：</p>
+<ul>
+<li>为每个路由 shift_right RM 写入模块级 (OOC) 检查点。</li>
+<li>在每个 RP 中挖掘逻辑，为顶部创建仅静态的设计图像。这是通过为每个实例调用 update_design -black_box 来完成的。</li>
+<li>锁定设计中纯静态部分的所有布局和布线。这是通过调用 lock_design 级路由来完成的。</li>
+<li>保存锁定的静态父图像以供所有子运行重复使用。<br>
+ 此外，当子运行完成时，会为路由的 shift_left RM 创建模块级检查点。锁定的静态设计图像将与父图像相同，因此不需要此步骤。<br>
+ 如果只需要特定的配置运行，则可以在“Design Runs”窗口中单独选择这些配置。请注意，必须先成功完成父运行，然后才能启动子运行，因为子运行从父运行锁定静态设计开始。</li>
+</ul>
+</li>
+<li>
+<p>实施完成后，在弹出的对话框中单击取消。</p>
+<blockquote>
+<p>警告！即使设计已经处理到子实现运行，默认情况下，选择 Open Implemented Design 会打开父运行。使用下拉选项选择所需的实施运行。</p>
+</blockquote>
+<p><img src="https://m1.im5i.com/2022/08/23/UqdX1Y.png" alt="DRC报告"><br>
+ 此时，还剩下两个步骤。首先是运行 PR 验证来比较两种配置，以确保设计图像的静态部分的一致性。强烈建议执行此步骤，并将在 Vivado 项目中自动执行。第二步是自己生成比特流。</p>
+</li>
+<li>
+<p>在Flow Navigator中，单击<strong>Generate Bitstream</strong>。此操作在活动父运行上启动比特流生成，并启动 PR 验证，然后在所有实现的子运行上启动比特流生成。<br>
+ 对于每次配置运行，默认情况下都会生成完整和部分比特流。</p>
+</li>
+</ol>
+<p> 整个 Dynamic Function eXchange 流程可以在项目环境中运行。从模块级综合到比特流生成的所有步骤都可以在不离开 GUI 的情况下完成。</p>
+<h3 id="五、添加额外的可重构模型和相应的配置">五、添加额外的可重构模型和相应的配置</h3>
+<ol>
+<li>
+<p>在 Vivado IDE 中打开设计后，打开 Dynamic Function eXchange Wizard。</p>
+</li>
+<li>
+<p>在 Edit Reconfigurable Modules 页面上，单击 + 按钮添加新 RM。</p>
+</li>
+<li>
+<p>选择 &lt;Extract_Dir&gt;\Sources\hdl\shift_right_slow 中的 shift_right_slow.v 文件，然后单击 OK。</p>
+</li>
+<li>
+<p>输入 shift_right_slow 作为 Reconfigurable Module 名称，然后单击 OK 和 Next。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdHgw.png" alt="DRC报告"><br>
+ 请注意，在“编辑配置”页面上，不再有自动创建配置的选项，因为您已经有两个现有配置。您可以通过删除所有现有配置重新启用此选项，但这将重新创建所有配置并删除所有现有结果。</p>
+</li>
+<li>
+<p>单击 + 按钮创建新配置，输入名称 config_right_slow，然后按 ENTER。为每个 Reconfigurable Partition 实例选择 shift_right_slow。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqdPWF.png" alt="DRC报告"></p>
+</li>
+<li>
+<p>单击下一步进入配置运行。使用 + 按钮创建具有以下属性的新配置：</p>
+<ul>
+<li>运行：child_1_impl_1 - 这与现有约定简单匹配</li>
+<li>父级：impl_1 - 这使此配置成为现有父级运行的子运行</li>
+<li>配置：config_right_slow - 这是一个使用刚刚定义的新 RM<br>
+<img src="https://m1.im5i.com/2022/08/23/UqiDRd.png" alt="DRC报告"></li>
+</ul>
+</li>
+<li>
+<p>单击<strong>ok</strong>添加新的配置运行。<br>
+ 这个新配置作为现有 impl_1 的子项，将重用静态设计实现结果，就像 config_left 一样。现在存在三个运行，其中两个作为初始父级的子级。绿色复选标记表示其中两个运行当前已完成。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqidUK.png" alt="DRC报告"></p>
+</li>
+<li>
+<p>单击下一步，然后单击完成以构建这个新的配置运行。</p>
+<p><img src="https://m1.im5i.com/2022/08/23/UqiiCC.png" alt="DRC报告"></p>
+</li>
+<li>
+<p>选择这个新的子实现运行，右键单击并选择 Launch Runs。这将在 shift_right_slow 模块上运行 OOC 综合，然后在锁定静态设计的上下文中实现该模块。</p>
+</li>
+</ol>
+<h3 id="六、创建和实现灰盒模块">六、创建和实现灰盒模块</h3>
+<p> 对于某些设计，所需的设备初始配置可能是在可重配置分区中没有驻留功能的映像。或者也许还没有可重新配置的模块可以实现。灰盒配置可用于仅实现静态设计，而无需提供真正的 RM 网表。<br>
+ 灰盒是一个以黑盒开始的模块，但随后会为所有端口自动插入 LUT。输出端口被驱动为逻辑 0（默认情况下，1 可通过属性选择），因此它们不会浮动。即使没有可用的 RM，该模块也允许处理设计。培训脚本可用于为该灰盒图像创建时序预算，优化静态设计的实现结果。具有灰盒 RM 的配置可以作为父运行，但仅在不存在其他 RM 和/或使用预算约束来优化 RP 接口布局时才建议这样做。</p>
+<ol>
+<li>打开动态功能交换 (DFX) 向导并移动到配置页面——在这种情况下不需要定义新的可重新配置模块，因为这是一个专用功能。创建一个名为 config_greybox 的新配置，并为每个 Reconfigurable Partition 实例输入 &lt;greybox&gt;。<br>
+<img src="https://m1.im5i.com/2022/08/23/UqixaH.png" alt="DRC报告"></li>
+<li>单击下一步进入配置运行页面，然后创建另一个新配置运行，这次是灰盒配置。
+<ul>
+<li>父级：synth_1 – 这使得该配置成为新的父级，从综合顶层设计开始</li>
+<li>配置：config_greybox – RM 仅包含 LUT 绑定</li>
+<li>运行：impl_greybox<br>
+<img src="https://m1.im5i.com/2022/08/23/UqiLIa.png" alt="DRC报告"><br>
+<img src="https://m1.im5i.com/2022/08/23/UqigMT.png" alt="DRC报告"></li>
+</ul>
+</li>
+<li>单击下一步，然后单击完成以创建此新运行。<br>
+ 现在，Design Runs 窗口中显示了四个实现运行和三个脱离上下文的运行。请注意，灰盒模块不需要综合——它是 DFX 解决方案中的嵌入式功能。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqis7A.png" alt="DRC报告"><br>
+ 此时可以实现灰盒配置。</li>
+<li>选择 impl_greybox 设计运行，右键单击并选择 Launch Runs。 Flow Navigator 不会启动此运行，因为它不是活动父级。
+<blockquote>
+<p>重要！因为 impl_1 和 impl_greybox 都是双亲，所以它们的静态设计结果会有所不同，并且它们生成的比特流在硬件上将不兼容。只有从单个父级派生的比特流（随后使用 PR 验证进行确认）才能通过动态功能交换 (DFX) 传送到设备。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="七、修改设计源或选项">七、修改设计源或选项</h3>
+<p> Vivado IDE 跟踪设计运行之间的依赖关系。考虑到配置的相互依赖性，这是 Dynamic Function eXchange 的一个关键特性。如果修改了父配置或实现结果的任何方面，则必须重新编译它和所有子代。</p>
+<ol>
+<li>选择 impl_1 design run。</li>
+<li>在 Run Properties 窗口的 Options 选项卡中，将 Strategy 更改为 Performance_Explore。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqirs0.png" alt="DRC报告"><br>
+ 一个弹出对话框将提醒您，如果您继续，impl_1 将被强制过期。</li>
+<li>单击是。<br>
+ 多个运行现在被标记为过期：impl_1 和依赖它的两个子运行。生成的文件仍然存在于它们各自的文件夹中，但会在父运行启动后立即删除。另一方面，impl_greybox 设计运行仍然完成，因为它不依赖于 impl_1 作为父代。<br>
+<img src="https://m1.im5i.com/2022/08/23/Uqi0WB.png" alt="DRC报告"><br>
+ 请注意，每个子运行的 Strategy 选项保持在 Vivado Implementation<br>
+Defaults；子运行不继承父运行的选项。但是，子运行中的任何策略或选项只会对 Reconfigurable Module 实施产生影响，因为静态设计已经路由并锁定。</li>
+<li>在 Flow Navigator 中，单击 Run Implementation。<br>
+ 将出现一个对话框，确认您是否要在继续之前重置运行。因为过时的步骤是父运行的第一步，所以第一个选项将父运行和所有子运行完全重置到执行的开始。单击重置并重新运行或从步骤运行：phys_opt_design 继续。<br>
+ 这实现了所有三个运行。首先，父 impl_1 运行将完成，然后两个子运行将并行运行。</li>
+</ol>
+<h3 id="总结">总结</h3>
+<p> Dynamic Function eXchange Project Flow 具有很大的灵活性，使用户能够管理他们的设计环境并探索不同的选项。用户必须仔细跟踪实现结果和比特流，以确保只有从单个固定静态图像构建的兼容比特流被下载到目标设备。<br>
+参考：ug947-2022.1</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/08/23/FPGA-DFX-RTLprj/">https://naughtyrabbit.github.io/2022/08/23/FPGA-DFX-RTLprj/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/FPGA/">FPGA</a><a class="post-meta__tags" href="/tags/DFX/">DFX</a><a class="post-meta__tags" href="/tags/%E9%83%A8%E5%88%86%E5%8F%AF%E9%87%8D%E6%9E%84/">部分可重构</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/19/UqDDQo.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/08/22/private-blog-1/"><img class="next-cover" src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">私人日记-1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img class="cover" src="https://m1.im5i.com/2022/08/18/UcHvfD.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-20</div><div class="title">FPGA_动态功能切换_UltraScale 基本 DFX 流程</div></div></a></div><div><a href="/2022/08/19/FPGA_PR_0/" title="FPGA_部分可重构技术_0介绍"><img class="cover" src="https://m1.im5i.com/2022/08/19/UcPktz.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-19</div><div class="title">FPGA_部分可重构技术_0介绍</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">50</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%A7%A3%E5%8E%8B%E4%BE%8B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">一、解压例程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8A%A0%E8%BD%BD%E5%88%9D%E5%A7%8B%E6%BA%90%E8%AE%BE%E8%AE%A1"><span class="toc-number">2.</span> <span class="toc-text">二、加载初始源设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BD%BF%E7%94%A8%E5%8A%A8%E6%80%81%E5%87%BD%E6%95%B0%E5%88%87%E6%8D%A2%EF%BC%88DFX%EF%BC%89%E5%90%91%E5%AF%BC%E5%AE%8C%E6%88%90%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.</span> <span class="toc-text">三、使用动态函数切换（DFX）向导完成设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BB%BC%E5%90%88%E5%92%8C%E5%AE%9E%E7%8E%B0%E5%BD%93%E5%89%8D%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">四、综合和实现当前设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%B7%BB%E5%8A%A0%E9%A2%9D%E5%A4%96%E7%9A%84%E5%8F%AF%E9%87%8D%E6%9E%84%E6%A8%A1%E5%9E%8B%E5%92%8C%E7%9B%B8%E5%BA%94%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-number">5.</span> <span class="toc-text">五、添加额外的可重构模型和相应的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%88%9B%E5%BB%BA%E5%92%8C%E5%AE%9E%E7%8E%B0%E7%81%B0%E7%9B%92%E6%A8%A1%E5%9D%97"><span class="toc-number">6.</span> <span class="toc-text">六、创建和实现灰盒模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%BF%AE%E6%94%B9%E8%AE%BE%E8%AE%A1%E6%BA%90%E6%88%96%E9%80%89%E9%A1%B9"><span class="toc-number">7.</span> <span class="toc-text">七、修改设计源或选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/23/FPGA-DFX-RTLprj/" title="FPGA_动态功能切换_DFX RTL工程流程"><img src="https://m1.im5i.com/2022/08/19/UqDDQo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_DFX RTL工程流程"/></a><div class="content"><a class="title" href="/2022/08/23/FPGA-DFX-RTLprj/" title="FPGA_动态功能切换_DFX RTL工程流程">FPGA_动态功能切换_DFX RTL工程流程</a><time datetime="2022-08-23T01:37:15.000Z" title="发表于 2022-08-23 09:37:15">2022-08-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/22/private-blog-1/" title="私人日记-1"><img src="https://m1.im5i.com/2022/08/17/UcosXC.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="私人日记-1"/></a><div class="content"><a class="title" href="/2022/08/22/private-blog-1/" title="私人日记-1">私人日记-1</a><time datetime="2022-08-22T14:26:24.000Z" title="发表于 2022-08-22 22:26:24">2022-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/poem-2022-8-21/" title="兔言兔语——2"><img src="https://m1.im5i.com/2022/08/19/UcPRvF.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="兔言兔语——2"/></a><div class="content"><a class="title" href="/2022/08/21/poem-2022-8-21/" title="兔言兔语——2">兔言兔语——2</a><time datetime="2022-08-21T14:21:03.000Z" title="发表于 2022-08-21 22:21:03">2022-08-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程"><img src="https://m1.im5i.com/2022/08/18/UcHvfD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_UltraScale 基本 DFX 流程"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-DFX-firstprj/" title="FPGA_动态功能切换_UltraScale 基本 DFX 流程">FPGA_动态功能切换_UltraScale 基本 DFX 流程</a><time datetime="2022-08-20T08:53:50.000Z" title="发表于 2022-08-20 16:53:50">2022-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app"><img src="https://m1.im5i.com/2022/08/19/UcPuaT.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_PR_1app"/></a><div class="content"><a class="title" href="/2022/08/20/FPGA-PR-1app/" title="FPGA_PR_1app">FPGA_PR_1app</a><time datetime="2022-08-20T03:15:36.000Z" title="发表于 2022-08-20 11:15:36">2022-08-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
