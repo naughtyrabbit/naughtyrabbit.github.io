@@ -6,7 +6,7 @@
   <link href="https://naughtyrabbit.github.io/atom.xml" rel="self"/>
   
   <link href="https://naughtyrabbit.github.io/"/>
-  <updated>2022-08-23T13:59:48.180Z</updated>
+  <updated>2022-08-30T08:01:16.070Z</updated>
   <id>https://naughtyrabbit.github.io/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>FPGA_软错误缓解_介绍</title>
+    <link href="https://naughtyrabbit.github.io/2022/08/24/FPGA-SEM-intro/"/>
+    <id>https://naughtyrabbit.github.io/2022/08/24/FPGA-SEM-intro/</id>
+    <published>2022-08-24T08:51:07.000Z</published>
+    <updated>2022-08-30T08:01:16.070Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>本篇主要是FPGA中软错误缓解相关知识入门介绍</p></blockquote><span id="more"></span><h3 id="综观">综观</h3><p> LogiCORE™ IP UltraScale™ 架构软错误缓解 (SEM) 控制器是一种自动配置、预先验证的解决方案，用于检测和纠正 Xilinx FPGA 配置存储器中的软错误。软错误是由电离辐射引起的状态元素中存储的值的意外变化。<br> SEM 控制器不能防止软错误；但是，它提供了一种更好地管理软错误的系统级影响的方法。对这些事件进行适当管理可以提高可靠性和可用性，并降低系统维护和停机成本。</p><p> 电离辐射能够在大多数硅器件中引起不希望的影响。从广义上讲，由单个事件引起的不良影响称为单一事件效应 <strong>single event effect</strong> (SEE)。在大多数情况下，这些事件不会永久损坏硅器件；不会对设备造成永久性损坏的 SEE 称为软错误。然而，软错误有可能降低可靠性。<br> Xilinx® 器件设计为对软错误具有固有的低敏感性。然而，赛灵思也认识到软错误在商业和实际限制范围内是不可避免的。因此，Xilinx 已将软错误检测和纠正功能集成到许多器件系列中。<br> 在许多应用中，可以忽略软错误。在需要更高可靠性的应用中，UltraScale™ 架构 SEM 控制器可以确保更高级别的可靠性。<br> 如果您的应用受益于使用 SEM 控制器，IP Design Checklist in<br>Appendix F 提供了使用和集成 SEM 控制器时的指导和注意事项列表。</p><h3 id="一、内存类型">一、内存类型</h3><p> 如果发生软错误，则会损坏一个或多个内存位。受影响的内存位可能在设备配置内存中（它决定了设计的行为），或者可能在设计内存元素中（它决定了设计的状态）。以下四个内存类别代表了设备中的大部分内存：</p><ul><li>配置内存——用于配置加载到设备中的设计功能的存储元素。这包括功能块行为和功能块连接。该内存在物理上分布在整个设备上，代表了最大的位数。只有一小部分位对于加载到设备中的任何特定设计的正确操作是必不可少的。</li><li>块存储器——用于存储设计状态的大容量存储元件。顾名思义，这些位被聚集成一个物理块，几个块分布在整个设备上。块存储器代表第二大位数。</li><li>分布式内存——用于存储设计状态的中等容量存储元件。这种类型的存储器存在于某些可配置逻辑块 (CLB) 中，并分布在整个设备中。分布式内存代表第三大位数。</li><li>触发器——用于存储设计状态的低容量存储元件。这种类型的存储器存在于所有可配置逻辑块 (CLB) 中，并且分布在整个设备中。触发器代表第四大位数。</li></ul><p> 极少数额外的内存位作为内部设备控制寄存器和状态元素存在。在这些区域中发生的软错误可能会导致区域或设备范围的干扰，称为单事件功能中断 (SEFI)。由于这些内存位的数量很少，SEFI 事件的频率在此讨论中被认为可以忽略不计，并且这些不常见的事件没有被 SEM 控制器处理。</p><h3 id="二、缓解方法">二、缓解方法</h3><p> 块存储器、分布式存储器和触发器中的设计状态的软错误缓解可以在设计本身中执行，方法是应用错误检测和纠正码或冗余等标准技术。未使用的设计状态资源（实际存在于器件中，但设计未使用）中的软错误将被忽略。关注可靠性的设计人员必须评估设计中的风险区域，并根据需要结合设计状态的缓解技术。<br> 配置存储器中设计功能的软错误缓解是使用错误检测和纠正代码执行的。<br> 配置存储器被组织成一个帧数组，很像一个宽的静态 RAM。在许多器件系列中，每个帧都受 ECC 保护，而在所有器件系列中，整个帧阵列都受 CRC 保护。这两种技术是互补的； CRC 对于错误检测非常强大，而 ECC 提供了高分辨率的错误位置。<br> SEM 控制器通过添加可选功能来将配置内存错误分类为“必要”或“非必要”，从而建立在集成逻辑的强大功能之上。这利用了这样一个事实，即只有一小部分配置存储器位对于任何特定设计的正确操作都是必不可少的。<br> 如果没有错误分类，所有配置内存错误都必须被认为是“必要的”。通过错误分类，大多数错误将被评估为“非必要”，从而消除误报并降低需要潜在破坏性系统级缓解响应的错误频率。<br> 此外，SEM 控制器扩展了内置校正功能以加速错误检测，并提供处理多位错误的可选功能。</p><h3 id="三、可靠性估计">三、可靠性估计</h3><p> 作为起点，系统可靠性规范应突出系统设计的关键部分，并为每个子部分所需的可靠性提供一个值。可靠性要求通常表示为及时失效 (FIT)，即在 10<sup>9</sup>小时（约 114,155 年）内预期的设计失效数量。<br> 当部署多个设计实例时，软错误影响其中任何一个实例的概率会成比例增加。例如，如果设计以 1,000 个产品单位装载，则所有已部署单位的标称 FIT 是 1,000 倍。这是一个重要的考虑因素，因为总部署的标称 FIT 可能会变得很大，并且可能代表服务或维护负担。<br> 总部署的标称 FIT 与单个单元受到影响的概率不同。此外，特定单元发生第二次软错误的概率取决于单个设计的 FIT，而不是部署。在为应用评估合适的软错误缓解策略时，这是一个重要的考虑因素。<br> 与软错误相关的 FIT 不得与产品预期寿命相混淆，后者考虑了系统某些部分的更换或物理修复。<br> Xilinx 器件 FIT 数据在 Xilinx 器件可靠性报告 (UG116) [参照 1] 中报告。数据揭示了软错误的总体频率。<br> 由于触发器的 FIT 非常低且数量少，触发器对 FIT 的贡献可以忽略不计。然而，这并没有贬低保护存储在触发器中的设计状态的重要性。如果存储在触发器中的任何状态对设计操作非常重要，则设计必须包含以适合应用的方式检测、纠正和恢复软错误的逻辑。<br> 在这些资源被高度利用的设计中，分布式内存和块内存对 FIT 的贡献可能很大。如前所述，通过在设计中使用软错误缓解技术可以显着降低 FIT 的贡献。例如，块存储器资源包括可用于某些块存储器配置的内置错误检测和纠正电路。对于所有块存储器和分布式存储器配置，可以使用可编程逻辑资源应用软错误缓解技术。<br> 配置内存对 FIT 的贡献很大。在不使用错误分类技术的情况下，配置内存中的所有软错误都必须被认为是“必要的”，因此对 FIT 的贡献超过了所有其他来源的总和。<br> 错误分类的使用不再将大多数软错误视为故障，从而减少了对 FIT 的贡献；如果软错误没有影响，则可以在没有任何中断的情况下对其进行纠正。<br> 在需要最高级别可靠性的设计中，配置存储器中的软错误分类至关重要。此功能由 SEM 控制器提供。</p><h3 id="四、功能摘要">四、功能摘要</h3><p> SEM 控制器可以根据设计要求以六种不同的模式生成：</p><ul><li>缓解和测试</li><li>仅缓解</li><li>检测和测试</li><li>仅检测</li><li>模拟</li><li>仅监控</li></ul><p> 缓解模式，缓解和测试以及仅缓解，启用错误检测，纠错和错误分类（可选）功能。错误注入在仅缓解模式中不可用。<br> 接下来的两种模式，Detect 和 Testing and Detect only，启用错误检测，但无法纠正或分类。错误注入在仅检测模式下不可用。<br> 最后两种模式（仅限仿真和监控）使您能够使用 SEM 控制器在发生单事件翻转 (SEU) 事件时评估和监控系统行为，而无需启用错误检测、错误纠正和错误分类功能。错误注入在仅监控模式下不可用。</p><h3 id="五、应用">五、应用</h3><p> 尽管 SEM 控制器可以自主运行，但大多数应用程序将该解决方案与应用程序级监控功能结合使用。此监控功能监控来自 SEM 控制器的事件报告，并确定是否需要执行其他操作（例如，重新配置设备或重置应用程序）。<br> 鼓励系统设计人员仔细考虑每个设计可靠性要求和系统级监督功能，以做出明智的决定。<br> 甚至需要一个错误缓解解决方案吗？如果需要 SEM 控制器，应该使用哪些功能？<br> 当 SEM 控制器是应用的最佳选择时，Xilinx 建议使用提供的 SEM 控制器，包括用于与外部设备连接的系统级设计帮助程序块。但是，如果应用程序需要，可以修改这些接口。</p><h3 id="六、SEM-IP-采用的主要考虑因素">六、SEM IP 采用的主要考虑因素</h3><p> 本节旨在评估 SEM IP 是否有助于满足产品部署的软错误缓解目标以及应选择哪种缓解方法。本节中使用的概念已在前面的部分中介绍过。<br> 有两个主要考虑因素：</p><ul><li>了解设计的软错误缓解要求</li><li>如果发生软错误，需要采取哪些措施</li></ul><ol><li><p>了解设计的软错误缓解要求<br> 如果软错误的影响对您的产品部署来说是一个问题，那么系统设计中的每个组件通常都需要一个 FIT 预算。要计算 Xilinx FPGA 的 FIT，请使用 SEU 休息室中提供的 SEU FIT 速率估计器，并查看 XAPP472 SEU 估计器以了解如何使用 FIT 速率估计器。<br> 要计算部署的 FIT，您至少需要：</p><ul><li>目标设备</li><li>要部署的设备的估计数量</li></ul><p> 除了为设备提供估计的 FIT 外，估计器还预测给定时间范围内预期的软错误数量。<br> 通过使用实施的设计，可以更准确地估计 FIT。这可以通过输入所使用的 Block RAM 数量、是否使用 Block RAM ECC 功能来检测和纠正软错误以及设计中基本位的百分比来实现。基本位定义为配置 RAM 位，用于定义 FPGA 上的功能。如果软错误无意中更改了一个基本位，则 FPGA 中的功能可能无法按预期运行。<br> 另一方面，如果更改了非必要位，则对功能没有影响。以下步骤确定设计中基本位的百分比：</p><ol><li>在 Vivado 中设置以下属性：</li></ol> <pre class="line-numbers language-none"><code class="language-none">set_property bitstream.seu.essentialbits yes [current_design]&#96;&#96;&#96;  2. 为您的设计重新生成比特流。3. 基本位百分比在 Vivado Tcl 控制台中打印，因此在生成位流和基本位数据时 Vivado 日志中打印。这是一个例子：  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><p>Writing bitstream ./sem_ultrap_v3_1_example.bit…<br>Creating bitstream…<br>Writing bitstream ./sem_ultrap_v3_1_example.ebc…<br>Creating essential bits data…<br>This design has 707717 essential bits out of 143015456 total (0.49%).</p><pre><code>&amp;emsp;完成 FIT 估计后，必须检查以确定是否满足部署的 FIT 要求。可能需要实施其他设计方法来降低 FIT。&amp;emsp;如果没有 FIT 目标，则不清楚需要进行哪些设计更改（以及随之而来的权衡）以减轻软错误影响，包括部署是否受益于使用 SEM IP。如果是这种情况，重要的是在集成之前确定使用 SEM IP 获得的好处。</code></pre></li><li><p>发生软错误时要考虑的操作<br> SEM IP 可以配置为检测或检测和纠正软错误。因此，必须考虑对软错误做出反应的系统级操作（如果有的话）。如果在设计中检测到软错误时未采取任何措施，则应评估和理解在设计中使用 SEM IP 的好处。虽然这是一个有效的用例，但应该知道软错误对设计的影响，并且应该很好地理解这种缓解方法，以确保它满足软错误缓解目标。</p><blockquote><p>推荐！ 在设计中使用 SEM IP 时，强烈建议记录 Monitor 接口的输出。</p></blockquote><p> 图 1-1 显示了一个决策树示例，该示例迭代了系统在发生软错误时可以执行的操作。通过了解可能性和系统级考虑因素，可以决定是否在设计中使用 SEM IP。</p><blockquote><p>注意：此图仅作为示例提供，并未列出所有可能的注意事项。</p></blockquote><p><img src="https://m1.im5i.com/2022/08/29/Uqgths.png" alt="好康的壁纸"></p></li></ol><p>参考：PG187</p>]]></content>
+    
+    
+    <summary type="html">本篇主要是FPGA中软错误缓解相关知识入门介绍</summary>
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>FPGA_动态功能切换_DFX RTL工程流程</title>
@@ -117,14 +134,12 @@
     <link href="https://naughtyrabbit.github.io/2022/08/20/FPGA-PR-1app/"/>
     <id>https://naughtyrabbit.github.io/2022/08/20/FPGA-PR-1app/</id>
     <published>2022-08-20T03:15:36.000Z</published>
-    <updated>2022-08-20T03:16:25.758Z</updated>
+    <updated>2022-08-24T08:53:07.681Z</updated>
     
-    <content type="html"><![CDATA[<blockquote><p>本篇主要是…</p></blockquote><span id="more"></span><p>  正文</p><h3 id="一、一级标题">一、一级标题</h3>]]></content>
+    <content type="html"><![CDATA[<blockquote><p>本篇主要是部分可重构的应用，暂时搁置，看到提醒我填坑 ^_^</p></blockquote><span id="more"></span><p>  正文</p><h3 id="一、一级标题">一、一级标题</h3>]]></content>
     
     
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇主要是…&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
+    <summary type="html">本篇主要是部分可重构的应用，暂时搁置，看到提醒我填坑 ^_^</summary>
     
     
     
@@ -449,31 +464,6 @@
     
     <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;本篇主要记录学习yolov5+csl旋转目标检测的原理，主要是探究代码中如何得到theta/gauss_theta的target。参考知乎 略略略 &lt;a href=&quot;https://zhuanlan.zhihu.com/p/358441134%EF%BC%9B&quot;&gt;https://zhuanlan.zhihu.com/p/358441134；&lt;/a&gt; yangxue &lt;a href=&quot;https://zhuanlan.zhihu.com/p/111493759&quot;&gt;https://zhuanlan.zhihu.com/p/111493759&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    <category term="pytorch" scheme="https://naughtyrabbit.github.io/categories/pytorch/"/>
-    
-    
-    <category term="pytorch学习" scheme="https://naughtyrabbit.github.io/tags/pytorch%E5%AD%A6%E4%B9%A0/"/>
-    
-    <category term="yolo" scheme="https://naughtyrabbit.github.io/tags/yolo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>yolov5+csl旋转目标检测代码解析1</title>
-    <link href="https://naughtyrabbit.github.io/2022/02/17/pytorch-learning-adv-yolov5-obb/"/>
-    <id>https://naughtyrabbit.github.io/2022/02/17/pytorch-learning-adv-yolov5-obb/</id>
-    <published>2022-02-17T01:50:17.000Z</published>
-    <updated>2022-02-22T05:20:22.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>本篇主要记录学习yolov5+csl旋转目标检测的原理，主要是代码中损失函数部分的细节。参考知乎 略略略 <a href="https://zhuanlan.zhihu.com/p/358441134%EF%BC%9B">https://zhuanlan.zhihu.com/p/358441134；</a> yangxue <a href="https://zhuanlan.zhihu.com/p/111493759">https://zhuanlan.zhihu.com/p/111493759</a></p></blockquote><span id="more"></span><h3 id="一、Define-criteria">一、Define criteria</h3><p>  源码位置：utils/loss.py</p><pre><code class="language-python"># Define criteriaBCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))BCEtheta = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['theta_pw']], device=device))BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))# BCEtheta是相对于yolov5自加的，csl基于角度分类的部分。</code></pre><p>  nn.BCEWithLogits()本质上和nn.BCELoss()没有区别，只是在BCELoss上对pred加了个logits函数(也就是sigmoid函数)，例子如下：</p><pre><code class="language-python">import torchimport torch.nn as nnlabel = torch.Tensor([1, 1, 0])pred = torch.Tensor([3, 2, 1])pred_sig = torch.sigmoid(pred)loss = nn.BCELoss()print(loss(pred_sig, label))loss = nn.BCEWithLogitsLoss()print(loss(pred, label))loss = nn.BCEWithLogitsLoss()print(loss(pred_sig, label))</code></pre><p>  输出结果分别为：</p><pre><code class="language-python">tensor(0.4963)tensor(0.4963)tensor(0.5990)</code></pre><p>  可以看到，nn.BCEWithLogitsLoss()相当于是在nn.BCELoss()中预测结果pred的基础上先做了个sigmoid，然后继续正常算loss。所以这就涉及到一个比较奇葩的bug，如果网络本身在输出结果的时候已经用sigmoid去处理了，算loss的时候用nn.BCEWithLogitsLoss()…那么就会相当于预测结果算了两次sigmoid，可能会出现各种奇奇怪怪的问题——比如网络收敛不了</p><h3 id="二、loss计算">二、loss计算</h3><p><img src="https://s4.ax1x.com/2022/02/19/Hb7Xoq.png" alt="图片描述"><br>  loss部分似乎没有过多的修改，在每个原本obj/cls等loss出现的地方加上theta（角度）损失就好，角度损失采用分类损失（损失函数都是BCE）。</p><h3 id="三、head部分">三、head部分</h3><p>  backbone部分特征提取不是重点，添加csl的时候也不需要作修改，下面看一下head部分————detect层（位于models/yolo.py）<br><img src="https://s4.ax1x.com/2022/02/19/Hb7Xoq.png" alt="图片描述"><br>  如图，输出部分相较于原来+180，即多了180个角度分类结果。之后类似改动（+180）不再赘述。<br>  但是我对比了一下，整个yolo.py只有另外一处也是**no = na * (nc + 185)**这种改动，其余改动均是作者加的注释部分。</p>]]></content>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本篇主要记录学习yolov5+csl旋转目标检测的原理，主要是代码中损失函数部分的细节。参考知乎 略略略 &lt;a href=&quot;https://zhuanlan.zhihu.com/p/358441134%EF%BC%9B&quot;&gt;https://zhuanlan.zhihu.com/p/358441134；&lt;/a&gt; yangxue &lt;a href=&quot;https://zhuanlan.zhihu.com/p/111493759&quot;&gt;https://zhuanlan.zhihu.com/p/111493759&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;</summary>
     
     
