@@ -1,0 +1,503 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>用fork,exec,wait实现一个自己的shell | 不听话的兔子君</title><meta name="keywords" content="fork(),exec(),wait()"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="仅供自己观看，请自重">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用fork,exec,wait实现一个自己的shell">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2022/11/02/linux-myshell/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="仅供自己观看，请自重">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/17/UcoXqB.png">
+<meta property="article:published_time" content="2022-11-02T01:06:35.000Z">
+<meta property="article:modified_time" content="2022-11-02T02:35:02.732Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="fork()">
+<meta property="article:tag" content="exec()">
+<meta property="article:tag" content="wait()">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/17/UcoXqB.png"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/11/02/linux-myshell/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '用fork,exec,wait实现一个自己的shell',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-11-02 10:35:02'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">用fork,exec,wait实现一个自己的shell</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-02T01:06:35.000Z" title="发表于 2022-11-02 09:06:35">2022-11-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-11-02T02:35:02.732Z" title="更新于 2022-11-02 10:35:02">2022-11-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/linux/">linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="用fork,exec,wait实现一个自己的shell"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>记录一下编写linux内核课程中遇到的问题和解决过程。</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="一、程序出不去？">一、程序出不去？</h3>
+<p> 先看程序</p>
+<pre><code class="language-c">// myshell.c
+#include &lt;stdio.h&gt;
+// used by exit
+#include &lt;stdlib.h&gt;
+// used by func fork,execlp,wait
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;wait.h&gt;
+#include &lt;string.h&gt;
+
+int main()&#123;
+    // 记录子进程结束状态
+    int status_c;
+    while (1)
+    &#123;
+        pid_t pid_c, pid_cid;
+        // 创建子进程
+	    pid_c = fork();
+        // 判断fork调用结果
+        // 出错
+        if (pid_c == -1)
+        &#123;
+            printf(&quot;Error when fork called\n&quot;);
+            exit(-1);
+        &#125;
+        // 子进程 处理命令行传入参数
+        else if (pid_c == 0)
+        &#123;   
+            // 接受命令行传入参数，存入字符串
+            char cmd_get[20];
+            // 模拟当前用户
+            printf(&quot;h_zeng@ubuntu:&quot;);
+            // 读取传入命令
+            scanf(&quot;%s&quot;, cmd_get);
+            if (strcmp(cmd_get, &quot;exit&quot;) == 0)
+            &#123;
+                printf(&quot;exit my shell\n&quot;);
+                exit(1);
+            &#125;
+            //printf(&quot;pid when child process : %d\n&quot;, getpid());
+            // 处理echo命令
+            if (strcmp(cmd_get, &quot;echo&quot;) == 0)
+            &#123;
+                scanf(&quot;%s&quot;, cmd_get);
+                // execl执行失败，返回
+                if(execl(&quot;/bin/echo&quot;,&quot;echo&quot;,cmd_get,NULL) == -1)
+                &#123;
+                    printf(&quot;Error when execl called\n&quot;);
+				    return -1;
+                &#125;
+                exit(0);
+            &#125;
+            // 其余情况自动从环境变量“$PATH”所指出的路径中进行查找
+            // execlp执行失败，返回
+            else if (execlp(cmd_get, cmd_get, NULL) == -1) 
+            &#123;
+                //printf(&quot;cmd_get : %s\n&quot;, cmd_get);
+                printf(&quot;Error when execlp called\n&quot;);
+				exit(-1);
+			&#125;
+            exit(0);
+        &#125;
+        // 父进程 等待子进程结束
+        else
+        &#123;   
+            // 等待子程序返回
+            pid_cid = wait(&amp;status_c);
+            //printf(&quot;pid when wait : %d\n&quot;, getpid());
+            // wait调用失败
+            if(pid_cid == -1)
+            &#123;
+                printf(&quot;Error when wait called\n&quot;);
+                break;
+            &#125;
+            // wait调用成功
+            // 子程序非正常结束返回，结束shell 
+            //printf(&quot;pid from wait(aka ended child process pid) : %d\n&quot;, pid_cid);
+            //printf(&quot;status_c : %d\n&quot;, WEXITSTATUS(status_c));
+            if(status_c &lt; 0) 
+            &#123;
+                printf(&quot;Exception occurs when child process end\n&quot;);
+                break;
+            &#125;
+        &#125;
+    &#125;
+    return 0;
+&#125;
+
+</code></pre>
+<p> 编译运行，得到如图结果，普通的命令包括<strong>echo</strong>等都能正常完成，但是到<strong>exit</strong>的时候程序执行完了可以看到开头仍是我程序里写的模拟用户。<br>
+<img src="https://m1.im5i.com/2022/11/02/UVBDrz.png" alt="程序出不去"><br>
+ 回到程序，分析一波，emmm，啥都没分析出来，参考网上的类似程序实现，发现他把第一个命令行传入参数的接收操作放在了fork之前。嗯，在产生子程序之前判断了读入<strong>exit</strong>,然后结束整个程序，应该可行。改代码！</p>
+<h3 id="二、多出来的子程序？">二、多出来的子程序？</h3>
+<pre><code class="language-c">// myshell.c
+int main()&#123;
+    // 记录子进程结束状态
+    int status_c;
+    while (1)
+    &#123;
+        pid_t pid_c, pid_cid;
+        // 接受命令行传入参数，存入字符串
+        char cmd_get[20];
+        // 模拟当前用户
+        printf(&quot;h_zeng@ubuntu:&quot;);
+        // 读取传入命令
+        scanf(&quot;%s&quot;, cmd_get);
+        if (strcmp(cmd_get, &quot;exit&quot;) == 0)
+        &#123;
+            printf(&quot;exit my shell\n&quot;);
+            exit(1);
+        &#125;
+        // 创建子进程
+	    pid_c = fork();
+        // 判断fork调用结果
+        // 出错
+        if (pid_c == -1)
+        &#123;
+            printf(&quot;Error when fork called\n&quot;);
+            exit(-1);
+        &#125;
+        // 子进程 处理命令行传入参数
+        else if (pid_c == 0)
+        &#123;   
+            //printf(&quot;pid when child process : %d\n&quot;, getpid());
+            // 处理echo命令
+            if (strcmp(cmd_get, &quot;echo&quot;) == 0)
+            &#123;
+                scanf(&quot;%s&quot;, cmd_get);
+                // execl执行失败，返回
+                if(execl(&quot;/bin/echo&quot;,&quot;echo&quot;,cmd_get,NULL) == -1)
+                &#123;
+                    printf(&quot;Error when execl called\n&quot;);
+				    return -1;
+                &#125;
+                exit(0);
+            &#125;
+            // 其余情况自动从环境变量“$PATH”所指出的路径中进行查找
+            // execlp执行失败，返回
+            else if (execlp(cmd_get, cmd_get, NULL) == -1) 
+            &#123;
+                //printf(&quot;cmd_get : %s\n&quot;, cmd_get);
+                printf(&quot;Error when execlp called\n&quot;);
+				exit(-1);
+			&#125;
+            exit(0);
+        &#125;
+        // 父进程 等待子进程结束
+        else
+        &#123;   
+            // 等待子程序返回
+            pid_cid = wait(&amp;status_c);
+            //printf(&quot;pid when wait : %d\n&quot;, getpid());
+            // wait调用失败
+            if(pid_cid == -1)
+            &#123;
+                printf(&quot;Error when wait called\n&quot;);
+                break;
+            &#125;
+            // wait调用成功
+            // 子程序非正常结束返回，结束shell 
+            //printf(&quot;pid from wait(aka ended child process pid) : %d\n&quot;, pid_cid);
+            //printf(&quot;status_c : %d\n&quot;, WEXITSTATUS(status_c));
+            if(status_c &lt; 0) 
+            &#123;
+                printf(&quot;Exception occurs when child process end\n&quot;);
+                break;
+            &#125;
+        &#125;
+    &#125;
+    return 0;
+&#125;
+</code></pre>
+<p> 再次编译运行，得到如图结果，<strong>exit</strong>能正常推出了，但是到<strong>echo</strong>的时候，正常打印出<em>hi</em>之后，<strong>execlp</strong>函数出现了错误，并且下面一行打印了两次模拟用户信息。<br>
+<img src="https://m1.im5i.com/2022/11/02/UVBUzs.png" alt="多出来的子程序"><br>
+ 回到程序，分析一波，很容易猜到程序比预想的“分裂”了多一次，导致把第二次读入的<em>hi</em>当成命令传入给<strong>execlp</strong>函数，但是突然发现一个问题，<strong>execlp</strong>函数出错后，子进程返回异常，父进程接收到异常应该结束掉整个shell程序，但是实际并没有。于是再次改代码，加上一些<strong>printf</strong>打印pid等信息看看猜想正确与否，以及为什么程序没有因为异常结束。</p>
+<pre><code class="language-c">// myshell.c
+int main()&#123;
+    // 记录子进程结束状态
+    int status_c;
+    while (1)
+    &#123;
+        pid_t pid_c, pid_cid;
+        // 接受命令行传入参数，存入字符串
+        char cmd_get[20];
+        // 模拟当前用户
+        printf(&quot;h_zeng@ubuntu:&quot;);
+        // 读取传入命令
+        scanf(&quot;%s&quot;, cmd_get);
+        if (strcmp(cmd_get, &quot;exit&quot;) == 0)
+        &#123;
+            printf(&quot;exit my shell\n&quot;);
+            exit(1);
+        &#125;
+        // 创建子进程
+	    pid_c = fork();
+        // 判断fork调用结果
+        // 出错
+        if (pid_c == -1)
+        &#123;
+            printf(&quot;Error when fork called\n&quot;);
+            exit(-1);
+        &#125;
+        // 子进程 处理命令行传入参数
+        else if (pid_c == 0)
+        &#123;   
+            printf(&quot;pid when child process : %d\n&quot;, getpid());
+            // 处理echo命令
+            if (strcmp(cmd_get, &quot;echo&quot;) == 0)
+            &#123;
+                scanf(&quot;%s&quot;, cmd_get);
+                // execl执行失败，返回
+                if(execl(&quot;/bin/echo&quot;,&quot;echo&quot;,cmd_get,NULL) == -1)
+                &#123;
+                    printf(&quot;Error when execl called\n&quot;);
+				    return -1;
+                &#125;
+                exit(0);
+            &#125;
+            // 其余情况自动从环境变量“$PATH”所指出的路径中进行查找
+            // execlp执行失败，返回
+            else if (execlp(cmd_get, cmd_get, NULL) == -1) 
+            &#123;
+                printf(&quot;cmd_get : %s\n&quot;, cmd_get);
+                printf(&quot;Error when execlp called\n&quot;);
+				exit(-1);
+			&#125;
+            exit(0);
+        &#125;
+        // 父进程 等待子进程结束
+        else
+        &#123;   
+            // 等待子程序返回
+            pid_cid = wait(&amp;status_c);
+            printf(&quot;pid when wait : %d\n&quot;, getpid());
+            // wait调用失败
+            if(pid_cid == -1)
+            &#123;
+                printf(&quot;Error when wait called\n&quot;);
+                break;
+            &#125;
+            // wait调用成功
+            // 子程序非正常结束返回，结束shell 
+            printf(&quot;pid from wait(aka ended child process pid) : %d\n&quot;, pid_cid);
+            // printf(&quot;status_c : %d\n&quot;, WEXITSTATUS(status_c));
+            printf(&quot;status_c : %d\n&quot;, status_c);
+            if(status_c &lt; 0) 
+            &#123;
+                printf(&quot;Exception occurs when child process end\n&quot;);
+                break;
+            &#125;
+        &#125;
+    &#125;
+    return 0;
+&#125;
+</code></pre>
+<p> 编译运行，得到如图结果，可以看到确实在用户输入<strong>echo hi</strong>之后有两个子程序执行了，第一个子进程正常结束，pid被父进程的<strong>wait</strong>函数捕获，值也一致，第二个子进程接收到了错误了<em>hi</em>为命令行输入，抛出<strong>execlp</strong>函数错误。然后--------------！<strong>wait</strong>函数得到的子进程返回状态居然是<strong>65280</strong>！！<br>
+<img src="https://m1.im5i.com/2022/11/02/UVBdoo.png" alt="多出来的子程序"></p>
+<h3 id="三、wait函数status">三、wait函数status</h3>
+<p> 好了，知道第一次为什么程序结束不了了，父进程在子进程异常结束后，<strong>wait</strong>函数得到的子进程结束状态并不是想当然的 -1。 随即查阅了<strong>wait</strong>函数<strong>status</strong>参数的意义，发现要用<strong>WEXITSTATUS</strong>等宏来解析。重新编写程序。</p>
+<pre><code class="language-c">// myshell.c
+
+int main()&#123;
+    // 记录子进程结束状态
+    int status_c;
+    while (1)
+    &#123;
+        pid_t pid_c, pid_cid;
+        // 创建子进程
+	    pid_c = fork();
+        // 判断fork调用结果
+        // 出错
+        if (pid_c == -1)
+        &#123;
+            printf(&quot;Error when fork called\n&quot;);
+            exit(-1);
+        &#125;
+        // 子进程 处理命令行传入参数
+        else if (pid_c == 0)
+        &#123;   
+            printf(&quot;pid when child process : %d\n&quot;, getpid());
+            // 接受命令行传入参数，存入字符串
+            char cmd_get[20];
+            // 模拟当前用户
+            printf(&quot;h_zeng@ubuntu:&quot;);
+            // 读取传入命令
+            scanf(&quot;%s&quot;, cmd_get);
+            if (strcmp(cmd_get, &quot;exit&quot;) == 0)
+            &#123;
+                printf(&quot;exit my shell\n&quot;);
+                exit(1);
+            &#125;
+            // 处理echo命令
+            if (strcmp(cmd_get, &quot;echo&quot;) == 0)
+            &#123;
+                scanf(&quot;%s&quot;, cmd_get);
+                // execl执行失败，返回
+                if(execl(&quot;/bin/echo&quot;,&quot;echo&quot;,cmd_get,NULL) == -1)
+                &#123;
+                    printf(&quot;Error when execl called\n&quot;);
+				    return -1;
+                &#125;
+                exit(0);
+            &#125;
+            // 其余情况自动从环境变量“$PATH”所指出的路径中进行查找
+            // execlp执行失败，返回
+            else if (execlp(cmd_get, cmd_get, NULL) == -1) 
+            &#123;
+                printf(&quot;cmd_get : %s\n&quot;, cmd_get);
+                printf(&quot;Error when execlp called\n&quot;);
+				exit(-1);
+			&#125;
+            exit(0);
+        &#125;
+        // 父进程 等待子进程结束
+        else
+        &#123;   
+            // 等待子程序返回
+            pid_cid = wait(&amp;status_c);
+            printf(&quot;pid when wait : %d\n&quot;, getpid());
+            // wait调用失败
+            if(pid_cid == -1)
+            &#123;
+                printf(&quot;Error when wait called\n&quot;);
+                break;
+            &#125;
+            // wait调用成功
+            // 子程序非正常结束返回，结束shell 
+            printf(&quot;pid from wait(aka ended child process pid) : %d\n&quot;, pid_cid);
+            printf(&quot;status_c : %d\n&quot;, WEXITSTATUS(status_c));
+            if(WEXITSTATUS(status_c) != 0 &amp;&amp; WEXITSTATUS(status_c) != 1) 
+            &#123;
+                printf(&quot;Exception occurs when child process end\n&quot;);
+                break;
+            &#125;
+            else if(WEXITSTATUS(status_c) == 1) 
+            &#123;
+                printf(&quot;the shell ended cause you typed 'exit' \n&quot;);
+                break;
+            &#125;
+        &#125;
+    &#125;
+    return 0;
+&#125;
+</code></pre>
+<p> 编译运行，得到如图结果，程序可以正常运行，<strong>WEXITSTATUS</strong>宏可以将子进程结束状态与子程序<strong>exit</strong>中整型变量对应。</p>
+<blockquote>
+<p>注意：如果exit(-1)，那么解析出来的是255，但是其他机器上我不知道，保险起见把除0/1以外的返回视为异常。</p>
+</blockquote>
+<p><img src="https://m1.im5i.com/2022/11/02/UVBjtM.png" alt="多出来的子程序"></p>
+<h3 id="四、总结">四、总结</h3>
+<p> 程序整体思路是利用fork产生子进程，处理命令行输入参数的处理，然后结束子进程，父进程得到子进程返回状态，判断整体程序是否应该继续执行</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/11/02/linux-myshell/">https://naughtyrabbit.github.io/2022/11/02/linux-myshell/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/fork/">fork()</a><a class="post-meta__tags" href="/tags/exec/">exec()</a><a class="post-meta__tags" href="/tags/wait/">wait()</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/17/UcoXqB.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/08/24/FPGA-SEM-intro/"><img class="next-cover" src="https://m1.im5i.com/2022/08/17/UctYoD.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">FPGA_软错误缓解_介绍</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%A8%8B%E5%BA%8F%E5%87%BA%E4%B8%8D%E5%8E%BB%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">一、程序出不去？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%A4%9A%E5%87%BA%E6%9D%A5%E7%9A%84%E5%AD%90%E7%A8%8B%E5%BA%8F%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">二、多出来的子程序？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81wait%E5%87%BD%E6%95%B0status"><span class="toc-number">3.</span> <span class="toc-text">三、wait函数status</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">四、总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/11/02/linux-myshell/" title="用fork,exec,wait实现一个自己的shell"><img src="https://m1.im5i.com/2022/08/17/UcoXqB.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="用fork,exec,wait实现一个自己的shell"/></a><div class="content"><a class="title" href="/2022/11/02/linux-myshell/" title="用fork,exec,wait实现一个自己的shell">用fork,exec,wait实现一个自己的shell</a><time datetime="2022-11-02T01:06:35.000Z" title="发表于 2022-11-02 09:06:35">2022-11-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/24/FPGA-SEM-intro/" title="FPGA_软错误缓解_介绍"><img src="https://m1.im5i.com/2022/08/17/UctYoD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_软错误缓解_介绍"/></a><div class="content"><a class="title" href="/2022/08/24/FPGA-SEM-intro/" title="FPGA_软错误缓解_介绍">FPGA_软错误缓解_介绍</a><time datetime="2022-08-24T08:51:07.000Z" title="发表于 2022-08-24 16:51:07">2022-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/23/FPGA-DFX-RTLprj/" title="FPGA_动态功能切换_DFX RTL工程流程"><img src="https://m1.im5i.com/2022/08/19/UcPqFo.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_DFX RTL工程流程"/></a><div class="content"><a class="title" href="/2022/08/23/FPGA-DFX-RTLprj/" title="FPGA_动态功能切换_DFX RTL工程流程">FPGA_动态功能切换_DFX RTL工程流程</a><time datetime="2022-08-23T01:37:15.000Z" title="发表于 2022-08-23 09:37:15">2022-08-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/22/private-blog-1/" title="私人日记-1"><img src="https://m1.im5i.com/2022/08/19/UqDdUW.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="私人日记-1"/></a><div class="content"><a class="title" href="/2022/08/22/private-blog-1/" title="私人日记-1">私人日记-1</a><time datetime="2022-08-22T14:26:24.000Z" title="发表于 2022-08-22 22:26:24">2022-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/poem-2022-8-21/" title="兔言兔语——2"><img src="https://m1.im5i.com/2022/08/19/UcPSYf.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="兔言兔语——2"/></a><div class="content"><a class="title" href="/2022/08/21/poem-2022-8-21/" title="兔言兔语——2">兔言兔语——2</a><time datetime="2022-08-21T14:21:03.000Z" title="发表于 2022-08-21 22:21:03">2022-08-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
