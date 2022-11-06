@@ -1,8 +1,9 @@
+https://naughtyrabbit.github.io/2022/11/06/private-diary-1/
+https://naughtyrabbit.github.io/2022/08/22/private-blog-1/
 https://naughtyrabbit.github.io/2022/11/02/linux-myshell/
 https://naughtyrabbit.github.io/2022/08/24/FPGA-SEM-intro/
 https://naughtyrabbit.github.io/2022/08/20/FPGA-PR-1app/
 https://naughtyrabbit.github.io/2022/08/23/FPGA-DFX-RTLprj/
-https://naughtyrabbit.github.io/2022/08/22/private-blog-1/
 https://naughtyrabbit.github.io/2022/08/20/FPGA-DFX-firstprj/
 https://naughtyrabbit.github.io/2022/08/21/poem-2022-8-21/
 https://naughtyrabbit.github.io/2021/05/21/first_blog/
