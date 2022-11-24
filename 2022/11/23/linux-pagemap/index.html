@@ -1,0 +1,310 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>利用pagemap获取虚拟地址对应物理地址 | 不听话的兔子君</title><meta name="keywords" content="fork(),pagemap"><meta name="author" content="naughtyrabbit"><meta name="copyright" content="naughtyrabbit"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="利用linux虚拟文件系统获取虚拟地址对应物理地址，同时，借由fork()机制和全局局部变量在虚拟内存中的位置分析写时拷贝技术。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用pagemap获取虚拟地址对应物理地址">
+<meta property="og:url" content="https://naughtyrabbit.github.io/2022/11/23/linux-pagemap/index.html">
+<meta property="og:site_name" content="不听话的兔子君">
+<meta property="og:description" content="利用linux虚拟文件系统获取虚拟地址对应物理地址，同时，借由fork()机制和全局局部变量在虚拟内存中的位置分析写时拷贝技术。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m1.im5i.com/2022/08/17/UcoIx0.jpg">
+<meta property="article:published_time" content="2022-11-23T03:08:51.000Z">
+<meta property="article:modified_time" content="2022-11-24T09:23:36.549Z">
+<meta property="article:author" content="naughtyrabbit">
+<meta property="article:tag" content="fork()">
+<meta property="article:tag" content="pagemap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m1.im5i.com/2022/08/17/UcoIx0.jpg"><link rel="shortcut icon" href="/img/head.jpg"><link rel="canonical" href="https://naughtyrabbit.github.io/2022/11/23/linux-pagemap/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '利用pagemap获取虚拟地址对应物理地址',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-11-24 17:23:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"><link rel="alternate" href="/atom.xml" title="不听话的兔子君" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">87</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">54</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">不听话的兔子君</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">利用pagemap获取虚拟地址对应物理地址</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-23T03:08:51.000Z" title="发表于 2022-11-23 11:08:51">2022-11-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-11-24T09:23:36.549Z" title="更新于 2022-11-24 17:23:36">2022-11-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/linux/">linux</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="利用pagemap获取虚拟地址对应物理地址"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>利用linux虚拟文件系统获取虚拟地址对应物理地址，同时，借由fork()机制和全局局部变量在虚拟内存中的位置分析写时拷贝技术。</p>
+</blockquote>
+<span id="more"></span>
+<h3 id="一、pagemap相关知识">一、pagemap相关知识</h3>
+<p> Linux文件目录中的/proc记录着当前进程的信息，称其为虚拟文件系统。在/proc下有一个链接目录名为self，这意味着哪一个进程打开了它，self中存储的信息就是所链接进程的。self中有一个名为pagemap的文件，专门用来记录所链接进程的物理页号信息。这样通过/proc/pid/pagemap文件，允许一个用户态的进程查看到每个虚拟页映射到的物理页。<br>
+ /proc/pid/pagemap中的每一项都包含了一个64位的值，这个值内容如下所示。每一项的映射方式不同于真正的虚拟地址映射，其文件中遵循独立的对应关系，即虚拟地址相对于0x0经过的页面数是对应项在文件中的偏移量</p>
+<pre class="line-numbers language-none"><code class="language-none">* &#x2F;proc&#x2F;pid&#x2F;pagemap.  This file lets a userspace process find out which
+   physical frame each virtual page is mapped to.  It contains one 64-bit
+   value for each virtual page, containing the following data (from
+   fs&#x2F;proc&#x2F;task_mmu.c, above pagemap_read):
+
+    * Bits 0-54  page frame number (PFN) if present&#x2F;&#x2F;present为1时，bit0-54表示物理页号
+    * Bits 0-4   swap type if swapped
+    * Bits 5-54  swap offset if swapped
+    * Bit  55    pte is soft-dirty (see Documentation&#x2F;vm&#x2F;soft-dirty.txt)
+    * Bit  56    page exclusively mapped (since 4.2)
+    * Bits 57-60 zero
+    * Bit  61    page is file-page or shared-anon (since 3.5)
+    * Bit  62    page swapped
+    * Bit  63    page present&#x2F;&#x2F;如果为1，表示当前物理页在内存中；为0，表示当前物理页不在内存中<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 根据上表，我们首先启动某个进程，获取该进程的进程号<strong>pid</strong>,然后打开/proc/pid/pagemap这个文件，读取其内容（这个文件比较大，正常在命令行中无法打开，因为每一个虚拟地址都有一条类似上表的记录）</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/*
+operating environment：
+	Ubuntu 18.04.2 LTS
+	gcc version 7.5.0
+
+程序功能：输入进程pid和虚拟地址，计算对应物理地址
+		本程序提供自身pid号  一个全局变量a 和一个局部变量b ，可以输入本程序自身pid和相应虚拟地址进行查询
+		也可以使用其他程序的pid和虚拟地址
+		程序必须在root权限下运行，否则读取到的pagemap数据为全0
+*/</span>
+
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/stat.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fcntl.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdint.h></span></span>
+
+<span class="token comment">//计算虚拟地址对应的地址，传入虚拟地址vaddr，通过paddr传出物理地址</span>
+<span class="token keyword">int</span> <span class="token function">mem_addr</span><span class="token punctuation">(</span><span class="token class-name">pid_t</span> pid<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> vaddr<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token operator">*</span>paddr<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">int</span> pageSize <span class="token operator">=</span> <span class="token function">getpagesize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>									<span class="token comment">//调用此函数获取系统设定的页面大小，通常为4k</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> v_pageIndex <span class="token operator">=</span> vaddr <span class="token operator">/</span> pageSize<span class="token punctuation">;</span>					<span class="token comment">//计算此虚拟地址相对于0x0的经过的页面数</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> v_offset <span class="token operator">=</span> v_pageIndex <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">;</span>		<span class="token comment">//计算在/proc/pid/pagemap文件中的偏移量</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> page_offset <span class="token operator">=</span> vaddr <span class="token operator">%</span> pageSize<span class="token punctuation">;</span>					<span class="token comment">//计算虚拟地址在页面中的偏移量</span>
+	<span class="token class-name">uint64_t</span> item <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>												<span class="token comment">//存储对应项的pagemap值</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> total_page <span class="token operator">=</span> <span class="token number">64</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> present_page <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+
+	<span class="token keyword">char</span> path <span class="token punctuation">[</span><span class="token number">0x100</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+	<span class="token function">sprintf</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">"/proc/%u/pagemap"</span><span class="token punctuation">,</span> pid<span class="token punctuation">)</span><span class="token punctuation">;</span>							<span class="token comment">//生成进程pid对应pagemap的路径</span>
+
+	<span class="token keyword">int</span> fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">;</span>									<span class="token comment">//以只读方式打开/proc/pid/pagemap</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span>fd <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>	<span class="token comment">//判断是否打开失败</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"open /proc/self/pagemap error\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">lseek</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> v_offset<span class="token punctuation">,</span> <span class="token constant">SEEK_SET</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>						<span class="token comment">//移动到pagemap相应的位置，即存储虚拟页对应的信息位置</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"lseek error\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token operator">&amp;</span>item<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>		<span class="token comment">//读取对应项的值，并存入item中，且判断读取数据位数是否正确</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"read item error\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">63</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> item<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>							<span class="token comment">//判断present是否为0，即该页是否被换出内存</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"page present is 0\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token class-name">uint64_t</span> phy_pageIndex <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">55</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> item<span class="token punctuation">;</span>		<span class="token comment">//计算物理页号，即取item的bit0-54</span>
+
+	<span class="token operator">*</span>paddr <span class="token operator">=</span> <span class="token punctuation">(</span>phy_pageIndex <span class="token operator">*</span> pageSize<span class="token punctuation">)</span> <span class="token operator">+</span> page_offset<span class="token punctuation">;</span>				<span class="token comment">//再加上页内偏移量就得到了物理地址</span>
+
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pid       virtual addr      v page index    page offset       pagemap item            phy page index      physical addr\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%-10d%-18lx%-16lx%-18lx%-24lx%-20lx%-20lx\n"</span><span class="token punctuation">,</span> pid<span class="token punctuation">,</span> vaddr<span class="token punctuation">,</span> v_pageIndex<span class="token punctuation">,</span> page_offset<span class="token punctuation">,</span> item<span class="token punctuation">,</span> phy_pageIndex<span class="token punctuation">,</span> <span class="token operator">*</span>paddr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// global variable a</span>
+<span class="token keyword">int</span> a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Please run in admin mode\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Use CTRL+C to exit\n\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// local variable a</span>
+	<span class="token keyword">int</span> b <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"my pid = %d\nglobal var 'a' virtual addr = 0x%lx\nlocal var 'b' virtual addr = 0x%lx\n"</span><span class="token punctuation">,</span><span class="token function">getpid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token operator">&amp;</span>a<span class="token punctuation">,</span><span class="token operator">&amp;</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token class-name">pid_t</span> pid <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>						<span class="token comment">//pid</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> vaddr <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>			<span class="token comment">//虚拟地址</span>
+	<span class="token keyword">unsigned</span> <span class="token keyword">long</span> phy <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>				<span class="token comment">//物理地址</span>
+	
+	<span class="token keyword">while</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\ninput the pid:         "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span><span class="token operator">&amp;</span>pid<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"input the vitual addr: "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%lx"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>vaddr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+		<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">mem_addr</span><span class="token punctuation">(</span>pid<span class="token punctuation">,</span> vaddr<span class="token punctuation">,</span> <span class="token operator">&amp;</span>phy<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"v_addr to phy_addr failure\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span>
+	
+	
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 程序主要声明了一个全局变量和一个局部变量，用以返回出其虚拟地址以供在pagemap文件中查找（虚拟地址相当于数组下标，对应值即是pagemap项），然后如果该地址在物理地址中存在即present位1，0~53位即是该虚拟地址对应的物理页号，结合物理页号和虚拟地址的偏移量（低12位，即4k）即可得到虚拟地址对应的物理地址。</p>
+<h3 id="二、文件读写函数">二、文件读写函数</h3>
+<p> 为了找出该进程实际用了多少内存空间（实际在物理内存中存在），即上述pagemap单项中present值为<strong>1</strong>的项有多少。最容易想到的自然是遍历（下一节会解释该方法的不可行性，或者不建议这么做的原因）。<br>
+ 在源代码中重新打开<strong>pagemap</strong>文件，循环遍历，初始化总项数为<strong>1024 * 1024</strong>（4g/4k，一共这么多个虚拟页表）。写出如下代码，该代码错误之处很多，下面解释。</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> fd <span class="token operator">=</span> <span class="token function">open</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> O_RDONLY<span class="token punctuation">)</span><span class="token punctuation">;</span>									<span class="token comment">//以只读方式打开/proc/pid/pagemap</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>fd <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>	<span class="token comment">//判断是否打开失败</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"open /proc/self/pagemap error\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">while</span> <span class="token punctuation">(</span>total_page<span class="token operator">--</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">lseek</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">SEEK_SET</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>				<span class="token comment">//移动到pagemap相应的位置，即存储虚拟页对应的信息位置</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"lseek error\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token operator">&amp;</span>item<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>		<span class="token comment">//读取对应项的值，并存入item中，且判断读取数据位数是否正确</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"read item error\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">uint64_t</span><span class="token punctuation">)</span><span class="token number">1</span> <span class="token operator">&lt;&lt;</span> <span class="token number">63</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> item<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>							<span class="token comment">//判断present是否为0，即该页是否被换出内存</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"page present is 1, count++\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		present_page<span class="token operator">++</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"left %d pages to read\n"</span><span class="token punctuation">,</span> total_page<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"current item %-24lx\n"</span><span class="token punctuation">,</span> item<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 首先是<strong>lseek</strong>函数,该函数用来调整当前文件读写位置，参数意义如下：</p>
+<pre><code>fd：文件描述符
+offset：偏移量
+whence：位置 
+      SEEK_SET：The offset is set to offset bytes. offset为0时表示文件开始位置。
+      SEEK_CUR：The offset is set to its current location plus offset bytes. offset为0时表示当前位置。
+      SEEK_END：The offset is set to the size of the file plus offset bytes. offset为0时表示结尾位置
+</code></pre>
+<p> 因此上述代码错误主要在于第三个参数的设置，应该设为<strong>SEEK_CUR</strong>，每次从上次读的文件末去读。<br>
+ 除此之外，<strong>read</strong>函数也会改变当前文件读写位置，因此如果上述代码只改<strong>lseek</strong>函数就相当于读一个<strong>item</strong>跳一个<strong>item</strong>。总结一下，如果想要连续读<strong>item</strong>，其实只需要一直使用<strong>read</strong>函数即可，每次调用<strong>read</strong>函数之后会自动将文件读写位置指向本次读的文件位置末。也因此在利用<strong>read</strong>，<strong>write</strong>函数进行读写操作时，如果先写入数据，然后立即读，此时是读不到写入数据的，因为读位置在上一次写位置的末位置，一般在读之前利用<strong>lseek</strong>函数调整当前文件读写位置至合适。</p>
+<h3 id="三、64位机地址空间">三、64位机地址空间</h3>
+<p> 解决完了一些函数使用上的错误后，重新执行代码，结果<strong>present</strong>的总虚拟页数还是0，继续找原因，稍微计算一下1024 x 1024的值明显比下图中虚拟页表值要小的多。<br>
+<img src="https://m1.im5i.com/2022/11/24/U5pKqx.png" alt="虚拟页表"><br>
+ 按4g虚拟内存来算，每个页表4k，应该是有1024 x 1024项，但是现在不匹配，在算一下4g的虚拟内存是 2^32 即32位，换算成16进制也是8位，而图中的虚拟地址却是48位。然后就想到了4g虚拟内存是对于32位机来说的，对于64位机，实际用了48位，也就是2^48寻址空间，也就是256T的虚拟内存空间，页表单位仍是4k，除下来2^48 / 2^12 = 36位，换算成16进制是9位，与图中相符。关于64位机的地址空间其实也不是都有用，详情可以查阅相关资料，这里不再深究。<br>
+ 然后我们再算一下，2^36 = 1024 * 1024 * 1024 * 3，中间我跑了一下1024 * 1024 * 3的遍历，用了约18分钟。然后再乘上1024,大约需要几天才能遍历完，这也是之前提到的遍历这种策略不可行的原因（其实还可以根据/proc/pid/maps文件找出实际使用的地址空间，在其中遍历，能够大大缩小遍历范围，但是不再考虑，下面来看最终的实现方法）</p>
+<h3 id="四、-proc-pid-status文件">四、/proc/pid/status文件</h3>
+<p> 根据上表，我们首</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/kongkongkkk/article/details/74366200">https://blog.csdn.net/kongkongkkk/article/details/74366200</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">naughtyrabbit</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://naughtyrabbit.github.io/2022/11/23/linux-pagemap/">https://naughtyrabbit.github.io/2022/11/23/linux-pagemap/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://naughtyrabbit.github.io" target="_blank">不听话的兔子君</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/fork/">fork()</a><a class="post-meta__tags" href="/tags/pagemap/">pagemap</a></div><div class="post_share"><div class="social-share" data-image="https://m1.im5i.com/2022/08/17/UcoIx0.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/11/06/private-diary-1/"><img class="next-cover" src="https://m1.im5i.com/2022/08/19/UcPHgz.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">个人随笔-意识流日记-2022.11.6</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/11/02/linux-myshell/" title="用fork,exec,wait实现一个自己的shell"><img class="cover" src="https://m1.im5i.com/2022/08/17/UcovSH.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-02</div><div class="title">用fork,exec,wait实现一个自己的shell</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://e.im5i.com/2021/10/12/PEw4Y.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">naughtyrabbit</div><div class="author-info__description">记录生活，记录成长</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">87</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">54</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">15</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/naughtyrabbit"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/naughtyrabbit" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81pagemap%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">一、pagemap相关知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99%E5%87%BD%E6%95%B0"><span class="toc-number">2.</span> <span class="toc-text">二、文件读写函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%8164%E4%BD%8D%E6%9C%BA%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4"><span class="toc-number">3.</span> <span class="toc-text">三、64位机地址空间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81-proc-pid-status%E6%96%87%E4%BB%B6"><span class="toc-number">4.</span> <span class="toc-text">四、&#x2F;proc&#x2F;pid&#x2F;status文件</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/11/23/linux-pagemap/" title="利用pagemap获取虚拟地址对应物理地址"><img src="https://m1.im5i.com/2022/08/17/UcoIx0.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用pagemap获取虚拟地址对应物理地址"/></a><div class="content"><a class="title" href="/2022/11/23/linux-pagemap/" title="利用pagemap获取虚拟地址对应物理地址">利用pagemap获取虚拟地址对应物理地址</a><time datetime="2022-11-23T03:08:51.000Z" title="发表于 2022-11-23 11:08:51">2022-11-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/06/private-diary-1/" title="个人随笔-意识流日记-2022.11.6"><img src="https://m1.im5i.com/2022/08/19/UcPHgz.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="个人随笔-意识流日记-2022.11.6"/></a><div class="content"><a class="title" href="/2022/11/06/private-diary-1/" title="个人随笔-意识流日记-2022.11.6">个人随笔-意识流日记-2022.11.6</a><time datetime="2022-11-06T11:49:08.000Z" title="发表于 2022-11-06 19:49:08">2022-11-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/02/linux-myshell/" title="用fork,exec,wait实现一个自己的shell"><img src="https://m1.im5i.com/2022/08/17/UcovSH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="用fork,exec,wait实现一个自己的shell"/></a><div class="content"><a class="title" href="/2022/11/02/linux-myshell/" title="用fork,exec,wait实现一个自己的shell">用fork,exec,wait实现一个自己的shell</a><time datetime="2022-11-02T01:06:35.000Z" title="发表于 2022-11-02 09:06:35">2022-11-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/24/FPGA-SEM-intro/" title="FPGA_软错误缓解_介绍"><img src="https://m1.im5i.com/2022/08/19/UcPeVM.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_软错误缓解_介绍"/></a><div class="content"><a class="title" href="/2022/08/24/FPGA-SEM-intro/" title="FPGA_软错误缓解_介绍">FPGA_软错误缓解_介绍</a><time datetime="2022-08-24T08:51:07.000Z" title="发表于 2022-08-24 16:51:07">2022-08-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/23/FPGA-DFX-RTLprj/" title="FPGA_动态功能切换_DFX RTL工程流程"><img src="https://m1.im5i.com/2022/08/19/UcPRvF.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FPGA_动态功能切换_DFX RTL工程流程"/></a><div class="content"><a class="title" href="/2022/08/23/FPGA-DFX-RTLprj/" title="FPGA_动态功能切换_DFX RTL工程流程">FPGA_动态功能切换_DFX RTL工程流程</a><time datetime="2022-08-23T01:37:15.000Z" title="发表于 2022-08-23 09:37:15">2022-08-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By naughtyrabbit</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
