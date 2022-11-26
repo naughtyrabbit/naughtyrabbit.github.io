@@ -1,4 +1,5 @@
 https://naughtyrabbit.github.io/2022/11/23/linux-pagemap/
+https://naughtyrabbit.github.io/2022/11/24/x86_server_setup/
 https://naughtyrabbit.github.io/2022/08/24/FPGA-SEM-intro/
 https://naughtyrabbit.github.io/2022/08/22/private-blog-1/
 https://naughtyrabbit.github.io/2022/11/06/private-diary-1/
