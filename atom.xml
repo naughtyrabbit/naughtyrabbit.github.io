@@ -6,7 +6,7 @@
   <link href="https://naughtyrabbit.github.io/atom.xml" rel="self"/>
   
   <link href="https://naughtyrabbit.github.io/"/>
-  <updated>2023-08-20T02:01:44.967Z</updated>
+  <updated>2024-04-03T11:56:22.869Z</updated>
   <id>https://naughtyrabbit.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>个人随笔-意识流日记-2024.4.2</title>
+    <link href="https://naughtyrabbit.github.io/2024/04/03/private-diary-3/"/>
+    <id>https://naughtyrabbit.github.io/2024/04/03/private-diary-3/</id>
+    <published>2024-04-03T11:04:26.000Z</published>
+    <updated>2024-04-03T11:56:22.869Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>私人内容，请自重</p></blockquote><span id="more"></span><p><font face="楷体" color="SteelBlue" size="4"><p><strong> 出差回西安，下了高铁，直奔乘坐出租车的地方，路上不少揽客的师傅，操着浓厚的本地口音，说着不用等直接上车之类的话，似乎也可以去坐，但是为什么不理睬呢，也懒得去想了，能拉到几个人呢在这，或者真的能拉到人吗？想着这些，已经到了“官方”出租车排队的地方。</strong><br><strong> 还感冒着，鼻塞加上眼睛痛，祈祷着到我的时候是一辆电车，少些汽油味，可能就不会晕车，运气很好，是一辆绿色车牌的车，上车前发了条信息，在车上会晕车看不了手机。</strong><br><strong> “师傅，去xx南校区”，司机似乎不知道这个学校，我重复了一遍，司机一边开车出高铁站，一边打开导航软件搜索起来。</strong><br><strong> “哪个校区？”，司机问。</strong><br><strong> “南校区”，我补充道，“东门”。</strong><br><strong> “已开始导航，全程xxx公里，预计52分钟”，传来开始导航的信号，我闭上眼睛，驶出地上之前有个很大的弯，感受着推背感，只有我一个人，便任由身体摆动，看着路边的风景，回忆着出差前来高铁站时也是一样的景色，熟悉的几个电线杆和几栋比较标志性的建筑，一起出行的几个或者回家或者去其他地方旅游，只有我回来西安。</strong><br><strong> “前方路段有交通事故拥堵，预计通行时间15分钟”，堵车了，饭还没吃，晕车体质加上感冒眼睛难受，我再次闭上眼睛</strong><br><strong> “今天运气很好，拉了两趟就够班费了（？），一趟从城西到高铁站65块，现在从高铁站到长安也能赚不少”，司机师傅操着方言发了个语音给谁，似乎在说今天跑了两趟车就挣了不少钱什么的，不清楚“班费”是个什么，可能是出租车公司的租车费用，感觉跑出租全是这种小长途单子确实很舒服，不麻烦，一个人也省油省电</strong><br><strong> “真不错，这不仅班费够了，电费也够了，多的就是你的零花钱”，似乎是对面回了个语音，听声音是个女声，大抵是司机的妻子吧；“xx保佑，这样就很不错啦”，妻子补充了一句什么什么保佑，没听清是佛祖还是安拉什么的，很朴实一家子呀，感觉很不错的生活，两口子就这么过着，跑出租应该也不会挣很多钱，但是两个人依然满足，互相感觉也很和谐，还怪叫人羡慕的。司机继续开着车，似乎没有继续了</strong><br><strong> “感谢您提供的事故发生车道信息，……”，车还在堵着，似乎到了发生事故的地方，司机在导航上上报了具体的事故发生车道。“虽然前方拥堵，但您依然在最优路线”，导航来了一句这个哈哈，车在缓缓移动着，逐渐驶出堵车路段</strong><br><strong> “您提供的事故发生车道信息，已给57位司机提供了帮助，为您增加100点xx值”</strong><br><strong> “您提供的事故发生车道信息，已给140位司机提供了帮助，……”</strong><br><strong> 人生虽苦，亦有美好，天逐渐黑了起来，远处路灯闪烁着亮黄色的灯光。</strong></p><p></font></p></p><p><img src="https://s21.ax1x.com/2024/04/03/pFHvpfU.jpg" alt="你好呀"></p>]]></content>
+    
+    
+    <summary type="html">仅供自己观看，请自重</summary>
+    
+    
+    
+    <category term="私人日记" scheme="https://naughtyrabbit.github.io/categories/%E7%A7%81%E4%BA%BA%E6%97%A5%E8%AE%B0/"/>
+    
+    
+    <category term="私人日记" scheme="https://naughtyrabbit.github.io/tags/%E7%A7%81%E4%BA%BA%E6%97%A5%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>你的第一个openCL程序————向量加</title>
@@ -428,29 +449,6 @@
     
     <summary type="html">&lt;blockquote&gt;
 &lt;p&gt;本节介绍了FFT(快速傅里叶变换)的HLS实现，使用tcl脚本创建HLS工程的过程，以及如何在vivado中使用生成的IP。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    <category term="hls" scheme="https://naughtyrabbit.github.io/categories/hls/"/>
-    
-    
-    <category term="hls学习" scheme="https://naughtyrabbit.github.io/tags/hls%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HLS学习入门（索贝尔算子1）</title>
-    <link href="https://naughtyrabbit.github.io/2022/03/06/hls-learning-sobel/"/>
-    <id>https://naughtyrabbit.github.io/2022/03/06/hls-learning-sobel/</id>
-    <published>2022-03-06T03:35:02.000Z</published>
-    <updated>2022-03-06T07:47:06.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>本节介绍了一种使用 HLS 实现 Sobel 检测的方法</p></blockquote><span id="more"></span><h3 id="一、Sobel-原理介绍">一、Sobel 原理介绍</h3><p>  索贝尔算子（Sobel operator）主要用作边缘检测，在技术上，它是一离散性差分算子，用来运算图像亮度函<br>数的灰度之近似值。在图像的任何一点使用此算子，将会产生对应的灰度矢量或是其法矢量。<br>  Sobel 卷积因子为：<br><img src="https://s1.ax1x.com/2022/03/06/bB52Ux.png" alt="图片描述"><br>  该算子包含两组 3x3 的矩阵，分别为横向及纵向，将之与图像作平面卷积，即可分别得出横向及纵向的亮度差<br>分近似值。如果以 A 代表原始图像，Gx 及 Gy 分别代表经横向及纵向边缘检测的图像灰度值，其公式如下：<br><img src="https://s1.ax1x.com/2022/03/06/bB55xe.png" alt="图片描述"><br>  具体计算如下：</p><pre><code>Gx = (-1)*f(x-1, y-1) + 0*f(x,y-1) + 1*f(x+1,y-1)        +(-2)*f(x-1,y) + 0*f(x,y)+2*f(x+1,y)        +(-1)*f(x-1,y+1) + 0*f(x,y+1) + 1*f(x+1,y+1)    = [f(x+1,y-1)+2*f(x+1,y)+f(x+1,y+1)]-[f(x-1,y-1)+2*f(x-1,y)+f(x-1,y+1)]Gy =1* f(x-1, y-1) + 2*f(x,y-1)+ 1*f(x+1,y-1)        +0*f(x-1,y) 0*f(x,y) + 0*f(x+1,y)        +(-1)*f(x-1,y+1) + (-2)*f(x,y+1) + (-1)*f(x+1, y+1)    = [f(x-1,y-1) + 2f(x,y-1) + f(x+1,y-1)]-[f(x-1, y+1) + 2*f(x,y+1)+f(x+1,y+1)]</code></pre><p>  其中 f(a,b), 表示图像(a,b)点的灰度值；<br>  图像的每一个像素的横向及纵向灰度值通过以下公式结合，来计算该点灰度的大小<br><img src="https://s1.ax1x.com/2022/03/06/bBIiaq.png" alt="图片描述"><br>  通常，为了提高效率 使用不开平方的近似值：<br><img src="https://s1.ax1x.com/2022/03/06/bBI3i6.png" alt="图片描述"><br>  如果梯度 G 大于某一阀值 则认为该点(x,y)为边缘点。<br>然后可用以下公式计算梯度方向：<br><img src="https://s1.ax1x.com/2022/03/06/bBIULd.png" alt="图片描述"><br>  Sobel 算子根据像素点上下、左右邻点灰度加权差，在边缘处达到极值这一现象检测边缘。对噪声具有平滑作<br>用，提供较为精确的边缘方向信息，边缘定位精度不够高。当对精度要求不是很高时，是一种较为常用的边缘检测<br>方法。</p><h3 id="二、代码解析">二、代码解析</h3><pre><code class="language-c++">#include &quot;top.h&quot;void hls_sobel(AXI_STREAM&amp; INPUT_STREAM, AXI_STREAM&amp; OUTPUT_STREAM, int rows, int cols)&#123;    //Create AXI streaming interfaces for the core#pragma HLS INTERFACE axis port=INPUT_STREAM#pragma HLS INTERFACE axis port=OUTPUT_STREAM#pragma HLS RESOURCE core=AXI_SLAVE variable=rows metadata=&quot;-bus_bundle CONTROL_BUS&quot;#pragma HLS RESOURCE core=AXI_SLAVE variable=cols metadata=&quot;-bus_bundle CONTROL_BUS&quot;#pragma HLS RESOURCE core=AXI_SLAVE variable=return metadata=&quot;-bus_bundle CONTROL_BUS&quot;//指定这两个参数在函数执行过程中不会被改变#pragma HLS INTERFACE ap_stable port=rows#pragma HLS INTERFACE ap_stable port=cols    RGB_IMAGE img_0(rows, cols);    RGB_IMAGE img_1(rows, cols);    RGB_IMAGE img_2(rows, cols);    RGB_IMAGE img_3(rows, cols);    RGB_IMAGE img_4(rows, cols);    RGB_IMAGE img_5(rows, cols);    RGB_PIXEL pix(10, 10, 10);#pragma HLS dataflow    hls::AXIvideo2Mat(INPUT_STREAM, img_0);    //Sobel:Computes a horizontal or vertical Sobel filter, returning    //an estimate of the horizontal or vertical derivative, using a filter    //第三个参数代表size，支持3,5,7,；    //前两个参数是(1, 0)=水平导数；(0, 1)=&gt;垂直导数    hls::Sobel&lt;1,0,3&gt;(img_0, img_1);    //SubS Computes the differences between elements of image src and scalar value scl    hls::SubS(img_1, pix, img_2);    /*     * 经过scale处理     */       //Scale Converts an input image src with optional linear transformation       //后面两个参数是变换比例和偏移，简单的说就是y=kx+b的k,b。       hls::Scale(img_2, img_3, 2, 0);       hls::Erode(img_3, img_4);       hls::Dilate(img_4, img_5);       hls::Mat2AXIvideo(img_5, OUTPUT_STREAM);/* //未经scale处理    hls::Erode(img_2, img_3);    hls::Dilate(img_3, img_4);    hls::Mat2AXIvideo(img_4, OUTPUT_STREAM); */&#125;</code></pre><h3 id="三、仿真结果">三、仿真结果</h3><p>  下图是提取边缘信息的仿真结果，分别是HLS实现和opencv实现：之后export RTL导出IP以供vivado使用。<br><img src="https://s1.ax1x.com/2022/03/06/bDPAFf.png" alt="图片描述"></p>]]></content>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;本节介绍了一种使用 HLS 实现 Sobel 检测的方法&lt;/p&gt;
 &lt;/blockquote&gt;</summary>
     
     
