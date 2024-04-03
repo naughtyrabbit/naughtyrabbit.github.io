@@ -1929,7 +1929,7 @@
       <link href="/2021/06/22/procom-linux-shm/"/>
       <url>/2021/06/22/procom-linux-shm/</url>
       
-        <content type="html"><![CDATA[<blockquote><p>linux 进程间通信编程，共享内存的实验</p></blockquote><span id="more"></span><h3 id="代码分析-8">代码分析</h3><p>  程序分析<br>  共享内存实现的步骤大体如下：</p><blockquote><ol><li>创建共享内存对象，shm_open</li><li>分配共享内存大小，ftruncate</li><li>映射共享内存（到具体的进程空间），mmap</li></ol></blockquote><pre><code class="language-c">//producer_customer.c//在多线程中//使用SYSTEM V API实现生产者消费者经典程序//实际上这是POSIX的实现方法，上面那句话可能有误？#include &lt;signal.h&gt;#include &quot;shm_com.h&quot;#include &quot;sem_com.h&quot;#include &lt;pthread.h&gt;#define SHM_NAME&quot;/MY_SHM&quot;int semid ;//信号量idchar *shm_addr = NULL;//共享内存映射地址struct shm_buf *shm_buf_inst = NULL;int ignore_signal(void)&#123;//忽略部分信号，避免程序非法退出signal(SIGINT, SIG_IGN);signal(SIGQUIT, SIG_IGN);signal(SIGSTOP, SIG_IGN);return 0;&#125;void *producer(void *arg)&#123;do&#123;sem_p(semid);//生产者对信号量进行P操作，申请对共享内存互斥操作printf(&quot;请向共享内存中输入信息(输入'quit'退出):&quot;);if((fgets(shm_buf_inst-&gt;buf, BUF_SIZE, stdin)) == NULL)&#123;perror(&quot;Error fgets&quot;);sem_v(semid);break;&#125;shm_buf_inst-&gt;pid = getpid();sem_v(semid);//生产者完成对共享内存的操作，对信号量进行V操作&#125;while(strncmp(shm_buf_inst-&gt;buf, &quot;quit&quot;, 4));pthread_exit(NULL);&#125;void *customer(void *arg)&#123;do&#123;sem_p(semid);//消费者对信号量进行P操作，申请对共享内存的互斥操作printf(&quot;进程%d向共享内存写入信息:%s&quot;, shm_buf_inst-&gt;pid, shm_buf_inst-&gt;buf);if((strncmp(shm_buf_inst-&gt;buf, &quot;quit&quot;, 4)) == 0)&#123;sem_v(semid);break;&#125;shm_buf_inst-&gt;pid = 0;memset(shm_buf_inst-&gt;buf, 0, BUF_SIZE);sem_v(semid);//消费者简称对信号量进行V操作，完成对共享内存菜单操作&#125;while(1);pthread_exit(NULL);&#125;int main()&#123;int fd;//共享内存对应open对应的文件描述符int res;pthread_t thread_p, thread_c;//创建信号量,并初始化为1if((semid =(semget(ftok(&quot;.&quot;, 'a'), 1, 0666|IPC_CREAT))) == -1)&#123;perror(&quot;Error semget&quot;);exit(-1);&#125;init_sem(semid, 1);//创建共享内存区if((fd = shm_open(SHM_NAME, O_RDWR|O_CREAT, 0666)) == -1)&#123;perror(&quot;Error shm_open&quot;);del_sem(semid);exit(-1);&#125;//为共享内存区分配内存空间if((ftruncate(fd, SHM_BUF_SIZE)) == -1)&#123;perror(&quot;Error ftruncate&quot;);del_sem(semid);close(fd);shm_unlink(SHM_NAME);exit(-1);&#125;//将共享内存地址映射到当前进程地址空间if((shm_addr = mmap(NULL, SHM_BUF_SIZE, PROT_READ|PROT_WRITE,\MAP_SHARED, fd, 0)) == MAP_FAILED)&#123;perror(&quot;Error, mmap&quot;);del_sem(semid);close(fd);shm_unlink(SHM_NAME);exit(-1);&#125;printf(&quot;共享内存映射地址%p\n&quot;, shm_addr);shm_buf_inst = (struct shm_buf *) shm_addr;res = pthread_create(&amp;thread_p, NULL, producer, NULL);if (res != 0)&#123;perror(&quot;Error pthread_create producer&quot;);&#125;res = pthread_create(&amp;thread_c, NULL, customer, NULL);if (res != 0)&#123;perror(&quot;Error pthread_create customer&quot;);&#125;pthread_join(thread_p, NULL);pthread_join(thread_c, NULL);del_sem(semid);if((munmap(shm_addr, SHM_BUF_SIZE)) == -1)&#123;perror(&quot;Error munmap&quot;);exit(-1);&#125;close(fd);shm_unlink(SHM_NAME);exit(0);&#125;</code></pre><h3 id="执行结果-8">执行结果</h3><p>  右边进程在往共享内存里写，左边的进程可以检测到，并打印相关信息，读写控制由PV操作完成。<br><img src="https://s.im5i.com/2021/06/22/a41dF.png" alt="执行结果"></p>]]></content>
+        <content type="html"><![CDATA[<blockquote><p>linux 进程间通信编程，共享内存的实验</p></blockquote><span id="more"></span><h3 id="代码分析-7">代码分析</h3><p>  程序分析<br>  共享内存实现的步骤大体如下：</p><blockquote><ol><li>创建共享内存对象，shm_open</li><li>分配共享内存大小，ftruncate</li><li>映射共享内存（到具体的进程空间），mmap</li></ol></blockquote><pre><code class="language-c">//producer_customer.c//在多线程中//使用SYSTEM V API实现生产者消费者经典程序//实际上这是POSIX的实现方法，上面那句话可能有误？#include &lt;signal.h&gt;#include &quot;shm_com.h&quot;#include &quot;sem_com.h&quot;#include &lt;pthread.h&gt;#define SHM_NAME&quot;/MY_SHM&quot;int semid ;//信号量idchar *shm_addr = NULL;//共享内存映射地址struct shm_buf *shm_buf_inst = NULL;int ignore_signal(void)&#123;//忽略部分信号，避免程序非法退出signal(SIGINT, SIG_IGN);signal(SIGQUIT, SIG_IGN);signal(SIGSTOP, SIG_IGN);return 0;&#125;void *producer(void *arg)&#123;do&#123;sem_p(semid);//生产者对信号量进行P操作，申请对共享内存互斥操作printf(&quot;请向共享内存中输入信息(输入'quit'退出):&quot;);if((fgets(shm_buf_inst-&gt;buf, BUF_SIZE, stdin)) == NULL)&#123;perror(&quot;Error fgets&quot;);sem_v(semid);break;&#125;shm_buf_inst-&gt;pid = getpid();sem_v(semid);//生产者完成对共享内存的操作，对信号量进行V操作&#125;while(strncmp(shm_buf_inst-&gt;buf, &quot;quit&quot;, 4));pthread_exit(NULL);&#125;void *customer(void *arg)&#123;do&#123;sem_p(semid);//消费者对信号量进行P操作，申请对共享内存的互斥操作printf(&quot;进程%d向共享内存写入信息:%s&quot;, shm_buf_inst-&gt;pid, shm_buf_inst-&gt;buf);if((strncmp(shm_buf_inst-&gt;buf, &quot;quit&quot;, 4)) == 0)&#123;sem_v(semid);break;&#125;shm_buf_inst-&gt;pid = 0;memset(shm_buf_inst-&gt;buf, 0, BUF_SIZE);sem_v(semid);//消费者简称对信号量进行V操作，完成对共享内存菜单操作&#125;while(1);pthread_exit(NULL);&#125;int main()&#123;int fd;//共享内存对应open对应的文件描述符int res;pthread_t thread_p, thread_c;//创建信号量,并初始化为1if((semid =(semget(ftok(&quot;.&quot;, 'a'), 1, 0666|IPC_CREAT))) == -1)&#123;perror(&quot;Error semget&quot;);exit(-1);&#125;init_sem(semid, 1);//创建共享内存区if((fd = shm_open(SHM_NAME, O_RDWR|O_CREAT, 0666)) == -1)&#123;perror(&quot;Error shm_open&quot;);del_sem(semid);exit(-1);&#125;//为共享内存区分配内存空间if((ftruncate(fd, SHM_BUF_SIZE)) == -1)&#123;perror(&quot;Error ftruncate&quot;);del_sem(semid);close(fd);shm_unlink(SHM_NAME);exit(-1);&#125;//将共享内存地址映射到当前进程地址空间if((shm_addr = mmap(NULL, SHM_BUF_SIZE, PROT_READ|PROT_WRITE,\MAP_SHARED, fd, 0)) == MAP_FAILED)&#123;perror(&quot;Error, mmap&quot;);del_sem(semid);close(fd);shm_unlink(SHM_NAME);exit(-1);&#125;printf(&quot;共享内存映射地址%p\n&quot;, shm_addr);shm_buf_inst = (struct shm_buf *) shm_addr;res = pthread_create(&amp;thread_p, NULL, producer, NULL);if (res != 0)&#123;perror(&quot;Error pthread_create producer&quot;);&#125;res = pthread_create(&amp;thread_c, NULL, customer, NULL);if (res != 0)&#123;perror(&quot;Error pthread_create customer&quot;);&#125;pthread_join(thread_p, NULL);pthread_join(thread_c, NULL);del_sem(semid);if((munmap(shm_addr, SHM_BUF_SIZE)) == -1)&#123;perror(&quot;Error munmap&quot;);exit(-1);&#125;close(fd);shm_unlink(SHM_NAME);exit(0);&#125;</code></pre><h3 id="执行结果-7">执行结果</h3><p>  右边进程在往共享内存里写，左边的进程可以检测到，并打印相关信息，读写控制由PV操作完成。<br><img src="https://s.im5i.com/2021/06/22/a41dF.png" alt="执行结果"></p>]]></content>
       
       
       <categories>
@@ -1952,36 +1952,11 @@
     
     
     <entry>
-      <title>linux进程间通信编程-有名管道</title>
-      <link href="/2021/06/22/procom-linux-fifo/"/>
-      <url>/2021/06/22/procom-linux-fifo/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>linux 进程间通信编程，有名管道的实验（存疑，为什么管道的创建在read.c里？）</p></blockquote><span id="more"></span><h3 id="代码分析-6">代码分析</h3><p>  程序分析 write.c</p><pre><code class="language-c">//fifo_write.c//有名管道的创建与使用write部分// mkfifo - make a FIFO special file (a named pipe)//#include &lt;sys/types.h&gt;//#include &lt;sys/stat.h&gt;//int mkfifo(const char *pathname, mode_t mode);#include &lt;sys/types.h&gt;#include &lt;sys/stat.h&gt;#include &lt;unistd.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#include &lt;fcntl.h&gt;#include &lt;limits.h&gt;#define FIFONAME&quot;./myfifo&quot;// PIPE_BUF defined in limits.h#define BUF_SIZEPIPE_BUFint main(int argc, char *argv[])&#123;int fd;char buf[BUF_SIZE];int real_write;if (argc &lt;=1 )&#123;printf(&quot;Usage: %s string\n&quot;,argv[0]);exit(0);&#125;sscanf(argv[1], &quot;%s&quot;, buf);if ((fd = open(FIFONAME, O_WRONLY)) &lt; 0)//只写方式打开fifo&#123;printf(&quot;Error open fifo files!\n&quot;);exit(-1);&#125;//向管道中写入字符串if((real_write = write(fd, buf, BUF_SIZE)) &gt; 0)&#123;printf(&quot;Write '%s' to FIFO\n&quot;, buf);&#125;close(fd);exit(0);&#125; </code></pre><p>  程序分析 read.c</p><pre><code class="language-c">//fifo_read.c//有名管道的创建与使用read部分// mkfifo - make a FIFO special file (a named pipe)//#include &lt;sys/types.h&gt;//#include &lt;sys/stat.h&gt;//int mkfifo(const char *pathname, mode_t mode);#include &lt;sys/types.h&gt;#include &lt;sys/stat.h&gt;#include &lt;unistd.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#include &lt;fcntl.h&gt;#include &lt;limits.h&gt;#include &lt;errno.h&gt;#include &lt;string.h&gt;#define FIFONAME&quot;./myfifo&quot;// PIPE_BUF defined in limits.h#define BUF_SIZEPIPE_BUFint main()&#123;int fd;char buf[BUF_SIZE];int real_read;//判断有名管道是否存在，若未创建则以相应的权限创建//access - check real user's permissions for a file//#include &lt;unistd.h&gt;//int access(const char *pathname, int mode);if ((access(FIFONAME, F_OK)) == -1)&#123;if(((mkfifo(FIFONAME, 0666)) &lt; 0) &amp;&amp; (errno != EEXIST))&#123;printf(&quot;Error Create FIFO file!\n&quot;);&#125;&#125;if ((fd = open(FIFONAME, O_RDONLY)) &lt; 0)//只读方式打开fifo&#123;printf(&quot;Error open fifo files!\n&quot;);exit(-1);&#125;while(1)&#123;memset(buf, 0, sizeof(buf));//从管道中读取字符串if((real_read = read(fd, buf, BUF_SIZE)) &gt; 0)&#123;printf(&quot;Read '%s' from FIFO\n&quot;, buf);if (!strcmp(buf,&quot;Quit&quot;)) break;&#125;&#125;close(fd);exit(0);&#125;</code></pre><h3 id="执行结果-6">执行结果</h3><p>  不必解释，看图<br><img src="https://s.im5i.com/2021/06/22/a36zA.png" alt="执行结果"></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> linux </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 有名管道 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>linux进程间通信编程-管道通信</title>
       <link href="/2021/06/22/procom-linux-pipecom/"/>
       <url>/2021/06/22/procom-linux-pipecom/</url>
       
-        <content type="html"><![CDATA[<blockquote><p>linux 进程间通信编程，管道通信的实验</p></blockquote><span id="more"></span><h3 id="代码分析-7">代码分析</h3><p>  程序分析</p><pre><code class="language-c">#include &lt;fcntl.h&gt;#include &lt;unistd.h&gt;#include &lt;stdio.h&gt;#include &lt;stdlib.h&gt;#include &lt;errno.h&gt;#include &lt;time.h&gt;#include &lt;string.h&gt;#include &lt;sys/types.h&gt;//mkfifo#include &lt;sys/stat.h&gt;//mkfifo// 定义FIFO有名管道名#define FIFO1&quot;in1&quot;#define FIFO2&quot;in2&quot;//设定缓冲区大小#define BUF_SIZE512//超时时间#define DELAY_TIME60//多路复用文件数目#define IN_FILES3#define MAX(a,b)((a) &gt; (b)? (a) : (b))int main()&#123;int fds[IN_FILES];char buf[BUF_SIZE];int i, res, real_read, maxfd;fd_set inset, tmpset;struct timeval tv;//超时时间设置fds[0] = 0;//标准输入设备//创建两个有名管道//access - check real user's permissions for a file//#include &lt;unistd.h&gt;//int access(const char *pathname, int mode);//mode: F_OK, R_OK, W_OK, and X_OK.//mkfifo - make a FIFO special file (a named pipe)//#include &lt;sys/types.h&gt;//#include &lt;sys/stat.h&gt;//int mkfifo(const char *pathname, mode_t mode);if((access(FIFO1, F_OK)) == -1)//如果 FIFO1 有名管道不存在&#123;if((mkfifo(FIFO1, 0666)) == -1)&#123;perror(&quot;Error FIFO1 create!&quot;);exit(-1);&#125;&#125;if((access(FIFO2, F_OK)) == -1)//如果 FIFO2 有名管道不存在&#123;if((mkfifo(FIFO2, 0666)) == -1)//指明创建一个有名管道且存取权限为0666，即创建者、与创建者同组的用户、其他用户对该有名管道的  访问权限 都是 可读可写。&#123;perror(&quot;Error FIFO2 create!&quot;);exit(-1);&#125;&#125;//以只读非阻塞的方式打开两个文件if((fds[1] = open(FIFO1, O_RDONLY|O_NONBLOCK)) == -1)&#123;perror(&quot;Error FIFO1 open&quot;);exit(-1);&#125;if((fds[2] = open(FIFO2, O_RDONLY|O_NONBLOCK)) == -1)&#123;perror(&quot;Error FIFO2 open&quot;);exit(-1);&#125;//以下为select函数作准备//取出两个文件描述符中的较大者maxfd = MAX(fds[1], fds[2]);//初始化读集合insetFD_ZERO(&amp;inset);//在读文件描述符中加入相应的描述符for(i = 0; i &lt; IN_FILES; i++)&#123;FD_SET(fds[i], &amp;inset);&#125;tv.tv_sec = DELAY_TIME;tv.tv_usec = 0;//使用select函数循环测试监测的读文件描述符集中是否有准备就绪的while(FD_ISSET(fds[0], &amp;inset) || FD_ISSET(fds[1], &amp;inset) || FD_ISSET(fds[2], &amp;inset))&#123;tv.tv_sec = DELAY_TIME;tv.tv_usec = 0;tmpset = inset;//使用临时文件描述符集，避免每次初始化//int select(int nfds, fd_set *readfds, fd_set *writefds,//           fd_set *exceptfds, struct timeval *timeout);res = select(maxfd + 1, &amp;tmpset, NULL, NULL, &amp;tv);//根据函数返回值进行处理switch (res)&#123;case -1:&#123;perror(&quot;Error Select&quot;);exit(-1);&#125;break;case 0:&#123;printf(&quot;超时\n&quot;);return 1;&#125;break;default:&#123;for (i = 0; i &lt; IN_FILES; i++)&#123;if (FD_ISSET(fds[i], &amp;tmpset))&#123;memset(buf, 0, BUF_SIZE);real_read = read(fds[i], buf, BUF_SIZE);if (real_read == -1 )&#123;if (errno != EAGAIN) &#123;return 1;&#125;&#125;//  文件读出错处理else if(!real_read)&#123;FD_CLR(fds[i], &amp;inset);close(fds[i]);&#125;else//文件读正常处理&#123;if (i == 0)&#123;// 标准终端输入处理（文件描述符是0）if ((buf[0] == 'q') || (buf[0] == 'Q'))&#123;return 0;&#125;&#125;else// FIFO输入处理&#123;buf[real_read] = '\0';printf(&quot;FIFO%d: %s&quot;, i, buf);&#125;//end if 输入处理&#125;//end if 文件处理 &#125;//end if 文件就绪处理&#125;//end for 文件轮询&#125;break;&#125;//end switch&#125;//end whilereturn 0;&#125;</code></pre><h3 id="执行结果-7">执行结果</h3><p>  同样没什么解释的，检测到in1,in2可读，就返回，在输入处理中打印到终端，检测到标准输入时，判断是否是“q/Q”,是则退出检测，超时后自动退出<br><img src="https://s.im5i.com/2021/06/22/a4o5Y.png" alt="执行结果"></p>]]></content>
+        <content type="html"><![CDATA[<blockquote><p>linux 进程间通信编程，管道通信的实验</p></blockquote><span id="more"></span><h3 id="代码分析-6">代码分析</h3><p>  程序分析</p><pre><code class="language-c">#include &lt;fcntl.h&gt;#include &lt;unistd.h&gt;#include &lt;stdio.h&gt;#include &lt;stdlib.h&gt;#include &lt;errno.h&gt;#include &lt;time.h&gt;#include &lt;string.h&gt;#include &lt;sys/types.h&gt;//mkfifo#include &lt;sys/stat.h&gt;//mkfifo// 定义FIFO有名管道名#define FIFO1&quot;in1&quot;#define FIFO2&quot;in2&quot;//设定缓冲区大小#define BUF_SIZE512//超时时间#define DELAY_TIME60//多路复用文件数目#define IN_FILES3#define MAX(a,b)((a) &gt; (b)? (a) : (b))int main()&#123;int fds[IN_FILES];char buf[BUF_SIZE];int i, res, real_read, maxfd;fd_set inset, tmpset;struct timeval tv;//超时时间设置fds[0] = 0;//标准输入设备//创建两个有名管道//access - check real user's permissions for a file//#include &lt;unistd.h&gt;//int access(const char *pathname, int mode);//mode: F_OK, R_OK, W_OK, and X_OK.//mkfifo - make a FIFO special file (a named pipe)//#include &lt;sys/types.h&gt;//#include &lt;sys/stat.h&gt;//int mkfifo(const char *pathname, mode_t mode);if((access(FIFO1, F_OK)) == -1)//如果 FIFO1 有名管道不存在&#123;if((mkfifo(FIFO1, 0666)) == -1)&#123;perror(&quot;Error FIFO1 create!&quot;);exit(-1);&#125;&#125;if((access(FIFO2, F_OK)) == -1)//如果 FIFO2 有名管道不存在&#123;if((mkfifo(FIFO2, 0666)) == -1)//指明创建一个有名管道且存取权限为0666，即创建者、与创建者同组的用户、其他用户对该有名管道的  访问权限 都是 可读可写。&#123;perror(&quot;Error FIFO2 create!&quot;);exit(-1);&#125;&#125;//以只读非阻塞的方式打开两个文件if((fds[1] = open(FIFO1, O_RDONLY|O_NONBLOCK)) == -1)&#123;perror(&quot;Error FIFO1 open&quot;);exit(-1);&#125;if((fds[2] = open(FIFO2, O_RDONLY|O_NONBLOCK)) == -1)&#123;perror(&quot;Error FIFO2 open&quot;);exit(-1);&#125;//以下为select函数作准备//取出两个文件描述符中的较大者maxfd = MAX(fds[1], fds[2]);//初始化读集合insetFD_ZERO(&amp;inset);//在读文件描述符中加入相应的描述符for(i = 0; i &lt; IN_FILES; i++)&#123;FD_SET(fds[i], &amp;inset);&#125;tv.tv_sec = DELAY_TIME;tv.tv_usec = 0;//使用select函数循环测试监测的读文件描述符集中是否有准备就绪的while(FD_ISSET(fds[0], &amp;inset) || FD_ISSET(fds[1], &amp;inset) || FD_ISSET(fds[2], &amp;inset))&#123;tv.tv_sec = DELAY_TIME;tv.tv_usec = 0;tmpset = inset;//使用临时文件描述符集，避免每次初始化//int select(int nfds, fd_set *readfds, fd_set *writefds,//           fd_set *exceptfds, struct timeval *timeout);res = select(maxfd + 1, &amp;tmpset, NULL, NULL, &amp;tv);//根据函数返回值进行处理switch (res)&#123;case -1:&#123;perror(&quot;Error Select&quot;);exit(-1);&#125;break;case 0:&#123;printf(&quot;超时\n&quot;);return 1;&#125;break;default:&#123;for (i = 0; i &lt; IN_FILES; i++)&#123;if (FD_ISSET(fds[i], &amp;tmpset))&#123;memset(buf, 0, BUF_SIZE);real_read = read(fds[i], buf, BUF_SIZE);if (real_read == -1 )&#123;if (errno != EAGAIN) &#123;return 1;&#125;&#125;//  文件读出错处理else if(!real_read)&#123;FD_CLR(fds[i], &amp;inset);close(fds[i]);&#125;else//文件读正常处理&#123;if (i == 0)&#123;// 标准终端输入处理（文件描述符是0）if ((buf[0] == 'q') || (buf[0] == 'Q'))&#123;return 0;&#125;&#125;else// FIFO输入处理&#123;buf[real_read] = '\0';printf(&quot;FIFO%d: %s&quot;, i, buf);&#125;//end if 输入处理&#125;//end if 文件处理 &#125;//end if 文件就绪处理&#125;//end for 文件轮询&#125;break;&#125;//end switch&#125;//end whilereturn 0;&#125;</code></pre><h3 id="执行结果-6">执行结果</h3><p>  同样没什么解释的，检测到in1,in2可读，就返回，在输入处理中打印到终端，检测到标准输入时，判断是否是“q/Q”,是则退出检测，超时后自动退出<br><img src="https://s.im5i.com/2021/06/22/a4o5Y.png" alt="执行结果"></p>]]></content>
       
       
       <categories>
@@ -1994,6 +1969,31 @@
         <tags>
             
             <tag> select()函数 </tag>
+            
+            <tag> 有名管道 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>linux进程间通信编程-有名管道</title>
+      <link href="/2021/06/22/procom-linux-fifo/"/>
+      <url>/2021/06/22/procom-linux-fifo/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>linux 进程间通信编程，有名管道的实验（存疑，为什么管道的创建在read.c里？）</p></blockquote><span id="more"></span><h3 id="代码分析-8">代码分析</h3><p>  程序分析 write.c</p><pre><code class="language-c">//fifo_write.c//有名管道的创建与使用write部分// mkfifo - make a FIFO special file (a named pipe)//#include &lt;sys/types.h&gt;//#include &lt;sys/stat.h&gt;//int mkfifo(const char *pathname, mode_t mode);#include &lt;sys/types.h&gt;#include &lt;sys/stat.h&gt;#include &lt;unistd.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#include &lt;fcntl.h&gt;#include &lt;limits.h&gt;#define FIFONAME&quot;./myfifo&quot;// PIPE_BUF defined in limits.h#define BUF_SIZEPIPE_BUFint main(int argc, char *argv[])&#123;int fd;char buf[BUF_SIZE];int real_write;if (argc &lt;=1 )&#123;printf(&quot;Usage: %s string\n&quot;,argv[0]);exit(0);&#125;sscanf(argv[1], &quot;%s&quot;, buf);if ((fd = open(FIFONAME, O_WRONLY)) &lt; 0)//只写方式打开fifo&#123;printf(&quot;Error open fifo files!\n&quot;);exit(-1);&#125;//向管道中写入字符串if((real_write = write(fd, buf, BUF_SIZE)) &gt; 0)&#123;printf(&quot;Write '%s' to FIFO\n&quot;, buf);&#125;close(fd);exit(0);&#125; </code></pre><p>  程序分析 read.c</p><pre><code class="language-c">//fifo_read.c//有名管道的创建与使用read部分// mkfifo - make a FIFO special file (a named pipe)//#include &lt;sys/types.h&gt;//#include &lt;sys/stat.h&gt;//int mkfifo(const char *pathname, mode_t mode);#include &lt;sys/types.h&gt;#include &lt;sys/stat.h&gt;#include &lt;unistd.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#include &lt;fcntl.h&gt;#include &lt;limits.h&gt;#include &lt;errno.h&gt;#include &lt;string.h&gt;#define FIFONAME&quot;./myfifo&quot;// PIPE_BUF defined in limits.h#define BUF_SIZEPIPE_BUFint main()&#123;int fd;char buf[BUF_SIZE];int real_read;//判断有名管道是否存在，若未创建则以相应的权限创建//access - check real user's permissions for a file//#include &lt;unistd.h&gt;//int access(const char *pathname, int mode);if ((access(FIFONAME, F_OK)) == -1)&#123;if(((mkfifo(FIFONAME, 0666)) &lt; 0) &amp;&amp; (errno != EEXIST))&#123;printf(&quot;Error Create FIFO file!\n&quot;);&#125;&#125;if ((fd = open(FIFONAME, O_RDONLY)) &lt; 0)//只读方式打开fifo&#123;printf(&quot;Error open fifo files!\n&quot;);exit(-1);&#125;while(1)&#123;memset(buf, 0, sizeof(buf));//从管道中读取字符串if((real_read = read(fd, buf, BUF_SIZE)) &gt; 0)&#123;printf(&quot;Read '%s' from FIFO\n&quot;, buf);if (!strcmp(buf,&quot;Quit&quot;)) break;&#125;&#125;close(fd);exit(0);&#125;</code></pre><h3 id="执行结果-8">执行结果</h3><p>  不必解释，看图<br><img src="https://s.im5i.com/2021/06/22/a36zA.png" alt="执行结果"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> linux </category>
+          
+      </categories>
+      
+      
+        <tags>
             
             <tag> 有名管道 </tag>
             
@@ -2081,38 +2081,11 @@
     
     
     <entry>
-      <title>linux文件读写编程-标准IO和底层IO对比</title>
-      <link href="/2021/06/21/fileio-linux-stiioandio/"/>
-      <url>/2021/06/21/fileio-linux-stiioandio/</url>
-      
-        <content type="html"><![CDATA[<blockquote><p>linux I/O编程，两个程序都是copy功能，一个用标准IO实现，一个用底层IO实现，比较之</p></blockquote><span id="more"></span><h3 id="代码分析-3">代码分析</h3><p>  标准IO</p><pre><code class="language-c">/* standard_io.c */#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#defineBUFFER_SIZE1024/* 每次读写缓存大小 */#define SRC_FILE_NAME&quot;src_file&quot;/* 源文件名 */#define DEST_FILE_NAME&quot;dest_file&quot;/* 目标文件名文件名 */#define OFFSET10240/* 拷贝的数据大小 */ int main()&#123;FILE *src_file, *dest_file;unsigned char buff[BUFFER_SIZE];int real_read_len;/* 以只读方式打开源文件 */src_file = fopen(SRC_FILE_NAME, &quot;r&quot;);/* 以只写方式打开目标文件，若此文件不存在则创建 */dest_file = fopen(DEST_FILE_NAME, &quot;w&quot;);if (!src_file || !dest_file)&#123;printf(&quot;Open file error\n&quot;);exit(1);&#125;/* 将源文件的读写指针移到最后10KB的起始位置*/fseek(src_file, -OFFSET, SEEK_END);/* 读取源文件的最后10KB数据并写到目标文件中，每次读写1KB */while ((real_read_len = fread(buff, 1, sizeof(buff), src_file)) &gt; 0)&#123;fwrite(buff, 1, real_read_len, dest_file);&#125;fclose(dest_file);fclose(src_file);return 0;&#125;</code></pre><p>  标准IO</p><pre><code class="language-c">/* copy_file.c */#include &lt;unistd.h&gt;#include &lt;sys/types.h&gt;#include &lt;sys/stat.h&gt;#include &lt;fcntl.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#defineBUFFER_SIZE1024/* 每次读写缓存大小，影响运行效率*/#define SRC_FILE_NAME&quot;src_file&quot;/* 源文件名 */#define DEST_FILE_NAME&quot;dest_file&quot;/* 目标文件名文件名 */#define OFFSET10240/* 拷贝的数据大小 */ int main()&#123;int src_file, dest_file;unsigned char buff[BUFFER_SIZE];int real_read_len;/* 以只读方式打开源文件 */src_file = open(SRC_FILE_NAME, O_RDONLY);/* 以只写方式打开目标文件，若此文件不存在则创建, 访问权限值为644 */dest_file = open(DEST_FILE_NAME, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);if (src_file &lt; 0 || dest_file &lt; 0)&#123;printf(&quot;Open file error\n&quot;);exit(1);&#125;/* 将源文件的读写指针移到最后10KB的起始位置*///lseek(src_file, -OFFSET, SEEK_END);lseek(src_file,0,SEEK_SET);/* 读取源文件的最后10KB数据并写到目标文件中，每次读写1KB */while ((real_read_len = read(src_file, buff, sizeof(buff))) &gt; 0)&#123;write(dest_file, buff, real_read_len);&#125;close(dest_file);close(src_file);return 0;&#125;</code></pre><h3 id="执行结果-3">执行结果</h3><p>  没什么说的，就不上图了，主要对比代码差异，实现的功能类似</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> linux </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 底层IO </tag>
-            
-            <tag> 标准IO </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>linux文件读写编程-freopen()函数</title>
       <link href="/2021/06/21/fileio-linux-freopen/"/>
       <url>/2021/06/21/fileio-linux-freopen/</url>
       
-        <content type="html"><![CDATA[<blockquote><p>linux I/O编程，用freopen实现重定向，将一个文件设置为标准输入，另外一个设置为标准输出</p></blockquote><span id="more"></span><h3 id="代码分析-4">代码分析</h3><p>  程序分析</p><pre><code class="language-c">//main.c#include  &lt;stdio.h&gt;#define FILE_IN&quot;in_file.txt&quot;#define FILE_OUT&quot;out_file.txt&quot;int main()&#123;int a, b;FILE *fp1, *fp2;fp1 = freopen(FILE_IN, &quot;r&quot;, stdin);//将in_file.txt设置为标准输入之后，下面的scanf就会从中读fp2 = freopen(FILE_OUT, &quot;w&quot;, stdout);//将out_file.txt设置为标准输出之后，下面的printf就会打印到其中if ((fp1 == NULL) || (fp2 == NULL))&#123;fprintf(stderr,&quot;Files open error!\n&quot;);return 0;&#125;while ((scanf(&quot;%d%d&quot;, &amp;a, &amp;b)) !=EOF)&#123;printf(&quot;%d + %d = %d\n&quot;, a, b, a+b);&#125;fclose(fp1);fclose(fp2);return 0;&#125;</code></pre><h3 id="执行结果-4">执行结果</h3><p>  不必解释，看图<br><img src="https://s.im5i.com/2021/06/21/auBNw.png" alt="执行结果"></p>]]></content>
+        <content type="html"><![CDATA[<blockquote><p>linux I/O编程，用freopen实现重定向，将一个文件设置为标准输入，另外一个设置为标准输出</p></blockquote><span id="more"></span><h3 id="代码分析-3">代码分析</h3><p>  程序分析</p><pre><code class="language-c">//main.c#include  &lt;stdio.h&gt;#define FILE_IN&quot;in_file.txt&quot;#define FILE_OUT&quot;out_file.txt&quot;int main()&#123;int a, b;FILE *fp1, *fp2;fp1 = freopen(FILE_IN, &quot;r&quot;, stdin);//将in_file.txt设置为标准输入之后，下面的scanf就会从中读fp2 = freopen(FILE_OUT, &quot;w&quot;, stdout);//将out_file.txt设置为标准输出之后，下面的printf就会打印到其中if ((fp1 == NULL) || (fp2 == NULL))&#123;fprintf(stderr,&quot;Files open error!\n&quot;);return 0;&#125;while ((scanf(&quot;%d%d&quot;, &amp;a, &amp;b)) !=EOF)&#123;printf(&quot;%d + %d = %d\n&quot;, a, b, a+b);&#125;fclose(fp1);fclose(fp2);return 0;&#125;</code></pre><h3 id="执行结果-3">执行结果</h3><p>  不必解释，看图<br><img src="https://s.im5i.com/2021/06/21/auBNw.png" alt="执行结果"></p>]]></content>
       
       
       <categories>
@@ -2135,11 +2108,38 @@
     
     
     <entry>
+      <title>linux文件读写编程-标准IO和底层IO对比</title>
+      <link href="/2021/06/21/fileio-linux-stiioandio/"/>
+      <url>/2021/06/21/fileio-linux-stiioandio/</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>linux I/O编程，两个程序都是copy功能，一个用标准IO实现，一个用底层IO实现，比较之</p></blockquote><span id="more"></span><h3 id="代码分析-5">代码分析</h3><p>  标准IO</p><pre><code class="language-c">/* standard_io.c */#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#defineBUFFER_SIZE1024/* 每次读写缓存大小 */#define SRC_FILE_NAME&quot;src_file&quot;/* 源文件名 */#define DEST_FILE_NAME&quot;dest_file&quot;/* 目标文件名文件名 */#define OFFSET10240/* 拷贝的数据大小 */ int main()&#123;FILE *src_file, *dest_file;unsigned char buff[BUFFER_SIZE];int real_read_len;/* 以只读方式打开源文件 */src_file = fopen(SRC_FILE_NAME, &quot;r&quot;);/* 以只写方式打开目标文件，若此文件不存在则创建 */dest_file = fopen(DEST_FILE_NAME, &quot;w&quot;);if (!src_file || !dest_file)&#123;printf(&quot;Open file error\n&quot;);exit(1);&#125;/* 将源文件的读写指针移到最后10KB的起始位置*/fseek(src_file, -OFFSET, SEEK_END);/* 读取源文件的最后10KB数据并写到目标文件中，每次读写1KB */while ((real_read_len = fread(buff, 1, sizeof(buff), src_file)) &gt; 0)&#123;fwrite(buff, 1, real_read_len, dest_file);&#125;fclose(dest_file);fclose(src_file);return 0;&#125;</code></pre><p>  标准IO</p><pre><code class="language-c">/* copy_file.c */#include &lt;unistd.h&gt;#include &lt;sys/types.h&gt;#include &lt;sys/stat.h&gt;#include &lt;fcntl.h&gt;#include &lt;stdlib.h&gt;#include &lt;stdio.h&gt;#defineBUFFER_SIZE1024/* 每次读写缓存大小，影响运行效率*/#define SRC_FILE_NAME&quot;src_file&quot;/* 源文件名 */#define DEST_FILE_NAME&quot;dest_file&quot;/* 目标文件名文件名 */#define OFFSET10240/* 拷贝的数据大小 */ int main()&#123;int src_file, dest_file;unsigned char buff[BUFFER_SIZE];int real_read_len;/* 以只读方式打开源文件 */src_file = open(SRC_FILE_NAME, O_RDONLY);/* 以只写方式打开目标文件，若此文件不存在则创建, 访问权限值为644 */dest_file = open(DEST_FILE_NAME, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);if (src_file &lt; 0 || dest_file &lt; 0)&#123;printf(&quot;Open file error\n&quot;);exit(1);&#125;/* 将源文件的读写指针移到最后10KB的起始位置*///lseek(src_file, -OFFSET, SEEK_END);lseek(src_file,0,SEEK_SET);/* 读取源文件的最后10KB数据并写到目标文件中，每次读写1KB */while ((real_read_len = read(src_file, buff, sizeof(buff))) &gt; 0)&#123;write(dest_file, buff, real_read_len);&#125;close(dest_file);close(src_file);return 0;&#125;</code></pre><h3 id="执行结果-5">执行结果</h3><p>  没什么说的，就不上图了，主要对比代码差异，实现的功能类似</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> linux </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 底层IO </tag>
+            
+            <tag> 标准IO </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>linux文件读写编程-select()函数</title>
       <link href="/2021/06/21/fileio-linux-select/"/>
       <url>/2021/06/21/fileio-linux-select/</url>
       
-        <content type="html"><![CDATA[<blockquote><p>linux I/O编程，用select()函数和无名管道机制实现</p></blockquote><span id="more"></span><h3 id="代码分析-5">代码分析</h3><p>  程序分析</p><pre><code class="language-c">//select.c#include &quot;select.h&quot;/* * comment: * pipe is used between two processes on the same computer. * */#define TIMES 50int main()&#123;int pipefds[2];int i;//int pipe(int fd[2]) if( -1 == pipe( pipefds))&#123; printf( &quot;Error when create pipes\n&quot;);&#125;else&#123;pid_t pid = fork();//pid_t fork(void)if( 0 == pid)&#123;// childprintf( &quot;child running\n&quot;);   close( pipefds[0]);            //子进程关闭读口，仅作写口for( i = 0; i &lt; TIMES; ++ i)&#123;write( pipefds[1], &quot;I am a good boy!&quot;,\strlen( &quot;I am a good boy!&quot;));sleep(1);&#125;&#125;else&#123;printf( &quot;parent running\n&quot;);char buf[256];close( pipefds[1]);            父进程关闭写口，仅作读口fd_set readfdset;// file descriptor setfor( i = 0; i &lt; TIMES; ++ i)&#123;FD_ZERO( &amp; readfdset);// add read file descriptorFD_SET( pipefds[0], &amp; readfdset);// add standard inputFD_SET( 0, &amp; readfdset);//select之前首先初始化//int select(int nfds, fd_set *readfds, fd_set *writefds,//  fd_set *exceptfds, struct timeval *timeout);select( pipefds[0]+1, &amp; readfdset, NULL, NULL, NULL);                //第二个参数：由select监视的读文件描述符集合                //第三个参数：由select监视的写文件描述符集合                //第四个参数：由select监视的异常处理文件描述符集合                //第四个参数：timeout，NULL表示永远等待if( FD_ISSET( pipefds[0], &amp; readfdset))&#123;buf[ read(pipefds[0], buf, 256)] = '\0';printf( &quot;Receive:%s\n&quot;, buf);&#125;if( FD_ISSET( 0, &amp; readfdset))&#123;buf[ read( 0, buf, 256)] = '\0';printf( &quot;Print:%s\n&quot;, buf);&#125;&#125;//end for TIMESint status;wait( &amp; status);            //使父进程阻塞，直到一个子进程结束&#125;//end if pid&#125;//end if of creat pipeereturn 0;&#125;</code></pre><h3 id="执行结果-5">执行结果</h3><p>  子进程负责往缓冲区写，而父进程，把读口的文件描述符和标准输入加入监听集，用select监听，程序执行的结果是父进程一直等待子进程的写动作或者标准输入，循环50次。<br><img src="https://s.im5i.com/2021/06/21/au1bY.png" alt="执行结果"></p>]]></content>
+        <content type="html"><![CDATA[<blockquote><p>linux I/O编程，用select()函数和无名管道机制实现</p></blockquote><span id="more"></span><h3 id="代码分析-4">代码分析</h3><p>  程序分析</p><pre><code class="language-c">//select.c#include &quot;select.h&quot;/* * comment: * pipe is used between two processes on the same computer. * */#define TIMES 50int main()&#123;int pipefds[2];int i;//int pipe(int fd[2]) if( -1 == pipe( pipefds))&#123; printf( &quot;Error when create pipes\n&quot;);&#125;else&#123;pid_t pid = fork();//pid_t fork(void)if( 0 == pid)&#123;// childprintf( &quot;child running\n&quot;);   close( pipefds[0]);            //子进程关闭读口，仅作写口for( i = 0; i &lt; TIMES; ++ i)&#123;write( pipefds[1], &quot;I am a good boy!&quot;,\strlen( &quot;I am a good boy!&quot;));sleep(1);&#125;&#125;else&#123;printf( &quot;parent running\n&quot;);char buf[256];close( pipefds[1]);            父进程关闭写口，仅作读口fd_set readfdset;// file descriptor setfor( i = 0; i &lt; TIMES; ++ i)&#123;FD_ZERO( &amp; readfdset);// add read file descriptorFD_SET( pipefds[0], &amp; readfdset);// add standard inputFD_SET( 0, &amp; readfdset);//select之前首先初始化//int select(int nfds, fd_set *readfds, fd_set *writefds,//  fd_set *exceptfds, struct timeval *timeout);select( pipefds[0]+1, &amp; readfdset, NULL, NULL, NULL);                //第二个参数：由select监视的读文件描述符集合                //第三个参数：由select监视的写文件描述符集合                //第四个参数：由select监视的异常处理文件描述符集合                //第四个参数：timeout，NULL表示永远等待if( FD_ISSET( pipefds[0], &amp; readfdset))&#123;buf[ read(pipefds[0], buf, 256)] = '\0';printf( &quot;Receive:%s\n&quot;, buf);&#125;if( FD_ISSET( 0, &amp; readfdset))&#123;buf[ read( 0, buf, 256)] = '\0';printf( &quot;Print:%s\n&quot;, buf);&#125;&#125;//end for TIMESint status;wait( &amp; status);            //使父进程阻塞，直到一个子进程结束&#125;//end if pid&#125;//end if of creat pipeereturn 0;&#125;</code></pre><h3 id="执行结果-4">执行结果</h3><p>  子进程负责往缓冲区写，而父进程，把读口的文件描述符和标准输入加入监听集，用select监听，程序执行的结果是父进程一直等待子进程的写动作或者标准输入，循环50次。<br><img src="https://s.im5i.com/2021/06/21/au1bY.png" alt="执行结果"></p>]]></content>
       
       
       <categories>
